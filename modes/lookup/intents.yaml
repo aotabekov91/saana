@@ -1,0 +1,35 @@
+---
+type: entity
+name: word
+automatically_extensible: yes
+
+---
+type: intent
+name: LookupMode_lookupEnglish
+slots:
+  - name: word
+    entity: word
+utterances:
+  - look up [word](oblique)
+  - look up [word](bleak)
+  - look up [word](charity)
+  - look up [word](pop up)
+  - look up [word](pass on)
+
+---
+type: intent
+name: LookupMode_lookupGerman
+slots:
+  - name: word
+    entity: word
+utterances:
+  - look up german [word](hallo)
+  - look up german [word](buch)
+  - look up german [word](land)
+  - look up german [word](aufstehen)
+  - look up german [word](absagen)
+---
+type: intent
+name: LookupMode_playSound
+utterances:
+  - sound 

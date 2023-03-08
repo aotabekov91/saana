@@ -1,0 +1,10 @@
+*
+!.gitignore
+!*.py
+!*/*.py
+!*/*/*.py
+!*/*/*/*.py
+!*.yaml
+!*/*.yaml
+!*/*/*.yaml
+!*/*/*/*.yaml

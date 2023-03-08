@@ -1,0 +1,21 @@
+---
+type: entity
+name: mode
+automatically_extensible: no 
+values:
+  - applications
+  - tasks
+  - question
+  - translator
+  - look up
+
+---
+type: intent
+name: ChangeMode_changeMode
+slots:
+  - name: mode
+    entity: mode
+utterances:
+  - activate [mode]
+  - change [mode]
+  - change to [mode]

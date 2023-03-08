@@ -1,0 +1,30 @@
+---
+type: entity
+name: language
+automatically_extensible: no
+values:
+  - english
+  - russian
+  - german
+  - turkish
+
+---
+type: entity
+name: sentence
+automatically_extensible: yes
+
+---
+type: intent
+name: TranslatorMode_translateAction
+slots:
+  - name: from
+    entity: language
+  - name: to
+    entity: language
+  - name: sentence
+    entity: sentence
+utterances:
+  - translate [from](english) [to](german) [sentence](Hello, friend! How are you?)
+  - translate [from](english) [to](german) [sentence](What is a book in German?)
+  - translate [from](english) [to](german) [sentence](This can continue and continue.)
+  - translate [from](english) [to](german) [sentence](It is a very useful application. Believe me!)

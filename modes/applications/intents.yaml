@@ -1,0 +1,23 @@
+# app entity
+---
+type: entity
+name: app
+automatically_extensible: yes
+values:
+  - browser
+  - chrome
+  - pdf
+  - music
+  - email
+  - tasks
+
+# open an app 
+---
+type: intent
+name: ApplicationsMode_openApplication
+slots:
+  - name: app
+    entity: app
+utterances:
+  - Open application [app](cute browser)
+  - Open application [app](email)
