@@ -3,11 +3,14 @@ type: entity
 name: mode
 automatically_extensible: no 
 values:
-  - applications
-  - tasks
-  - question
-  - translator
-  - look up
+  - [ApplicationsMode, applications]
+  - [TasksMode, tasks]
+  - [AIMode, question, ai]
+  - [TranlatorMode, translator, translate]
+  - [LookupMode, look up, definition]
+  - [WikiMode, archive, wiki]
+  - [BookmarksMode, bookmarks]
+  - [WindowsManagerMode, manager, windows]
 
 ---
 type: intent
@@ -18,4 +21,6 @@ slots:
 utterances:
   - activate [mode]
   - change [mode]
+  - change a [mode]
   - change to [mode]
+  - change the [mode]

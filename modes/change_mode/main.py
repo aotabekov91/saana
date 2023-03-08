@@ -1,26 +1,25 @@
 import sys
 
-from speechToCommand.utils.moder import Mode
+from speechToCommand.utils.moder import BaseMode
 
-class ChangeMode(Mode):
-    def __init__(self, config):
-        super(ChangeMode, self).__init__(config, keyword='changer', info='Change modes')
+class ChangeMode(BaseMode):
+    def __init__(self, port=None, parent_port=None, config=None):
+        super(ChangeMode, self).__init__(
+                keyword='change',
+                info='Change modes',
+                port=port,
+                parent_port=parent_port,
+                config=config
+                )
 
-    def set_mode(self, mode):
-        self.parent_socket.send_json({'command':'setCurrentMode', 'mode_keyword':mode})
-        print(self.parent_socket.recv_json())
-
-    def handleRequest(self, request):
-        print(f'{self.__class__.__name__}: {request}')
-        if request['command']=='ChangeMode_changeMode':
-            _, __, ___, slots=self.parse_request(request)
-            if not slots: return
-            mode_name=slots[0]['value']['value']
-            self.set_mode(mode_name)
+    @BaseMode.respond
+    def changeMode(self, request):
+        slotNames=request.get('slot_names')
+        mode_name=slotNames.get('mode')
+        self.parent_socket.send_json({'command':'setCurrentMode', 'mode_name':mode_name})
+        respond=self.parent_socket.recv_json()
+        print(respond)
 
 if __name__=='__main__':
-    app=ChangeMode({'port':8234})
-    app.tlist=app.get_tasks()
-    app.ui.addWidgetsToList(app.tlist)
-    app.ui.show()
-    sys.exit(app.exec_())
+    app=ChangeMode(port=33333, parent_port=44444)
+    app.run()

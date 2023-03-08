@@ -3,49 +3,55 @@ import asyncio
 import subprocess
 from i3ipc.aio import Connection
 
-from speechToCommand.utils.moder import Mode
+from speechToCommand.utils.moder import BaseMode
+from speechToCommand.utils.moder import QBaseMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class ApplicationsMode(Mode):
-    def __init__(self, config):
-        super(ApplicationsMode, self).__init__(config, keyword='applications', info='Applications')
+class ApplicationsMode(QBaseMode):
+    def __init__(self, port=None, parent_port=None, config=None):
+        super(ApplicationsMode, self).__init__(
+                 keyword='applications', 
+                 info='Applications', 
+                 port=port, 
+                 parent_port=parent_port, 
+                 config=config)
+
+        self.kind=None
+        self.apps=self.get_applications_data()
+
         self.ui=ListMainWindow('AppsMode - own_floating', 'Apps: ')
-
         self.ui.edit.returnPressed.connect(self.confirmAction)
-        self.ui.show_signal.connect(self.showAction)
-        self.ui.choose_signal.connect(self.chooseAction)
-        self.ui.confirm_signal.connect(self.confirmAction)
-        self.ui.open_signal.connect(self.openAction)
 
-        self.mode=None
-        self.get_applications_data()
-
+    @BaseMode.respond
     def openAction(self, request={}):
-        print('Applications to show')
-        self.mode='open'
+        self.kind='open'
         self.ui.list.clear()
         self.ui.addWidgetsToList(self.apps)
         self.ui.show()
 
+
+    @BaseMode.respond
     def chooseAction(self, request={}):
         _, __, ___, slots=self.parse_request(request)
         app_name=''
         if slots: app_name=slots[0]['value']['value']
 
-        if self.mode=='show':
+        if self.kind=='show':
             self.dlist=self.get_windows_data()
-        elif self.mode=='open':
+        elif self.kind=='open':
             self.dlist=self.apps
         self.ui.addWidgetsToList(self.dlist)
         self.ui.edit.setText(app_name)
         self.ui.show()
 
+    @BaseMode.respond
     def showAction(self, request={}):
-        self.mode='show'
+        self.kind='show'
         self.dlist=self.get_windows_data()
         self.ui.addWidgetsToList(self.dlist)
         self.ui.show()
 
+    @BaseMode.respond
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()
         self.set_window(item.itemData['id'])
@@ -62,17 +68,17 @@ class ApplicationsMode(Mode):
         return windows, tree
 
     def set_window(self, wid):
-        if self.mode=='show':
+        if self.kind=='show':
             windows, tree=asyncio.run(self.get_windows())
             w=tree.find_by_id(wid)
             asyncio.run(w.command('focus'))
-        elif self.mode=='open':
+        elif self.kind=='open':
             subprocess.Popen(wid)
 
     def get_applications_data(self):
         proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)
         applications=proc.stdout.readlines()
-        self.apps=[]
+        apps=[]
         for app in applications:
             info={}
             app=app.decode().strip('\n').split(' ')
@@ -80,8 +86,8 @@ class ApplicationsMode(Mode):
             app_version=' '.join(app[1:])
             info['top']=app_name
             info['id']=app_name
-            self.apps+=[info]
-
+            apps+=[info]
+        return apps
 
     def get_windows_data(self):
         windows, _=asyncio.run(self.get_windows())
@@ -95,8 +101,5 @@ class ApplicationsMode(Mode):
         return items
 
 if __name__=='__main__':
-    app=ApplicationsMode({'port':8234})
-    app.dlist=app.get_windows_data()
-    app.ui.addWidgetsToList(app.dlist)
-    app.ui.show()
-    sys.exit(app.exec_())
+    app=ApplicationsMode(port=33333)
+    app.run()

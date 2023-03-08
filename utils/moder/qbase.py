@@ -1,55 +1,65 @@
-import zmq
 import sys
+import zmq
 import time
-import threading
-
-from configparser import ConfigParser
-from speechToCommand.utils.moder import BaseMode 
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from speechToCommand.utils.moder.base import BaseMode 
+
 class ZMQListener(QObject):
-
-    request=pyqtSignal(dict)
-
+    request = pyqtSignal(dict)
     def __init__(self, parent):
         super(ZMQListener, self).__init__()
         self.parent=parent
-        self.port=parent.port
-        self.running=True
+        self.running = True
+        self.wait=False
 
     def loop(self):
         while self.running:
-            request=self.parent.socket.recv_json()
+            request = self.parent.socket.recv_json()
             self.request.emit(request)
-            self.parent.socket.send_json({'status': f'{self.parent.__class__.__name__} received request'})
+            self.parent.wait=True
+            while self.parent.wait:
+                print(f'{self.parent.__class__.__name__}: waiting')
+                time.sleep(1)
 
 class QBaseMode(BaseMode, QApplication):
 
-    def __init__(self, keyword='', info=None, config=None):
-        super(QBaseMode, self).__init__(keyword, info, config, [])
+    responded=pyqtSignal()
+
+    def __init__(self, 
+                 keyword=None, 
+                 info=None, 
+                 port=None, 
+                 parent_port=None, 
+                 config=None,
+                 argv=[]):
+
+        super(QBaseMode, self).__init__(
+                 keyword=keyword, 
+                 info=info, 
+                 port=port, 
+                 parent_port=parent_port, 
+                 config=config,
+                 argv=argv)
+
         self.setApplicationName('own_floating')
         self.set_listener()
 
     def set_listener(self):
-        self.listener_thread = QThread()
-        self.listener=ZMQListener(self)
-        self.listener.moveToThread(self.listener_thread)
-        self.listener_thread.started.connect(self.listener.loop)
-        self.listener.request.connect(self.handle_request)
-        QTimer.singleShot(0, self.listener_thread.start)
+        self.listener = QThread()
+        self.zeromq_listener=ZMQListener(self)
+        self.zeromq_listener.moveToThread(self.listener)
+        self.listener.started.connect(self.zeromq_listener.loop)
+        self.zeromq_listener.request.connect(self.handle_request)
+        QTimer.singleShot(0, self.listener.start)
 
-    def _run(self):
+
+    def run(self):
         sys.exit(self.exec_())
 
     def exit(self):
-        self.listener.running=False
+        self.zeromq_listener.running=False
         super().exit()
-
-if __name__=='__main__':
-    config=ConfigParser()
-    config.read({'Custom':{'port':8001}})
-    app=BaseMode(config=config)
-    app.run()

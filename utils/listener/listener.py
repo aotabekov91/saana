@@ -20,27 +20,26 @@ def callback(listener, audio):
 
 class Listener(sr.Recognizer):
 
-    def __init__(self, config=None):
+    def __init__(self, parent=None): 
         super().__init__()
-        self.config=config
+        self.parent=parent
+
         self.set_connection()
+
         self.set_vosk()
         self.set_microphone()
-        self.activate()
+        self.run()
 
     def set_connection(self):
-        if self.config!=None:
-            self.port=int(self.config['port'])
-            self.scontext = zmq.Context()
-            self.ssocket = self.scontext.socket(zmq.PUSH)
-            self.ssocket.bind(f'tcp://*:{self.port}')
+        self.socket = zmq.Context().socket(zmq.PUSH)
+        if self.parent.listener_port:
+            self.socket.bind(f'tcp://*:{self.parent.listener_port}')
         else:
-            self.port=None
+            self.parent.listener_port=self.socket.bind_to_random_port(f'tcp://*')
 
     def send_json(self, data):
         print('Listener: ', data['text'])
-        if self.port: 
-            self.ssocket.send_json(data)
+        self.socket.send_json(data)
 
     def set_vosk(self):
         mode_dir=os.path.dirname(os.path.realpath(__file__))
@@ -58,14 +57,14 @@ class Listener(sr.Recognizer):
         with self.mic as source:
             self.adjust_for_ambient_noise(source)
 
-    def activate(self):
+    def run(self):
         self.stopFunction=self.listen_in_background(self.mic, callback)
 
-    def deactivate(self):
+    def exit(self):
         self.stopFunction()
 
 if __name__=='__main__':
-    listener=Listener()
-    listener.activate()
+    listener=Listener(port=33333)
+    listener.run()
     while True:
         time.sleep(1)
