@@ -1,47 +1,46 @@
 import sys
 
-from cumodoro import task
-from speechToCommand.utils.moder import Mode
+from cumodoro import server
+
+from speechToCommand.utils.moder import BaseMode
+from speechToCommand.utils.moder import QBaseMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class TasksMode(Mode):
+class TasksMode(QBaseMode):
 
-    def __init__(self, config):
+    def __init__(self, port=None, parent_port=None, config=None):
+        super(TasksMode, self).__init__(
+                 keyword='tasks', 
+                 info='Tasks', 
+                 port=port, 
+                 parent_port=parent_port, 
+                 config=config)
 
-        super(TasksMode, self).__init__(config, keyword='tasks', info='Tasks')
-        self.ui=ListMainWindow('Tasks - own_floating', 'Task: ')
+        self.ui=ListMainWindow(self, 'Tasks - own_floating', 'Task: ')
         self.ui.edit.returnPressed.connect(self.confirmAction)
-        self.ui.show_signal.connect(self.showAction)
-        self.ui.choose_signal.connect(self.chooseAction)
 
-    def handleRequest(self, request):
-        if request['command']=='TasksMode_finishTask':
-            task.finish_task()
-        else:
-            super().handleRequest(request)
-                
+    @BaseMode.respond
     def showAction(self, request):
         self.tlist=self.get_tasks()
         self.ui.addWidgetsToList(self.tlist)
         self.ui.show()
 
+    @BaseMode.respond
     def chooseAction(self, request):
-        self.tlist=self.get_tasks()
-        self.ui.addWidgetsToList(self.tlist)
-        _, __, ___, slots=self.parse_request(request)
-        task_name=''
-        if slots: task_name=slots[0]['value']['value']
+        task_name=request['slot_names'].get('item', '')
         self.ui.edit.setText(task_name)
         self.ui.show()
 
+    @BaseMode.respond
+    #todo server hangs here for server.set_task
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()
-        if item: task.set_task(item.itemData['id'])
+        server.set_task(item.itemData['id'])
         self.ui.hide()
         self.ui.edit.clear()
 
     def get_tasks(self):
-        tasks, reverse=task.get_tasks()
+        tasks, reverse=server.get_tasks()
         data=[{'top':n, 'id':t} for n, t in tasks.items()]
         return data
 

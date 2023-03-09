@@ -1,7 +1,7 @@
 import os
 import openai
 
-from speechToCommand.utils.moder import Mode
+from speechToCommand.utils.moder import BaseMode
 from speechToCommand.utils.widgets.qrender import RenderMainWindow 
 
 class AIMode(Mode):
