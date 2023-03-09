@@ -51,7 +51,7 @@ class BaseMode:
             poller=zmq.Poller()
             poller.register(self.parent_socket, flags=zmq.POLLOUT)
 
-            if poller.poll(timeout=500):
+            if poller.poll(timeout=50):
 
                 self.parent_socket.send_json({
                     'command': 'registerMode',

@@ -98,6 +98,7 @@ class Handler:
         self.modes[r['mode_name']]['socket']=socket
 
     def act(self, mode_name, command_name, slot_names, intent_data):
+        print('Sending: ', mode_name, command_name) 
         if mode_name in self.modes:
             socket=self.modes[mode_name]['socket']
             socket.send_json({'command': command_name,
@@ -155,7 +156,7 @@ class Handler:
 
             m_name=None
             if self.currentMode != None:
-                mode_names=set([self.currentMode, 'ChangeMode', 'GenericMode'])
+                mode_names=[self.currentMode, 'GenericMode', 'ChangeMode']
                 m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
                 if m_name == 'GenericMode': m_name=self.currentMode
             if self.currentMode is None or m_name is None:

@@ -20,7 +20,7 @@ class ApplicationsMode(QBaseMode):
         self.apps=self.get_applications_data()
 
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
-        self.ui.edit.returnPressed.connect(self.confirmAction)
+        self.ui.edit.returnPressed.connect(lambda: self.confirmAction(True))
 
     @BaseMode.respond
     def openAction(self, request={}):
@@ -32,10 +32,7 @@ class ApplicationsMode(QBaseMode):
 
     @BaseMode.respond
     def chooseAction(self, request={}):
-        _, __, ___, slots=self.parse_request(request)
-        app_name=''
-        if slots: app_name=slots[0]['value']['value']
-
+        app_name=request['slot_names'].get('app', '')
         if self.kind=='show':
             self.dlist=self.get_windows_data()
         elif self.kind=='open':

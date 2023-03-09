@@ -1,38 +1,105 @@
 import sys
-from speechToCommand.utils.moder import Mode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
 from googletrans import Translator as GTranslator
 
-class TranslatorMode(Mode):
-    def __init__(self, config):
+import sys
+import asyncio
+import subprocess
+from i3ipc.aio import Connection
 
-        super(TranslatorMode, self).__init__(config, keyword='translator', info='Translator')
-        self.translator=GTranslator()
-        self.ui=ListMainWindow('Trans - own_floating', 'To translate: ')
-        self.ui.edit.returnPressed.connect(self.confirmAction)
-        self.ui.confirm_signal.connect(self.confirmAction)
-        self.ui.done_signal.connect(self.doneAction)
+from speechToCommand.utils.moder import BaseMode
+from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-    def handleRequest(self, request):
-        print(request)
-        if request['command']=='TranslatorMode_translateAction':
-            _, __, ___, slots=self.parse_request(request)
-            if not slots: return
-            request=slots[-1]['value']['value']
-            self.ui.edit.setText(request)
-            self.ui.show()
-        else:
-            super().handleRequest(request)
+class TranslatorMode(QBaseMode):
+    def __init__(self, port=None, parent_port=None, config=None):
+        super(TranslatorMode, self).__init__(
+                 keyword='translator', 
+                 info='Translator', 
+                 port=port, 
+                 parent_port=parent_port, 
+                 config=config)
 
-    def confirmAction(self, request={}):
-        text=self.ui.edit.text()
-        translation=self.translator.translate(text, dest='de').text
-        self.ui.addWidgetsToList([{'top':self.ui.edit.text(), 'down':translation}])
+        self.kind=None
+        self.apps=self.get_applications_data()
 
-    def doneAction(self, request={}):
+        self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
+        self.ui.edit.returnPressed.connect(lambda: self.confirmAction(True))
+
+    @BaseMode.respond
+    def openAction(self, request={}):
+        self.kind='open'
         self.ui.list.clear()
+        self.ui.addWidgetsToList(self.apps)
+        self.ui.show()
 
-if __name__ == '__main__':
-    app = TranslatorMode({})
-    app.ui.show()
-    sys.exit(app.exec_())
+
+    @BaseMode.respond
+    def chooseAction(self, request={}):
+        app_name=request['slot_names'].get('app', '')
+        if self.kind=='show':
+            self.dlist=self.get_windows_data()
+        elif self.kind=='open':
+            self.dlist=self.apps
+        self.ui.addWidgetsToList(self.dlist)
+        self.ui.edit.setText(app_name)
+        self.ui.show()
+
+    @BaseMode.respond
+    def showAction(self, request={}):
+        self.kind='show'
+        self.dlist=self.get_windows_data()
+        self.ui.addWidgetsToList(self.dlist)
+        self.ui.show()
+
+    @BaseMode.respond
+    def confirmAction(self, request={}):
+        item=self.ui.list.currentItem()
+        self.set_window(item.itemData['id'])
+        self.ui.edit.clear()
+        self.ui.hide()
+
+    async def get_windows(self):
+        i3=await Connection().connect()
+        tree=await i3.get_tree()
+        windows={}
+        for w in tree:
+            if w.name in ['', None]: continue
+            windows[w]=w.name
+        return windows, tree
+
+    def set_window(self, wid):
+        if self.kind=='show':
+            windows, tree=asyncio.run(self.get_windows())
+            w=tree.find_by_id(wid)
+            asyncio.run(w.command('focus'))
+        elif self.kind=='open':
+            subprocess.Popen(wid)
+
+    def get_applications_data(self):
+        proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)
+        applications=proc.stdout.readlines()
+        apps=[]
+        for app in applications:
+            info={}
+            app=app.decode().strip('\n').split(' ')
+            app_name=app[0]
+            app_version=' '.join(app[1:])
+            info['top']=app_name
+            info['id']=app_name
+            apps+=[info]
+        return apps
+
+    def get_windows_data(self):
+        windows, _=asyncio.run(self.get_windows())
+        items=[]
+        for i3_window, name in windows.items():
+            if i3_window.type!='con': continue
+            if i3_window.name in ['content']+[str(i) for i in range(0, 11)]: continue
+            if 'i3bar' in i3_window.name: continue
+            workspace=i3_window.workspace().name
+            items+=[{'top':name, 'down':f'Workspace {workspace}', 'id':i3_window.id}]
+        return items
+
+if __name__=='__main__':
+    app=TranslatorMode(port=33333)
+    app.run()
