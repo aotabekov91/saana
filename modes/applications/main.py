@@ -19,7 +19,7 @@ class ApplicationsMode(QBaseMode):
         self.kind=None
         self.apps=self.get_applications_data()
 
-        self.ui=ListMainWindow('AppsMode - own_floating', 'Apps: ')
+        self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
         self.ui.edit.returnPressed.connect(self.confirmAction)
 
     @BaseMode.respond

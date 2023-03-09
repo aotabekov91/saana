@@ -1,11 +1,8 @@
-import time
-
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from .qbase import QBaseMainWindow
-from speechToCommand.utils.helper import respond
+from .qbase import BaseMainWindow
 
 class QCustomListItem (QWidget):
     def __init__ (self, parent = None):
@@ -21,6 +18,7 @@ class QCustomListItem (QWidget):
         self.textDownQLabel.setStyleSheet('''color: rgb(255, 0, 0);''')
         self.textQVBoxLayout.addWidget(self.textUpQLabel)
         self.textQVBoxLayout.addWidget(self.textDownQLabel)
+        # self.textQVBoxLayout.addStretch(1)
 
         self.allQHBoxLayout  = QHBoxLayout()
         self.allQHBoxLayout.setSpacing(5)
@@ -63,10 +61,10 @@ class QCustomListItem (QWidget):
         hint_height=upHint+downHint+iconHint
         return QSize(600, hint_height)
 
-class ListMainWindow (QBaseMainWindow):
-    returnPressed=pyqtSignal()
-    def __init__ (self, app, window_title='', label_title=''):
-        super(ListMainWindow, self).__init__(app, window_title)
+class ListMainWindow (BaseMainWindow):
+
+    def __init__ (self, window_title='', label_title=''):
+        super(ListMainWindow, self).__init__(window_title)
 
         self.setGeometry(0, 0, 800, 600)
 
@@ -96,9 +94,8 @@ class ListMainWindow (QBaseMainWindow):
 
         self.main=QWidget()
         self.main.setLayout(layout)
-        self.setCentralWidget(self.main)
 
-        self.edit.returnPressed.connect(self.returnPressed)
+        self.setCentralWidget(self.main)
 
     def adjustSize(self):
         heightHint=0
@@ -143,47 +140,6 @@ class ListMainWindow (QBaseMainWindow):
         self.list.addItem(item)
         self.list.setItemWidget(item, widget)
 
-    @respond
     def doneAction(self, request={}):
+        super().doneAction(request)
         self.list.clear()
-        self.edit.clear()
-        self.hide()
-
-    @respond
-    def chooseAction(self, request={}):
-        _, __, ___, slots=self.parse_request(request)
-        item=slots[0]['value']['value']
-        self.edit.setText(item)
-        self.show()
-
-    @respond
-    def moveUpAction(self, request={}):
-        crow=self.list.currentRow()
-        if crow>0:
-            crow-=1
-            self.list.setCurrentRow(crow)
-
-    @respond
-    def moveDownAction(self, request={}):
-        crow=self.list.currentRow()
-        if crow-1<self.list.count():
-            crow+=1
-            self.list.setCurrentRow(crow)
-
-    def keyPressEvent(self, event):
-        if self.list.hasFocus():
-            if event.key()==Qt.Key_J:
-                self.moveDownAction()
-            elif event.key()==Qt.Key_K:
-                self.moveUpAction()
-            elif event.key()==Qt.Key_L:
-                self.confirmAction()
-        elif event.modifiers() and Qt.ControlModifier:
-            if event.key() == Qt.Key_N:
-                self.moveDownAction()
-            elif event.key() == Qt.Key_P:
-                self.moveUpAction()
-            elif event.key() == Qt.Key_M:
-                self.confirmAction()
-        else:
-            super().keyPressEvent(event)

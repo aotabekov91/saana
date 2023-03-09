@@ -80,7 +80,7 @@ class BaseMode:
             if func:
                 func(request)
             elif self.ui:
-                self.ui.handle_request(request, self.socket)
+                self.ui.handle_request(request)
             else:
                 self.socket.send_json({"status":"request not understood"})
                 self.waiting=False
@@ -119,19 +119,6 @@ class BaseMode:
             self.parent_socket=zmq.Context().socket(zmq.REQ)
             self.parent_socket.connect(f'tcp://localhost:{self.parent_port}')
 
-    # should be removed and handled already in intender
-    def parse_request(self, request):
-        command=request['command']
-        input_, intent, slots=(None,)*3
-        intent_data=request.get('intent_data')
-        if not intent_data:
-            return command, input_, intent, slots
-        else:
-            input_=intent_data['input']
-            intent=intent_data['intent']
-            slots=intent_data['slots']
-            if len(slots)==0: slots=None
-            return command, input_, intent, slots
 
     def run(self):
         self.running=True
@@ -143,6 +130,9 @@ class BaseMode:
         self.running=False
         if request: self.socket.send_json({'status':'exiting'})
 
+    def stop_waiting(self):
+        pass
+    
     def respond(func):
         def inner(self, request):
             try:
@@ -153,7 +143,7 @@ class BaseMode:
                 msg='{name}: {err}'.format(name=func.__name__, err=error)
             if request!=None and len(request)>0:
                 self.socket.send_json({'status':msg})
-                self.wait=False
+                self.stop_waiting()
         return inner
 
 if __name__=='__main__':

@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineWidgets import *
 
-from .qbase import QBaseMainWindow
+from .qbase import BaseMainWindow
 
 class Browser(QWebEngineView):
     def __init__(self):
@@ -30,8 +30,7 @@ class Browser(QWebEngineView):
         self.url = QUrl('file:///' + base_path)
         self.page().setHtml(html, baseUrl=self.url)
 
-class RenderMainWindow (QBaseMainWindow):
-    returnPressed=pyqtSignal()
+class RenderMainWindow (BaseMainWindow):
     def __init__ (self, window_title='', label_title=''):
         super(RenderMainWindow, self).__init__(window_title)
 
@@ -61,19 +60,6 @@ class RenderMainWindow (QBaseMainWindow):
         self.main.setLayout(layout)
 
         self.setCentralWidget(self.main)
-
-        self.edit.returnPressed.connect(self.returnPressed)
-
-    def chooseAction(self, request={}):
-        _, __, ___, slots=self.parse_request(request)
-        item=slots[0]['value']['value']
-        self.edit.setText(item)
-        self.show()
-
-    def doneAction(self, request):
-        self.edit.clear()
-        self.browser.setHtml('')
-        self.hide()
 
     def setHtml(self, html):
         self.browser.setHtml(html)

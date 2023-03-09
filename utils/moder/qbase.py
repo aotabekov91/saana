@@ -20,14 +20,12 @@ class ZMQListener(QObject):
         while self.running:
             request = self.parent.socket.recv_json()
             self.request.emit(request)
-            self.parent.wait=True
-            while self.parent.wait:
+            self.wait=True
+            while self.wait:
                 print(f'{self.parent.__class__.__name__}: waiting')
-                time.sleep(1)
+                time.sleep(2)
 
 class QBaseMode(BaseMode, QApplication):
-
-    responded=pyqtSignal()
 
     def __init__(self, 
                  keyword=None, 
@@ -56,10 +54,13 @@ class QBaseMode(BaseMode, QApplication):
         self.zeromq_listener.request.connect(self.handle_request)
         QTimer.singleShot(0, self.listener.start)
 
+    def stop_waiting(self):
+        self.zeromq_listener.wait=False
 
     def run(self):
         sys.exit(self.exec_())
 
     def exit(self):
+        self.zeromq_listener.wait=False
         self.zeromq_listener.running=False
         super().exit()
