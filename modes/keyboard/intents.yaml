@@ -1,18 +1,18 @@
 ---
 type: entity
-name: language
+name: lan
 automatically_extensible: no
 values:
-  - english
-  - german
-  - russian
-  - turkish
+  - [us, english]
+  - [de, german]
+  - [ru, russian]
+  - [tr, turkish]
 
 ---
 type: intent
 name: KeyboardMode_changeKeyboard
 slots:
-  - name: language
-    entity: language
+  - name: lan
+    entity: lan
 utterances:
-  - keyboard [language](english)
+  - keyboard [lan](english)

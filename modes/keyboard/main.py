@@ -1,38 +1,33 @@
 import zmq
 import subprocess
 
-from speechToCommand.utils.moder import Mode
+from speechToCommand.utils.moder import BaseMode
 
-class KeyboardMode(Mode):
+class KeyboardMode(BaseMode):
 
-    def __init__(self, config):
-        super(KeyboardMode, self).__init__(config, keyword='keyboard', info='Keyboard')
+    def __init__(self, port=None, parent_port=None, config=None):
+        super(KeyboardMode, self).__init__(
+                keyword='keyboard',
+                info='Change keyboard language',
+                port=port,
+                parent_port=parent_port,
+                config=config
+                )
 
-    def get_mode(self):
+    def reset_prev_mode(self):
         self.parent_socket.send_json({'command':'previousMode'})
-        data=self.parent_socket.recv_json()
-        return data['previousMode']
+        prev_mode=self.parent_socket.recv_json().get('previousMode', '')
+        if prev_mode!='':
+            self.parent_socket.send_json({'command':'setCurrentMode', 'mode_name':prev_mode})
+            respond=self.parent_socket.recv_json()
+            print(respond)
 
-    def set_mode(self, mode):
-        self.parent_socket.send_json({'command':'setCurrentMode', 'mode_name':mode})
-        print(self.parent_socket.recv_json())
-
-    def handleRequest(self, request):
-        if request['command']=='KeyboardMode_changeKeyboard':
-            _, __, ___, slots=self.parse_request(request)
-            if slots:
-                lan=slots[0]['value']['value']
-                old_mode=self.get_mode()
-                self.changeKeyboard(lan)
-                self.set_mode(old_mode)
-
-    def changeKeyboard(self, lan):
-        if lan in ['english', 'en']:
-            lan='us'
-        elif lan in ['german', 'de']:
-            lan='de'
-        elif lan in ['russian', 'ru']:
-            lan='ru'
-        elif lan in ['turkish', 'tr']:
-            lan='tr'
+    @BaseMode.respond
+    def changeKeyboard(self, request):
+        lan=request['slot_names']['lan']
         subprocess.Popen(['setxkbmap', lan])
+        self.reset_prev_mode()
+
+if __name__=='__main__':
+    app=KeyboardMode(port=33333, parent_port=44444)
+    app.run()

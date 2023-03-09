@@ -97,6 +97,10 @@ class SpeechToCommand:
     def exit(self):
         self.listener.exit()
         self.handler.exit()
+        for i in range(1, 4):
+            intender=getattr(self, f'intender_socket_{i}')
+            intender.send_json({'command':'exit'})
+            print(intender.recv_json())
 
 if __name__ == '__main__':
     r=SpeechToCommand()
