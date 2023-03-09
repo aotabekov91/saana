@@ -5,29 +5,40 @@ import threading
 from configparser import ConfigParser
 
 from speechToCommand.utils.handler import Handler
-from speechToCommand.utils.intender import Intender
 from speechToCommand.utils.listener import Listener
+
+from speechToCommand.utils.intender import get_intender
 
 class SpeechToCommand:
     def __init__(self,
                  config=None,
                  handler_port=None,
                  listener_port=None,
-                 intender_port=None):
+                 intender_port_1=None,
+                 intender_port_2=None,
+                 intender_port_3=None,
+                 ):
 
         self.config=config
 
         self.handler_port=handler_port
         self.listener_port=listener_port
-        self.intender_port=intender_port
+        self.intender_port_1=intender_port_1
+        self.intender_port_2=intender_port_2
+        self.intender_port_3=intender_port_3
 
         self.set_config()
         self.set_connection()
+        self.set_intenders()
 
-        self.intender=Intender(self)
         self.listener=Listener(self)
-
         self.handler=Handler(self)
+
+    def set_intenders(self):
+
+        self.intender_1=get_intender(self.intender_port_1)
+        self.intender_2=get_intender(self.intender_port_2)
+        self.intender_3=get_intender(self.intender_port_3)
 
     def set_config(self):
 
@@ -47,9 +58,15 @@ class SpeechToCommand:
             if not self.listener_port:
                 if self.config.has_option('General', 'listener_port'):
                     self.listener_port=self.config.getint('General', 'listener_port')
-            if not self.intender_port:
-                if self.config.has_option('General', 'intender_port'):
-                    self.listener_port=self.config.getint('General', 'listener_port')
+            if not self.intender_port_1:
+                if self.config.has_option('General', 'intender_port_1'):
+                    self.intender_port_1=self.config.getint('General', 'intender_port_1')
+            if not self.intender_port_2:
+                if self.config.has_option('General', 'intender_port_2'):
+                    self.intender_port_2=self.config.getint('General', 'intender_port_2')
+            if not self.intender_port_3:
+                if self.config.has_option('General', 'intender_port_3'):
+                    self.intender_port_3=self.config.getint('General', 'intender_port_3')
                
     def set_connection(self):
         self.handler_socket = zmq.Context().socket(zmq.REP)
@@ -62,9 +79,17 @@ class SpeechToCommand:
         if self.listener_port:
             self.listener_socket.connect(f'tcp://localhost:{self.listener_port}')
 
-        self.intender_socket = zmq.Context().socket(zmq.REQ)
-        if self.intender_port:
-            self.intender_socket.connect(f'tcp://*:{self.intender_port}')
+        self.intender_socket_1 = zmq.Context().socket(zmq.REQ)
+        if self.intender_port_1:
+            self.intender_socket_1.connect(f'tcp://localhost:{self.intender_port_1}')
+
+        self.intender_socket_2 = zmq.Context().socket(zmq.REQ)
+        if self.intender_port_2:
+            self.intender_socket_2.connect(f'tcp://localhost:{self.intender_port_2}')
+
+        self.intender_socket_3 = zmq.Context().socket(zmq.REQ)
+        if self.intender_port_3:
+            self.intender_socket_3.connect(f'tcp://localhost:{self.intender_port_3}')
 
     def run(self):
         self.handler.handle()

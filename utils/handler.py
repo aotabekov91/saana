@@ -1,3 +1,4 @@
+import sys
 import zmq
 import json
 import threading
@@ -62,21 +63,34 @@ class Handler:
                 msg={'status':'ok', 'action':'setModeAction'}
             elif r['command']=='registerMode':
                 self.modes[r['mode_name']]=r
-                self.create_socket(r)
-                self.parent.intender.add_mode(r)
-                self.parent.intender.update_parser()
-                msg={'status':'ok', 'action': 'registeredMode'}
-            else:
-                msg={'status':'nok', 'info':'request not understood'}
 
-            self.socket.send_json(msg)
+                self.parent.intender_socket_1.send_json(r)
+                self.parent.intender_socket_2.send_json(r)
+                self.parent.intender_socket_3.send_json(r)
+                respond1=self.parent.intender_socket_1.recv_json()
+                respond2=self.parent.intender_socket_2.recv_json()
+                respond3=self.parent.intender_socket_3.recv_json()
+                print('Respond from Intender: ', respond1)
+                print('Respond from Intender: ', respond2)
+                print('Respond from Intender: ', respond3)
+
+                self.create_socket(r)
+
+                msg={'status':'ok', 'action': 'registeredMode'}
+
+            else:
+
+                msg={'status':'nok', 'info':'request not understood'}
 
         except:
 
-            msg={'status':'nok',
+           err_type, error, traceback = sys.exc_info()
+           msg={'status':'nok',
                  'info': 'an error has occured',
+                 'error': str(error),
                  'agent': self.__class__.__name__}
-            self.socket.send_json(msg)
+
+        self.socket.send_json(msg)
 
     def create_socket(self, r):
         socket=zmq.Context().socket(zmq.REQ)
@@ -103,8 +117,30 @@ class Handler:
 
     def handle(self):
 
-        def parse(*args, **kwargs):
-            return self.parent.intender.parse(*args, **kwargs)
+        def parse(text, mode_name):
+            msg={'command':'parse', 'text':text, 'mode_name':mode_name}
+            if not mode_name or type(mode_name)==str:
+                mode_name=[mode_name]
+
+            for i, m_name in enumerate(mode_name):
+                intender=getattr(self.parent, f'intender_socket_{i+1}')
+                msg['mode_name']=m_name
+                intender.send_json(msg)
+            rs=[]
+            for i, m_name in enumerate(mode_name):
+                intender=getattr(self.parent, f'intender_socket_{i+1}')
+                rs+=[intender.recv_json()]
+            for i, r in enumerate(rs):
+                if i==0: chosen=r
+                if chosen['i_prob']<r['i_prob']: chosen=r
+            r=chosen
+            print(r, rs)
+
+            if r['status']=='ok':
+                return r['mode_name'], r['c_name'], r['s_names'], r['i_data']
+            else:
+                print(r)
+                raise
 
         def listen():
             return self.parent.listener_socket.recv_json()
@@ -119,14 +155,11 @@ class Handler:
 
             m_name=None
             if self.currentMode != None:
-                m_name, c_name, s_names, i_data = parse(d['text'], self.currentMode)
-                if m_name is None:
-                    m_name, c_name, s_names, i_data = parse(d['text'], 'ChangeMode')
-                if m_name is None:
-                    m_name, c_name, s_names, i_data = parse(d['text'], 'GenericMode')
-                    if m_name == 'GenericMode': m_name=self.currentMode
+                mode_names=set([self.currentMode, 'ChangeMode', 'GenericMode'])
+                m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
+                if m_name == 'GenericMode': m_name=self.currentMode
             if self.currentMode is None or m_name is None:
-                m_name, c_name, s_names, i_data = parse(d['text'])
+                m_name, c_name, s_names, i_data = parse(d['text'], None)
 
             if m_name:
                 self.set_current_mode(m_name)
