@@ -22,7 +22,6 @@ class KeyboardMode(BaseMode):
             respond=self.parent_socket.recv_json()
             print(respond)
 
-    @BaseMode.respond
     def changeKeyboard(self, request):
         lan=request['slot_names']['lan']
         subprocess.Popen(['setxkbmap', lan])

@@ -5,7 +5,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from .window import Window
-from speechToCommand.utils.helper import respond
 
 class QBaseMainWindow (Window, QMainWindow):
 
@@ -24,14 +23,11 @@ class QBaseMainWindow (Window, QMainWindow):
     def stop_waiting(self):
         self.app.stop_waiting()
     
-    @respond
     def showAction(self, request={}):
         self.show()
 
-    @respond
     def hideAction(self, request={}):
         self.hide()
 
-    @respond
     def doneAction(self, request={}):
         self.hide()

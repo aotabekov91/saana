@@ -3,7 +3,6 @@ import asyncio
 import subprocess
 from i3ipc.aio import Connection
 
-from speechToCommand.utils.moder import BaseMode
 from speechToCommand.utils.moder import QBaseMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
@@ -22,15 +21,12 @@ class ApplicationsMode(QBaseMode):
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
         self.ui.edit.returnPressed.connect(lambda: self.confirmAction(True))
 
-    @BaseMode.respond
     def openAction(self, request={}):
         self.kind='open'
         self.ui.list.clear()
         self.ui.addWidgetsToList(self.apps)
         self.ui.show()
 
-
-    @BaseMode.respond
     def chooseAction(self, request={}):
         app_name=request['slot_names'].get('app', '')
         if self.kind=='show':
@@ -41,14 +37,12 @@ class ApplicationsMode(QBaseMode):
         self.ui.edit.setText(app_name)
         self.ui.show()
 
-    @BaseMode.respond
     def showAction(self, request={}):
         self.kind='show'
         self.dlist=self.get_windows_data()
         self.ui.addWidgetsToList(self.dlist)
         self.ui.show()
 
-    @BaseMode.respond
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()
         self.set_window(item.itemData['id'])

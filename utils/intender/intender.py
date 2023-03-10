@@ -74,6 +74,7 @@ class Intender(SnipsNLUEngine):
             if r['command']=='registerMode':
                 self.add_mode(r)
                 self.update_parser()
+
                 msg={'status':'ok', 'info':'mode added'}
             elif r['command']=='parse':
                 r=self.parse(r['text'], r['mode_name'])

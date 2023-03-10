@@ -5,7 +5,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from .qbase import QBaseMainWindow
-from speechToCommand.utils.helper import respond
 
 class QCustomListItem (QWidget):
     def __init__ (self, parent = None):
@@ -143,27 +142,24 @@ class ListMainWindow (QBaseMainWindow):
         self.list.addItem(item)
         self.list.setItemWidget(item, widget)
 
-    @respond
     def doneAction(self, request={}):
         self.list.clear()
         self.edit.clear()
         self.hide()
 
-    @respond
     def chooseAction(self, request={}):
-        _, __, ___, slots=self.parse_request(request)
-        item=slots[0]['value']['value']
-        self.edit.setText(item)
-        self.show()
+        slot_names=request['slot_names']
+        item=slot_names.get('item', None)
+        if item:
+            self.edit.setText(item)
+            self.show()
 
-    @respond
     def moveUpAction(self, request={}):
         crow=self.list.currentRow()
         if crow>0:
             crow-=1
             self.list.setCurrentRow(crow)
 
-    @respond
     def moveDownAction(self, request={}):
         crow=self.list.currentRow()
         if crow-1<self.list.count():

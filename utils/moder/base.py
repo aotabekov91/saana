@@ -79,16 +79,19 @@ class BaseMode:
         try:
             if func:
                 func(request)
-            elif self.ui:
+                msg={"status":f"{self.__class__.__name__} handled request"}
+            elif self.ui and (self.ui.isVisible() or 'showAction' in action):
                 self.ui.handle_request(request)
+                msg={"status":f"{self.__class__.__name__}'s UI handled request"}
             else:
-                self.socket.send_json({"status":"request not understood"})
-                self.waiting=False
+                msg={"status":"not understood"}
+
         except:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
-            self.socket.send_json({"status":msg})
-            self.waiting=False
+
+        print(msg)
+        self.stop_waiting()
 
     def set_config(self):
         if self.info is None: self.info=self.__class__.__name__
@@ -110,7 +113,7 @@ class BaseMode:
                 self.port=self.config.getint('Custom', 'port')
 
     def set_connection(self):
-        self.socket = zmq.Context().socket(zmq.REP)
+        self.socket = zmq.Context().socket(zmq.PULL)
         if self.port:
             self.socket.bind(f'tcp://*:{self.port}')
         else:
@@ -128,7 +131,8 @@ class BaseMode:
 
     def exit(self, request=None):
         self.running=False
-        if request: self.socket.send_json({'status':'exiting'})
+        if request:
+            self.socket.send_json({'status':'exiting'})
 
     def stop_waiting(self):
         pass

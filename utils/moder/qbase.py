@@ -9,7 +9,10 @@ from PyQt5.QtWidgets import *
 from speechToCommand.utils.moder.base import BaseMode 
 
 class ZMQListener(QObject):
+
     request = pyqtSignal(dict)
+    reset_socket=pyqtSignal()
+
     def __init__(self, parent):
         super(ZMQListener, self).__init__()
         self.parent=parent
@@ -18,12 +21,15 @@ class ZMQListener(QObject):
 
     def loop(self):
         while self.running:
-            request = self.parent.socket.recv_json()
-            self.request.emit(request)
-            self.wait=True
-            while self.wait:
-                print(f'{self.parent.__class__.__name__}: waiting')
-                time.sleep(2)
+            try:
+                request = self.parent.socket.recv_json()
+                self.request.emit(request)
+                self.wait=True
+                while self.wait:
+                    print(f'{self.parent.__class__.__name__}: waiting')
+                    time.sleep(2)
+            except zmq.error.ZMQError:
+                self.reset_socket.emit()
 
 class QBaseMode(BaseMode, QApplication):
 
@@ -52,10 +58,17 @@ class QBaseMode(BaseMode, QApplication):
         self.zeromq_listener.moveToThread(self.listener)
         self.listener.started.connect(self.zeromq_listener.loop)
         self.zeromq_listener.request.connect(self.handle_request)
+        self.zeromq_listener.reset_socket.connect(self.reset_socket)
         QTimer.singleShot(0, self.listener.start)
 
     def stop_waiting(self):
         self.zeromq_listener.wait=False
+
+    def reset_socket(self):
+        self.parent.socket.send_json(
+                {'status':'nok', 'info': f'error in {self.__class__.__name__}'}
+                )
+        self.stop_waiting()
 
     def run(self):
         sys.exit(self.exec_())

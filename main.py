@@ -1,6 +1,7 @@
 import os
 import zmq
 import threading
+import argparse
 
 from configparser import ConfigParser
 
@@ -31,8 +32,10 @@ class SpeechToCommand:
         self.set_connection()
         self.set_intenders()
 
-        self.listener=Listener(self)
         self.handler=Handler(self)
+
+    def set_listener(self):
+        self.listener=Listener(self)
 
     def set_intenders(self):
 
@@ -103,5 +106,14 @@ class SpeechToCommand:
             print(intender.recv_json())
 
 if __name__ == '__main__':
+
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--listener', nargs='?', type=bool, default=False)
+    args=parser.parse_args()
+
     r=SpeechToCommand()
+
+    if args.listener:
+        r.set_listener()
+
     r.run()

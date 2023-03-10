@@ -19,19 +19,16 @@ class TasksMode(QBaseMode):
         self.ui=ListMainWindow(self, 'Tasks - own_floating', 'Task: ')
         self.ui.edit.returnPressed.connect(self.confirmAction)
 
-    @BaseMode.respond
     def showAction(self, request):
         self.tlist=self.get_tasks()
         self.ui.addWidgetsToList(self.tlist)
         self.ui.show()
 
-    @BaseMode.respond
     def chooseAction(self, request):
         task_name=request['slot_names'].get('item', '')
         self.ui.edit.setText(task_name)
         self.ui.show()
 
-    @BaseMode.respond
     #todo server hangs here for server.set_task
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()
