@@ -62,6 +62,7 @@ class TasksMode(QBaseMode):
 
         self.mode=None
         self.note=''
+
         self.work=60*self.config.getint('Custom', 'work')
         self.rest=60*self.config.getint('Custom', 'rest')
 
@@ -132,11 +133,24 @@ class TasksMode(QBaseMode):
         t=Thread(target=play)
         t.start()
 
-        notification.notify(
-            title=f'{quote["text"]}\n\n{quote["author"]}\n',
-            message='Time to {}{}'.format('have a rest'*(kind=='rest'), 'work'*(kind=='work')),
-            timeout=120,
-        )
+        title=f'{quote["text"]}\n\n{quote["author"]}\n'
+        message='Time to {}{}'.format('have a rest'*(kind=='rest'), 'work'*(kind=='work'))
+
+        if self.parent_port:
+            self.parent_socket.send_json({
+                'mode_name':self.__class__.__name__,
+                'command':'notify',
+                'timeout': 50000,
+                'text':title,
+                'detail': message})
+            respond=self.parent_socket.recv_json()
+            print(respond)
+        else:
+            notification.notify(
+                    title=title,
+                    message=message,
+                    timeout=120,
+                    )
 
     def finishTask(self, request={}):
 
@@ -157,7 +171,7 @@ class TasksMode(QBaseMode):
             self.alertAction('work')
 
     def setTask(self, request):
-        self.task_id=request['task_id']
+        self.task_id=request.get('task_id', -1)
         self.note=request.get('rest', self.note)
         self.task_name=request.get('task_name', '')
         work=request.get('work', self.work)

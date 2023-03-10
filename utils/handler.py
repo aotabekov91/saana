@@ -80,6 +80,9 @@ class Handler:
                 slot_names=r.get('slot_names', {})
                 self.act(mode_name, mode_action, slot_names, intent_data)
                 msg={'status':'ok', 'action':'setModeAction'}
+            elif r['command']=='notify':
+                self.act('NotifyMode', 'notifyAction', r, r)   
+                msg={'status':'ok', 'action':'setListener'}
             elif r['command']=='setListener':
                 self.set_listener()
                 msg={'status':'ok', 'action':'setListener'}

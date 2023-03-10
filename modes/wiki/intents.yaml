@@ -1,0 +1,26 @@
+---
+type: intent
+name: WikiMode_showTodos
+utterances:
+  - todos 
+  - todo
+  - to do
+  - to does
+  - show todos
+
+---
+type: intent
+name: WikiMode_showWikis
+utterances:
+  - wikis  
+  - files
+  - show wikis
+  - wiki
+
+---
+type: intent
+name: WikiMode_setTodoDone
+utterances:
+  - cross out   
+  - submit
+  - finish 
