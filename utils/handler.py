@@ -14,6 +14,7 @@ class Handler:
         self.socket=self.parent.handler_socket
 
         self.modes={}
+        self.mode_store_data={}
         self.sockets={}
 
         self.currentMode=None
@@ -46,6 +47,19 @@ class Handler:
             except:
                 print(f'Could not load: {mode_class.__name__}')
                     
+    def set_listener(self):
+        self.parent.set_listener()
+        for r in self.modes.values():
+            self.parent.intender_socket_1.send_json(r)
+            self.parent.intender_socket_2.send_json(r)
+            self.parent.intender_socket_3.send_json(r)
+            respond1=self.parent.intender_socket_1.recv_json()
+            respond2=self.parent.intender_socket_2.recv_json()
+            respond3=self.parent.intender_socket_3.recv_json()
+            print('Respond from Intender: ', respond1)
+            print('Respond from Intender: ', respond2)
+            print('Respond from Intender: ', respond3)
+
     def respond(self, r):
         
         try:
@@ -66,9 +80,21 @@ class Handler:
                 slot_names=r.get('slot_names', {})
                 self.act(mode_name, mode_action, slot_names, intent_data)
                 msg={'status':'ok', 'action':'setModeAction'}
+            elif r['command']=='setListener':
+                self.set_listener()
+                msg={'status':'ok', 'action':'setListener'}
+            elif r['command']=='storeData':
+                mode_store=self.mode_store_data.get(r['mode_name'])
+                mode_store[r['data_name']]=r['data']
+                msg={'status':'ok', 'action':'storeData'}
+            elif r['command']=='accessStoreData':
+                mode_store=self.mode_store_data.get(r['mode_name'], {})
+                data=mode_store.get(r['data_name'], {})
+                msg={'status':'ok', 'action':'accessStoreData', 'data':data}
             elif r['command']=='registerMode':
 
                 self.modes[r['mode_name']]=r
+                self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
 
                 if hasattr(self.parent, 'listener'):

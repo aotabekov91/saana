@@ -1,16 +1,18 @@
+import os
 import sys
 import logging
 import datetime
 
 import sqlite3 as sql
 from collections import deque
-import .config as config
 
 class Task():
     pass
 
 class Database():
-    def __init__(self):
+    def __init__(self, db_path, config):
+        self.db_path=db_path
+        self.config=config
         self.db = None
         self.cursor = None
         self.tasks = None
@@ -22,7 +24,7 @@ class Database():
     def connect(self):
         if self.db == None:
             try:
-                self.db = sql.connect(config.DATABASE, detect_types=sql.PARSE_DECLTYPES|sql.PARSE_COLNAMES, check_same_thread=False)
+                self.db = sql.connect(self.db_path, detect_types=sql.PARSE_DECLTYPES|sql.PARSE_COLNAMES, check_same_thread=False)
                 self.db.isolation_level = None
                 self.cursor = self.db.cursor()
                 self.has_savepoint = False
@@ -279,7 +281,8 @@ class Database():
 
     def alter_pomodoro_task(self,idx,task,time=None,immediate=False):
         if idx == None:
-            self.execute("INSERT INTO pomodoros (time,duration,task) VALUES (?,?,?)", (time,config.TIME_POMODORO_SEC,task), immediate)
+            self.execute("INSERT INTO pomodoros (time,duration,task) VALUES (?,?,?)",
+                         (time,self.config.get('Custom', 'work'),task), immediate)
         else:
             self.execute("UPDATE pomodoros SET task = ? WHERE id == ?",(task,idx),immediate)
 
@@ -289,7 +292,7 @@ class Database():
 
     def add_pomodoro_now(self,task, actual_time_in_seconds=None, note=''):
         if actual_time_in_seconds is None:
-            actual_time_in_seconds=config.TIME_POMODORO_SEC
+            actual_time_in_seconds=self.config.get('Custom', 'work')
         if task == None:
             self.execute("INSERT INTO pomodoros (time,duration) VALUES (?,?,?)",(datetime.datetime.now(),actual_time_in_seconds,note))
         else:

@@ -4,6 +4,9 @@ import zmq
 import time
 import inspect
 
+from inspect import getsourcefile
+from os.path import abspath
+
 from configparser import ConfigParser
 
 class BaseMode:
@@ -36,9 +39,12 @@ class BaseMode:
 
         self.register()
 
-    def set_intents_path(self):
+    def get_folder(self):
         file_path=os.path.abspath(inspect.getfile(self.__class__))
-        main_path=os.path.dirname(file_path).replace('\\', '/')
+        return os.path.dirname(file_path).replace('\\', '/')
+
+    def set_intents_path(self):
+        main_path=self.get_folder()
 
         path=f'{main_path}/intents.yaml'
         if os.path.isfile(path): self.intents_path=path
@@ -96,7 +102,8 @@ class BaseMode:
     def set_config(self):
         if self.info is None: self.info=self.__class__.__name__
         if self.config is None:
-            mode_path=os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
+            file_path=os.path.abspath(inspect.getfile(self.__class__))
+            mode_path=os.path.dirname(file_path).replace('\\', '/')
             config_path=f'{mode_path}/config.ini'
             if os.path.isfile(config_path):
                 self.config=ConfigParser()

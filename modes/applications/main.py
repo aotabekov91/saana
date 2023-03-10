@@ -3,6 +3,10 @@ import asyncio
 import subprocess
 from i3ipc.aio import Connection
 
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
 from speechToCommand.utils.moder import QBaseMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
@@ -19,13 +23,13 @@ class ApplicationsMode(QBaseMode):
         self.apps=self.get_applications_data()
 
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
-        self.ui.edit.returnPressed.connect(lambda: self.confirmAction(True))
 
     def openAction(self, request={}):
         self.kind='open'
         self.ui.list.clear()
         self.ui.addWidgetsToList(self.apps)
         self.ui.show()
+        self.ui.setFocus()
 
     def chooseAction(self, request={}):
         app_name=request['slot_names'].get('app', '')
@@ -36,12 +40,14 @@ class ApplicationsMode(QBaseMode):
         self.ui.addWidgetsToList(self.dlist)
         self.ui.edit.setText(app_name)
         self.ui.show()
+        self.ui.edit.setFocus()
 
     def showAction(self, request={}):
         self.kind='show'
         self.dlist=self.get_windows_data()
         self.ui.addWidgetsToList(self.dlist)
         self.ui.show()
+        self.ui.edit.setFocus()
 
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()

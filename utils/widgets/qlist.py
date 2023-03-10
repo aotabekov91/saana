@@ -63,9 +63,12 @@ class QCustomListItem (QWidget):
         return QSize(600, hint_height)
 
 class ListMainWindow (QBaseMainWindow):
+
     returnPressed=pyqtSignal()
+
     def __init__ (self, app, window_title='', label_title=''):
         super(ListMainWindow, self).__init__(app, window_title)
+
 
         self.setGeometry(0, 0, 800, 600)
 
@@ -74,6 +77,8 @@ class ListMainWindow (QBaseMainWindow):
         self.label.setText(label_title)
         self.edit=QLineEdit()
         self.edit.textChanged.connect(self.inputTextChanged)
+        self.edit.returnPressed.connect(self.returnPressed)
+
         self.label.hide()
         self.dlist=[]
 
@@ -98,6 +103,7 @@ class ListMainWindow (QBaseMainWindow):
         self.setCentralWidget(self.main)
 
         self.edit.returnPressed.connect(self.returnPressed)
+        self.returnPressed.connect(self.app.confirmAction)
 
     def adjustSize(self):
         heightHint=0
@@ -153,6 +159,7 @@ class ListMainWindow (QBaseMainWindow):
         if item:
             self.edit.setText(item)
             self.show()
+            self.setFocus()
 
     def moveUpAction(self, request={}):
         crow=self.list.currentRow()
@@ -173,13 +180,13 @@ class ListMainWindow (QBaseMainWindow):
             elif event.key()==Qt.Key_K:
                 self.moveUpAction()
             elif event.key()==Qt.Key_L:
-                self.confirmAction()
+                self.returnPressed.emit()
         elif event.modifiers() and Qt.ControlModifier:
             if event.key() == Qt.Key_N:
                 self.moveDownAction()
             elif event.key() == Qt.Key_P:
                 self.moveUpAction()
             elif event.key() == Qt.Key_M:
-                self.confirmAction()
+                self.returnPressed.emit()
         else:
             super().keyPressEvent(event)

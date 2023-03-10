@@ -25,6 +25,7 @@ class QBaseMainWindow (Window, QMainWindow):
     
     def showAction(self, request={}):
         self.show()
+        self.setFocus()
 
     def hideAction(self, request={}):
         self.hide()

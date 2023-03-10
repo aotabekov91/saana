@@ -1,4 +1,5 @@
 import os
+import sys
 import zmq
 import threading
 import argparse
@@ -9,6 +10,8 @@ from speechToCommand.utils.handler import Handler
 from speechToCommand.utils.listener import Listener
 
 from speechToCommand.utils.intender import get_intender
+
+from tendo import singleton
 
 class SpeechToCommand:
     def __init__(self,
@@ -107,13 +110,19 @@ class SpeechToCommand:
 
 if __name__ == '__main__':
 
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--listener', nargs='?', type=bool, default=False)
-    args=parser.parse_args()
+    try:
 
-    r=SpeechToCommand()
+        me=singleton.SingleInstance()
 
-    if args.listener:
-        r.set_listener()
+        parser=argparse.ArgumentParser()
+        parser.add_argument('--listener', nargs='?', type=bool, default=False)
+        args=parser.parse_args()
+        r=SpeechToCommand()
+        if args.listener:
+            r.set_listener()
+        r.run()
 
-    r.run()
+    except singleton.SingleInstanceException:
+
+        print('An instance of SpeechToCommand is already running!')
+        sys.exit()
