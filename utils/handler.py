@@ -97,17 +97,16 @@ class Handler:
                 self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
 
-                if hasattr(self.parent, 'listener'):
 
-                    self.parent.intender_socket_1.send_json(r)
-                    self.parent.intender_socket_2.send_json(r)
-                    self.parent.intender_socket_3.send_json(r)
-                    respond1=self.parent.intender_socket_1.recv_json()
-                    respond2=self.parent.intender_socket_2.recv_json()
-                    respond3=self.parent.intender_socket_3.recv_json()
-                    print('Respond from Intender: ', respond1)
-                    print('Respond from Intender: ', respond2)
-                    print('Respond from Intender: ', respond3)
+                self.parent.intender_socket_1.send_json(r)
+                self.parent.intender_socket_2.send_json(r)
+                self.parent.intender_socket_3.send_json(r)
+                respond1=self.parent.intender_socket_1.recv_json()
+                respond2=self.parent.intender_socket_2.recv_json()
+                respond3=self.parent.intender_socket_3.recv_json()
+                print('Respond from Intender: ', respond1)
+                print('Respond from Intender: ', respond2)
+                print('Respond from Intender: ', respond3)
 
 
                 msg={'status':'ok', 'action': 'registeredMode'}

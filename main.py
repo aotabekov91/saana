@@ -115,7 +115,7 @@ if __name__ == '__main__':
         me=singleton.SingleInstance()
 
         parser=argparse.ArgumentParser()
-        parser.add_argument('--listener', nargs='?', type=bool, default=False)
+        parser.add_argument('--listener', nargs='?', type=bool, default=True)
         args=parser.parse_args()
         r=SpeechToCommand()
         if args.listener:

@@ -10,7 +10,8 @@ values:
   - [LookupMode, look up, definition]
   - [WikiMode, archive, wiki]
   - [BookmarksMode, bookmarks]
-  - [WindowsManagerMode, manager, windows]
+  - [WindowsManagerMode, manager, windows, i3, window]
+  - [ChangeMode, change, changer, overview, all]
 
 ---
 type: intent

@@ -14,6 +14,12 @@ class QBaseMainWindow (Window, QMainWindow):
         self.socket=app.socket
         self.setWindowTitle(window_title)
 
+    def move_to_center(self):
+        qtRectangle = self.frameGeometry()
+        centerPoint = QDesktopWidget().availableGeometry().center()
+        qtRectangle.moveCenter(centerPoint)
+        self.move(qtRectangle.topLeft())
+
     def keyPressEvent(self, event):
         if event.key() in [Qt.Key_Q, Qt.Key_Escape]:
             self.hide()

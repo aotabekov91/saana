@@ -29,6 +29,7 @@ class ChangeMode(QBaseMode):
     def showAction(self, request={}):
         self.ui.addWidgetsToList(self.modes)
         self.ui.show()
+        self.setFocus()
 
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()

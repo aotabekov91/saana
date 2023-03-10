@@ -62,6 +62,7 @@ class QCustomListItem (QWidget):
         hint_height=upHint+downHint+iconHint
         return QSize(600, hint_height)
 
+
 class ListMainWindow (QBaseMainWindow):
 
     returnPressed=pyqtSignal()
@@ -70,7 +71,7 @@ class ListMainWindow (QBaseMainWindow):
         super(ListMainWindow, self).__init__(app, window_title)
 
 
-        self.setGeometry(0, 0, 800, 600)
+        self.setGeometry(0, 0, 700, 500)
 
         self.info=QWidget()
         self.label= QLabel()
@@ -105,13 +106,24 @@ class ListMainWindow (QBaseMainWindow):
         self.edit.returnPressed.connect(self.returnPressed)
         self.returnPressed.connect(self.app.confirmAction)
 
+        self.move_to_center()
+        self.adjustSize()
+
     def adjustSize(self):
-        heightHint=0
-        for i in range(self.myQListWidget.count()):
-            heightHint+=self.myQListWidget.sizeHintForRow(i)
-        heightHint+=2*self.myQListWidget.frameWidth()
-        if self.width()>heightHint:
-            self.setGeometry(0,0,800,heightHint)
+        pass
+
+        # try:
+        #     heightHint=self.list.sizeHintForRow(0)
+        # except:
+        #     heightHint=0
+        # hint=heightHint*self.list.count()+4
+        # # for i in range(
+        #     # heightHint+=self.list.sizeHintForRow(i)
+        # # heightHint+=2*self.list.frameWidth()
+        # # if self.width()>heightHint:
+        #     # self.setGeometry(0,0,800,heightHint)
+        #     # self.setHeight(heightHint)
+        # self.setMinimumHeight(hint)
 
     def inputTextChanged(self, text):
         self.list.clear()
@@ -129,6 +141,7 @@ class ListMainWindow (QBaseMainWindow):
         for d in dList:
             self.addWidgetToList(d)
         self.list.setCurrentRow(0)
+        self.adjustSize()
 
     def addWidgetToList(self, w):
 

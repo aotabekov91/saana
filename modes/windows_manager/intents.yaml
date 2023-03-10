@@ -1,0 +1,83 @@
+---
+type: entity
+name: workspace
+automatically_extensible: no
+values:
+  - ['1', one, monday, odd, january]
+  - ['2', two, tuesday, even, february]
+  - ['3', three, wednesday, march]
+  - ['4', four, thursday, april]
+  - ['5', five, wednesday, may]
+  - ['6', six, friday, june]
+  - ['7', seve, saturday, july]
+  - ['8', eight, sunday, august]
+  - ['9', nine, september]
+  - ['10', ten, october]
+  - ['11', eleven, november, special]
+  - ['12', twelve, december]
+
+---
+type: entity
+name: app
+automatically_extensible: no
+values:
+  - [kitty, terminal, console]
+  - [qutebrowser, browser, cute]
+  - [google-chrome, chrome, google, 'google chrome']
+
+---
+type: entity
+name: command
+automatically_extensible: no
+values:
+  - 'split horizontal'
+  - 'split vertical'
+
+---
+type: intent
+name: WindowsManagerMode_changeWorkspace
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - show [workspace](one)
+  - Workspace [workspace](five)
+  - Workspace [workspace](six)
+  - Go [workspace](six)
+  - Go the [workspace](six)
+  - Jump [workspace](six)
+  - Jump the [workspace](six)
+
+---
+type: intent
+name: WindowsManagerMode_moveToWorkspace
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - Move the [workspace](six)
+  - Move to [workspace](four)
+  - Moved [workspace](eight)
+  - Move the [workspace](ten)
+  - Relocate to [workspace](four)
+  - Relocate [workspace](eight)
+
+---
+type: intent
+name: WindowsManagerMode_runApplication
+slots:
+  - name: app
+    entity: app
+utterances:
+  - Open [app](terminal)
+  - Run [app](browser)
+  - New [app](google chrome)
+
+---
+type: intent
+name: WindowsManagerMode_runCommand
+slots:
+  - name: command
+    entity: command
+utterances:
+  - do [command]
