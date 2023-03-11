@@ -1,0 +1,18 @@
+---
+type: entity
+name: response
+automatically_extensible: no 
+values:
+  - easy
+  - good
+  - again
+  - hard
+
+---
+type: intent
+name: AnkiMode_chooseAction
+slots:
+  - name: response
+    entity: response
+utterances:
+  - [response]

@@ -12,6 +12,7 @@ values:
   - [BookmarksMode, bookmarks]
   - [WindowsManagerMode, manager, windows, i3, window]
   - [ChangeMode, change, changer, overview, all]
+  - [GenericMode, generic]
 
 ---
 type: intent

@@ -1,9 +1,8 @@
 import sys
 import asyncio
 import subprocess
-from i3ipc.aio import Connection
 
-from speechToCommand.utils.moder import Mode
+from i3ipc.aio import Connection
 
 from speechToCommand.utils.moder import BaseMode
 
@@ -16,14 +15,20 @@ class WindowsMode(BaseMode):
                  parent_port=parent_port, 
                  config=config)
 
-        asyncio.run(self.connect_to_i3())
+        self.manager=asyncio.run(Connection().connect())
+
+    def workspaceLeft(self, request):
+        pass
+
+    def workspaceRight(self, request):
+        pass
 
     def changeWorkspace(self, request):
         slot_names=request['slot_names']
         workspace=slot_names.get('workspace', None)
         if workspace:
             workspace=int(workspace)
-            asyncio.run(self.run_command(f'workspace {workspace}'))
+            asyncio.run(self.manager.command(f'workspace {workspace}'))
 
     def moveToWorkspace(self, request):
         slot_names=request['slot_names']
@@ -31,7 +36,7 @@ class WindowsMode(BaseMode):
         if workspace:
             workspace=int(workspace)
             command=f'move container to workspace {workspace}; workspace {workspace}'
-            asyncio.run(self.run_command(command))
+            asyncio.run(self.manager.command(command))
 
     def runApplication(self, request):
         slot_names=request['slot_names']
@@ -39,19 +44,13 @@ class WindowsMode(BaseMode):
         if app:
             floating='--class floating'*(app=='kitty')
             command=f'exec {app} {floating}' 
-            asyncio.run(self.run_command(command))
+            asyncio.run(self.manager.command(command))
 
     def runCommand(self, request):
         slot_names=request['slot_names']
         command=slot_names.get('command', None)
         if command:
-            asyncio.run(self.run_command(command))
-
-    async def connect_to_i3(self):
-        self.i3=await Connection().connect()
-
-    async def run_command(self, command):
-        await self.i3.command(command)
+            asyncio.run(self.manager.command(command))
 
 if __name__=='__main__':
     app=WindowsMode(port=8234)

@@ -31,9 +31,9 @@ class Browser(QWebEngineView):
         self.page().setHtml(html, baseUrl=self.url)
 
 class RenderMainWindow (QBaseMainWindow):
-    returnPressed=pyqtSignal()
-    def __init__ (self, window_title='', label_title=''):
+    def __init__ (self, app, window_title='', label_title=''):
         super(RenderMainWindow, self).__init__(window_title)
+        self.app=app
 
         self.setGeometry(0, 0, 800, 600)
 
@@ -62,13 +62,14 @@ class RenderMainWindow (QBaseMainWindow):
 
         self.setCentralWidget(self.main)
 
-        self.edit.returnPressed.connect(self.returnPressed)
+        self.edit.returnPressed.connect(self.app.confirmAction)
 
     def chooseAction(self, request={}):
         _, __, ___, slots=self.parse_request(request)
         item=slots[0]['value']['value']
         self.edit.setText(item)
         self.show()
+        self.edit.setFocus()
 
     def doneAction(self, request):
         self.edit.clear()

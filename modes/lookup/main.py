@@ -6,12 +6,12 @@ from multiprocessing import Process
 
 from generator import finish_processes
 
-from speechToCommand.utils.moder import Mode
+from speechToCommand.utils.moder import QBaseMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
 from .notes import get_anki_notes
 
-class LookupMode(Mode):
+class LookupMode(QBaseMode):
     def __init__(self, config):
 
         super(LookupMode, self).__init__(config, keyword='look up', info='Lookup')
@@ -21,15 +21,15 @@ class LookupMode(Mode):
         self.ui.confirm_signal.connect(self.confirmAction)
         self.ui.done_signal.connect(self.doneAction)
 
-    def handleRequest(self, request):
-        print(f'{self.__class__.__name__}: {request}')
-        if request['command']=='LookupMode_lookupEnglish':
+
+        def lookupEnglish(self, request):
             _, __, ___, slots=self.parse_request(request)
             if not slots: return
             request=slots[0]['value']['value']
             self.lan='en'
             self.ui.edit.setText(request)
             self.ui.show()
+
         elif request['command']=='LookupMode_lookupGerman':
             _, __, ___, slots=self.parse_request(request)
             if not slots: return
@@ -65,8 +65,6 @@ class LookupMode(Mode):
 
     def doneAction(self, request={}):
         self.ui.label.setText('')
-
-
 
     def set_label(self, notes):
 

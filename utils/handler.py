@@ -79,7 +79,7 @@ class Handler:
                 intent_data=r.get('intent_data', {})
                 slot_names=r.get('slot_names', {})
                 self.act(mode_name, mode_action, slot_names, intent_data)
-                msg={'status':'ok', 'action':'setModeAction'}
+                msg={'status':'ok', 'action':'setModeAction', 'info': r}
             elif r['command']=='notify':
                 self.act('NotifyMode', 'notifyAction', r, r)   
                 msg={'status':'ok', 'action':'setListener'}
@@ -135,8 +135,8 @@ class Handler:
         self.sockets[r['mode_name']]=socket
 
     def act(self, mode_name, command_name, slot_names={}, intent_data={}):
-        print('Sending: ', mode_name, command_name) 
-        if mode_name=='GenericMode': mode_name=self.currentMode
+        if not self.currentMode in [None, 'GenericMode']:
+            mode_name=self.currentMode
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
@@ -172,12 +172,10 @@ class Handler:
                 if i==0: chosen=r
                 if chosen['i_prob']<r['i_prob']: chosen=r
             r=chosen
-            print(r, rs)
 
             if r['status']=='ok':
                 return r['mode_name'], r['c_name'], r['s_names'], r['i_data']
             else:
-                print(r)
                 raise
 
         def listen():
@@ -192,13 +190,16 @@ class Handler:
             if d['text']=='exit': self.parent.exit()
 
             m_name=None
+            mode_names=[]
             if self.currentMode != None:
-                mode_names=[self.currentMode, 'GenericMode', 'ChangeMode']
+                for f in [self.currentMode, 'GenericMode', 'ChangeMode']:
+                    if not f in mode_names: mode_names+=[f]
                 m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
                 if m_name == 'GenericMode': m_name=self.currentMode
             if self.currentMode is None or m_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'], None)
 
+            print('Understood: ', m_name, c_name) 
             if m_name:
                 self.set_current_mode(m_name)
                 self.act(m_name, c_name, s_names, i_data)

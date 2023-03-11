@@ -1,0 +1,18 @@
+---
+type: entity
+name: language
+automatically_extensible: no
+values:
+  - english
+  - german
+  - russian
+  - turkish
+
+---
+type: intent
+name: KeyboardMode_changeKeyboard
+slots:
+  - name: language
+    entity: language
+utterances:
+  - keyboard [language](english)

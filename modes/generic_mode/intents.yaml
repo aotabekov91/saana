@@ -43,6 +43,18 @@ utterances:
 
 ---
 type: intent
+name: GenericMode_copyAction
+utterances:
+  - copy
+
+---
+type: intent
+name: GenericMode_pasteAction
+utterances:
+  - paste
+
+---
+type: intent
 name: GenericMode_removeAction
 utterances:
   - remove
@@ -62,6 +74,62 @@ name: GenericMode_moveUpAction
 utterances:
   - move up
   - up
+
+---
+type: intent
+name: GenericMode_moveLeftAction
+utterances:
+  - move left 
+  - left 
+
+---
+type: intent
+name: GenericMode_moveRightAction
+utterances:
+  - move right 
+  - right 
+
+---
+type: intent
+name: GenericMode_fullscreenAction
+utterances:
+  - full screen
+  - fullscreen 
+
+---
+type: intent
+name: GenericMode_escapAction
+utterances:
+  - escape 
+
+---
+type: intent
+name: GenericMode_spaceAction
+utterances:
+  - space 
+  - forward
+
+---
+type: intent
+name: GenericMode_spaceShiftAction
+utterances:
+  - space shift
+  - backward 
+
+---
+type: intent
+name: GenericMode_closeAction
+utterances:
+  - close window
+
+---
+type: intent
+name: GenericMode_floatingToggleAction
+utterances:
+  - float
+  - floating
+  - toggle
+  - toggle floating
 
 ---
 type: intent
