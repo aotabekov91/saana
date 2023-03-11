@@ -1,3 +1,4 @@
+import os
 import sys
 import asyncio
 import subprocess
@@ -17,39 +18,31 @@ class WindowsMode(BaseMode):
 
         self.manager=asyncio.run(Connection().connect())
 
-    def workspaceLeft(self, request):
-        pass
+    def showFocusKeys(self, request):
+        os.popen('i3-easyfocus -a')
 
-    def workspaceRight(self, request):
-        pass
+    def focusAction(self, request):
+        slot_names=request.get('slot_names', {})
+        window=slot_names.get('window', None)
+        if window in ['left', 'right']:
+            asyncio.run(self.manager.command(f'focus {window}'))
+        else:
+            os.popen(f'xdotool key {window}')
 
-    def changeWorkspace(self, request):
+    def changeWorkspaceAction(self, request):
+        print('change', request)
         slot_names=request['slot_names']
         workspace=slot_names.get('workspace', None)
         if workspace:
             workspace=int(workspace)
             asyncio.run(self.manager.command(f'workspace {workspace}'))
 
-    def moveToWorkspace(self, request):
+    def moveToWorkspaceAction(self, request):
         slot_names=request['slot_names']
         workspace=slot_names.get('workspace', None)
         if workspace:
             workspace=int(workspace)
             command=f'move container to workspace {workspace}; workspace {workspace}'
-            asyncio.run(self.manager.command(command))
-
-    def runApplication(self, request):
-        slot_names=request['slot_names']
-        app=slot_names.get('app', None)
-        if app:
-            floating='--class floating'*(app=='kitty')
-            command=f'exec {app} {floating}' 
-            asyncio.run(self.manager.command(command))
-
-    def runCommand(self, request):
-        slot_names=request['slot_names']
-        command=slot_names.get('command', None)
-        if command:
             asyncio.run(self.manager.command(command))
 
 if __name__=='__main__':

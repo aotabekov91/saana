@@ -137,6 +137,7 @@ class Handler:
     def act(self, mode_name, command_name, slot_names={}, intent_data={}):
         if not self.currentMode in [None, 'GenericMode']:
             mode_name=self.currentMode
+        print(mode_name, command_name, slot_names, self.modes.keys())
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
@@ -168,15 +169,20 @@ class Handler:
             for i, m_name in enumerate(mode_name):
                 intender=getattr(self.parent, f'intender_socket_{i+1}')
                 rs+=[intender.recv_json()]
+
+            chosen=None
             for i, r in enumerate(rs):
-                if i==0: chosen=r
-                if chosen['i_prob']<r['i_prob']: chosen=r
+                # if i==0: chosen=r
+                # if chosen['i_prob']<r['i_prob']: chosen=r
+                if r['mode_name']!=None:
+                    chosen=r
+                    break
+
+            if not chosen: return None, None, {}, {}
             r=chosen
 
             if r['status']=='ok':
                 return r['mode_name'], r['c_name'], r['s_names'], r['i_data']
-            else:
-                raise
 
         def listen():
             return self.parent.listener_socket.recv_json()

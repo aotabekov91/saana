@@ -10,7 +10,7 @@ values:
   - [LookupMode, look up, definition]
   - [WikiMode, archive, wiki]
   - [BookmarksMode, bookmarks]
-  - [WindowsManagerMode, manager, windows, i3, window]
+  - [WindowsMode, manager, windows, i3, window]
   - [ChangeMode, change, changer, overview, all]
   - [GenericMode, generic]
 

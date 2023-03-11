@@ -17,13 +17,10 @@ class GenericMode(BaseMode):
                 config=config
                 )
 
-        self.connect_to_manager()
-
         self.current_window=None
-
-    def connect_to_manager(self):
         self.manager=asyncio.run(Connection().connect())
         self.tree=asyncio.run(self.manager.get_tree())
+
 
     def run_command(self, command, container=None):
         if container:

@@ -1,15 +1,14 @@
-# app entity
 ---
 type: entity
 name: app
-automatically_extensible: yes
+automatically_extensible: no
 values:
-  - browser
-  - chrome
-  - pdf
-  - music
-  - email
-  - tasks
+  - [kitty, terminal, console]
+  - [qutebrowser, browser, cute]
+  - [google-chrome, chrome, google, 'google chrome']
+  - [pdf, sioyek, document]
+  - [email, thunderbird, bird, thunder]
+  - [music, mpv]
 
 # open an app 
 ---
@@ -21,3 +20,14 @@ slots:
 utterances:
   - Open application [app](cute browser)
   - Open application [app](email)
+
+---
+type: intent
+name: ApplicationsMode_runApplication
+slots:
+  - name: app
+    entity: app
+utterances:
+  - Open [app](terminal)
+  - Run [app](browser)
+  - New [app](google chrome)

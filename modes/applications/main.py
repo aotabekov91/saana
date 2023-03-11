@@ -97,6 +97,15 @@ class ApplicationsMode(QBaseMode):
             items+=[{'top':name, 'down':f'Workspace {workspace}', 'id':i3_window.id}]
         return items
 
+    # todo opening apps
+    def runApplication(self, request):
+        slot_names=request['slot_names']
+        app=slot_names.get('app', None)
+        if app:
+            floating='--class floating'*(app=='kitty')
+            command=f'exec {app} {floating}' 
+            asyncio.run(self.manager.command(command))
+
 if __name__=='__main__':
     app=ApplicationsMode(port=33333)
     app.run()
