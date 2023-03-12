@@ -134,6 +134,7 @@ utterances:
   - close
   - clause
   - cloth
+  - finish
 
 ---
 type: intent
