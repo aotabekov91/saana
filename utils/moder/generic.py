@@ -46,7 +46,7 @@ class GenericWindow:
 
     def closeAction(self, request):
         asyncio.run(self.manager.command('kill'))
-        time.sleep(1)
+        time.sleep(.5)
         if self.parent_port:
             self.parent_socket.send_json({'command':'setModeAction',
                                           'mode_name':'CheckerMode',
@@ -59,10 +59,19 @@ class GenericWindow:
     def hideAction(self, request):
         self.set_current_window()
         self.run_command('move scratchpad')
+        time.sleep(0.5)
+        if self.parent_port:
+            self.parent_socket.send_json({'command':'setModeAction',
+                                          'mode_name':'CheckerMode',
+                                          'mode_action':'checkAction',
+                                          })
+            respond=self.parent_socket.recv_json()
+            print(respond)
+
 
     def doneAction(self, request):
         self.hideAction(request)
-        time.sleep(1)
+        time.sleep(.5)
         if self.parent_port:
             self.parent_socket.send_json({'command':'setModeAction',
                                           'mode_name':'CheckerMode',
@@ -103,7 +112,7 @@ class GenericWindow:
 
     def confirmAction(self, request):
         os.popen('xdotool getactivewindow key Enter')
-        time.sleep(1)
+        time.sleep(.5)
         if self.parent_port:
             self.parent_socket.send_json({'command':'setModeAction',
                                           'mode_name':'CheckerMode',
@@ -123,3 +132,8 @@ class GenericWindow:
 
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))
+    
+    def inputAction(self, request):
+        slot_names=request.get('slot_names', {})
+        text=slot_names.get('input', '')
+        os.popen('xdotool getactivewindow type {text}')
