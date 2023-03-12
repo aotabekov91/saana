@@ -66,6 +66,7 @@ type: intent
 name: GenericMode_moveDownAction
 utterances:
   - move down
+  - go down
   - down
 
 ---
@@ -73,6 +74,7 @@ type: intent
 name: GenericMode_moveUpAction
 utterances:
   - move up
+  - go up
   - up
 
 ---

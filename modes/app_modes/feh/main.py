@@ -25,11 +25,11 @@ class FehMode(BaseMode):
             self.generic.set_current_window()
             self.current_window=self.generic.current_window
 
-    def spaceAction(self, request):
+    def forwardAction(self, request):
         if self.check_window_class():
             os.popen(f'xdotool getactivewindow key j')
 
-    def spaceShiftAction(self, request):
+    def backwardAction(self, request):
         if self.check_window_class():
             os.popen(f'xdotool getactivewindow key k')
 
