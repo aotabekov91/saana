@@ -24,7 +24,7 @@ class BaseMode:
             super(BaseMode, self).__init__()
 
         self.ui=None
-        self.generic=GenericWindow(parent_port=parent_port)
+        self.generic=GenericWindow(self)
 
         self.info=info
         self.port=port
@@ -80,7 +80,7 @@ class BaseMode:
 
     def handle_request(self, request):
         print(f'{self.__class__.__name__} received request: {request}')
-        command=request['command'].split('_')
+        command=request['command'].rsplit('_', 1)
         mode_name, action=command[0], command[-1]
 
         func=getattr(self, action, False)
@@ -91,7 +91,8 @@ class BaseMode:
             elif self.ui and (self.ui.isVisible() or 'showAction' in action):
                 self.ui.handle_request(request)
                 msg={"status":f"{self.__class__.__name__}'s UI handled request"}
-            elif 'GenericMode' in mode_name:
+            # elif 'GenericMode' in mode_name:
+            elif hasattr(self.generic, action): 
                 self.generic.handle_request(request)
                 msg={"status":f"{self.__class__.__name__}'s generic window handled request"}
             else:

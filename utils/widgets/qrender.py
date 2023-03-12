@@ -32,8 +32,7 @@ class Browser(QWebEngineView):
 
 class RenderMainWindow (QBaseMainWindow):
     def __init__ (self, app, window_title='', label_title=''):
-        super(RenderMainWindow, self).__init__(window_title)
-        self.app=app
+        super(RenderMainWindow, self).__init__(app, window_title)
 
         self.setGeometry(0, 0, 800, 600)
 

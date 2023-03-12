@@ -161,6 +161,14 @@ utterances:
 
 ---
 type: intent
+name: GenericMode_checkAction 
+utterances:
+  - check
+  - cast
+  - determine 
+
+---
+type: intent
 name: GenericMode_inputAction
 slots:
   - name: input

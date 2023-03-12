@@ -9,16 +9,10 @@ from i3ipc.aio import Connection
 
 class GenericWindow:
 
-    def __init__(self, parent_port=None):
+    def __init__(self, parent=None):
+        self.parent=parent
         self.current_window=None
-        self.parent_port=parent_port
         self.manager=asyncio.run(Connection().connect())
-        self.set_connection()
-
-    def set_connection(self):
-        if self.parent_port:
-            self.parent_socket=zmq.Context().socket(zmq.REQ)
-            self.parent_socket.connect(f'tcp://localhost:{self.parent_port}')
 
     def handle_request(self, request):
         print(f'{self.__class__.__name__}: UI handling request')
@@ -46,40 +40,19 @@ class GenericWindow:
 
     def closeAction(self, request):
         asyncio.run(self.manager.command('kill'))
-        time.sleep(.5)
-        if self.parent_port:
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'CheckerMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
-
+        time.sleep(.1)
+        self.checkAction(request)
 
     def hideAction(self, request):
         self.set_current_window()
         self.run_command('move scratchpad')
-        time.sleep(0.5)
-        if self.parent_port:
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'CheckerMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
-
+        time.sleep(0.1)
+        self.checkAction(request)
 
     def doneAction(self, request):
         self.hideAction(request)
-        time.sleep(.5)
-        if self.parent_port:
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'CheckerMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
-
+        time.sleep(.1)
+        self.checkAction(request)
 
     def copyAction(self, request):
         class_=os.popen('xdotool getactivewindow getwindowclassname')
@@ -112,14 +85,8 @@ class GenericWindow:
 
     def confirmAction(self, request):
         os.popen('xdotool getactivewindow key Enter')
-        time.sleep(.5)
-        if self.parent_port:
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'CheckerMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
+        time.sleep(.1)
+        self.checkAction(request)
 
     def escapeAction(self, request):
         os.popen('xdotool getactivewindow key Escape')
@@ -133,7 +100,28 @@ class GenericWindow:
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))
     
+    def zoomInAction(self, request={}):
+        os.popen(f'xdotool getactivewindow type +')
+
+    def zoomOutAction(self, request={}):
+        os.popen(f'xdotool getactivewindow type -')
+
     def inputAction(self, request):
         slot_names=request.get('slot_names', {})
         text=slot_names.get('input', '')
         os.popen('xdotool getactivewindow type {text}')
+        
+    def checkAction(self, request):
+        self.set_current_window()
+        window_class=self.current_window.window_class
+        if not self.parent.parent_port: return
+        if not self.parent.config.has_section('Custom'): return
+        if not self.parent.config.has_option('Custom', window_class): return
+
+        mode_name=self.parent.config.get('Custom', window_class)
+
+        self.parent.parent_socket.send_json(
+                {'command':'setCurrentMode',
+                 'mode_name':mode_name})
+        respond=self.parent.parent_socket.recv_json()
+        print(respond)

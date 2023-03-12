@@ -45,13 +45,13 @@ class SpeechToCommandCLI:
 
     def run_mode_actions(self, actions):
         if self.handler_port:
-            for action in actions:
-                tmp=action.split('_')
-                mode_name, mode_action=tmp[0], tmp[-1]
+            for mode_action in actions:
+                tmp=mode_action.split('_')
+                mode_name, action_name=tmp[0], tmp[-1]
                 self.handler_socket.send_json({
                         'command':'setModeAction',
                         'mode_name':mode_name,
-                        'mode_action':mode_action
+                        'mode_action': mode_action,
                         })
                 print(self.handler_socket.recv_json())
 

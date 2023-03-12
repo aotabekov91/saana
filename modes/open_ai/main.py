@@ -13,6 +13,7 @@ class AIAnswer(QObject):
     answered=pyqtSignal(str, str)
 
     def __init__(self, parent):
+        super(AIAnswer, self).__init__()
         self.parent=parent
         self.question=None
 
