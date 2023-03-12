@@ -50,9 +50,10 @@ class AIMode(QBaseMode):
                  parent_port=parent_port, 
                  config=config)
 
-
         self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
-        self.ui.edit.textChanged.connect(self.uiEditTextChanged)
+        # self.ui.edit.textChanged.connect(self.uiEditTextChanged)
+        self.ui.show()
+
         self.set_answerer()
 
     def set_answerer(self):
@@ -65,21 +66,21 @@ class AIMode(QBaseMode):
 
     @pyqtSlot(str, str)
     def update(self, question, answer):
-        html=self.getHtml(question, answer)
-        self.ui.setHtml(html)
+        html=self.get_html(question, answer)
+        self.ui.set_html(html)
         self.ui.show()
 
     def confirmAction(self, request=None):
         question=self.ui.edit.text()
         self.answerer.question=question
-        html=self.getHtml(question, 'Waiting...')
-        self.ui.setHtml(html)
+        html=self.get_html(question, 'Waiting...')
+        self.ui.set_html(html)
 
     def uiEditTextChanged(self, text):
-        html=self.getHtml(text, '')
-        self.ui.setHtml(html)
+        html=self.get_html(text, '')
+        self.ui.set_html(html)
 
-    def getHtml(self, question, answer):
+    def get_html(self, question='', answer=''):
         html='''
         <!doctype html>
             <html>
@@ -97,5 +98,5 @@ class AIMode(QBaseMode):
         return html
 
 if __name__=='__main__':
-    app=AIMode(port=3333)
+    app=AIMode(port=33333)
     app.run()

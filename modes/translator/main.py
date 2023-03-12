@@ -52,21 +52,15 @@ class TranslatorMode(QBaseMode):
         self.ui=ListMainWindow(self, 'Translator - own_floating', 'Apps: ')
         self.ui.edit.returnPressed.connect(self.confirmAction)
 
-        self.to_='de'
-        self.from_='en'
+        self.to_lan='de'
 
-    def chooseAction(self, request={}):
+    def setLanguageAction(self, request={}):
         slot_names=request['slot_names']
-        from_=slot_names.get('from', 'en')
-        to_=slot_names.get('to', 'de')
-        sentence_=slot_names.get('sentence', '')
-
-        self.from_=from_
-        self.to_=to_
+        self.to_lan=slot_names.get('lan', 'en')
 
     def confirmAction(self, request={}):
         text=self.ui.edit.text()
-        trans=translate(text, self.to_, self.from_)
+        trans=translate(text, self.to_lan)
         dlist=[{'top':text, 'down':trans}]
         self.ui.addWidgetsToList(dlist)
         self.ui.show()

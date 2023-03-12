@@ -1,6 +1,7 @@
 import sys
 import zmq
 import json
+import time
 import threading
 
 from multiprocessing import Process
@@ -50,18 +51,19 @@ class Handler:
                     print(f'Could not load: {mode_class.__name__}')
 
                     
-    def set_listener(self):
-        self.parent.set_listener()
-        for r in self.modes.values():
-            self.parent.intender_socket_1.send_json(r)
-            self.parent.intender_socket_2.send_json(r)
-            self.parent.intender_socket_3.send_json(r)
-            respond1=self.parent.intender_socket_1.recv_json()
-            respond2=self.parent.intender_socket_2.recv_json()
-            respond3=self.parent.intender_socket_3.recv_json()
-            print('Respond from Intender: ', respond1)
-            print('Respond from Intender: ', respond2)
-            print('Respond from Intender: ', respond3)
+    def set_intender_data(self):
+        modes_data=list(self.modes.values())
+        for i in range(1, 4):
+            intender_socket=getattr(self.parent, f'intender_socket_{i}')
+            intender_socket.send_json(
+                    {'command':'registerModes',
+                     'modes_data':modes_data}
+                    )
+        for i in range(1, 4):
+            intender_socket=getattr(self.parent, f'intender_socket_{i}')
+            respond=intender_socket.recv_json()
+            print(respond)
+
 
     def respond(self, r):
         
@@ -87,7 +89,7 @@ class Handler:
                 self.act('NotifyMode', 'notifyAction', r, r)   
                 msg={'status':'ok', 'action':'setListener'}
             elif r['command']=='setListener':
-                self.set_listener()
+                self.parent.set_listener()
                 msg={'status':'ok', 'action':'setListener'}
             elif r['command']=='storeData':
                 mode_store=self.mode_store_data.get(r['mode_name'])
@@ -107,15 +109,15 @@ class Handler:
                 self.create_socket(r)
 
 
-                self.parent.intender_socket_1.send_json(r)
-                self.parent.intender_socket_2.send_json(r)
-                self.parent.intender_socket_3.send_json(r)
-                respond1=self.parent.intender_socket_1.recv_json()
-                respond2=self.parent.intender_socket_2.recv_json()
-                respond3=self.parent.intender_socket_3.recv_json()
-                print('Respond from Intender: ', respond1)
-                print('Respond from Intender: ', respond2)
-                print('Respond from Intender: ', respond3)
+                # self.parent.intender_socket_1.send_json(r)
+                # self.parent.intender_socket_2.send_json(r)
+                # self.parent.intender_socket_3.send_json(r)
+                # respond1=self.parent.intender_socket_1.recv_json()
+                # respond2=self.parent.intender_socket_2.recv_json()
+                # respond3=self.parent.intender_socket_3.recv_json()
+                # print('Respond from Intender: ', respond1)
+                # print('Respond from Intender: ', respond2)
+                # print('Respond from Intender: ', respond3)
 
 
                 msg={'status':'ok', 'action': 'registeredMode'}
@@ -156,6 +158,9 @@ class Handler:
         reporterThread=threading.Thread(target=listen)
         reporterThread.setDaemon(True)
         reporterThread.start()
+        
+        time.sleep(5)
+        self.set_intender_data()
 
     def handle(self):
 

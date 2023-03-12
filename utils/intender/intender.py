@@ -19,11 +19,14 @@ class Intender(SnipsNLUEngine):
         self.socket = zmq.Context().socket(zmq.REP)
         self.socket.bind(f'tcp://*:{self.port}')
 
-    def add_mode(self, r):
-        if r['intents_path']:
+    def add_mode(self, data):
+        if type(data)==dict: data=[data,]
+        for r in data: 
+
+            if not r['intents_path']: continue
+
             dataset = Dataset.from_yaml_files(language='en', filenames=[r['intents_path']])
             intent_names=[i.intent_name for i in dataset.intents]
-
             self.modes[r['mode_name']]={'dataset':dataset,
                                         'path': r['intents_path'],
                                         'intent_names': intent_names,
@@ -34,7 +37,7 @@ class Intender(SnipsNLUEngine):
         dataset = Dataset.from_yaml_files(language='en', filenames=yaml_paths)
         self.fit(dataset.json)
 
-    def parse(self, text, m_name=None, prob=.3):
+    def parse(self, text, m_name=None, prob=.1):
         if m_name:
             mode=self.modes.get(m_name, None)
             if mode:
@@ -74,7 +77,10 @@ class Intender(SnipsNLUEngine):
             if r['command']=='registerMode':
                 self.add_mode(r)
                 self.update_parser()
-
+                msg={'status':'ok', 'info':'mode added'}
+            elif r['command']=='registerModes':
+                self.add_mode(r['modes_data'])
+                self.update_parser()
                 msg={'status':'ok', 'info':'mode added'}
             elif r['command']=='parse':
                 r=self.parse(r['text'], r['mode_name'])

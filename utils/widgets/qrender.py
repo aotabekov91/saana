@@ -40,7 +40,7 @@ class RenderMainWindow (QBaseMainWindow):
         self.label= QLabel()
         self.label.setText(label_title)
         self.edit=QLineEdit()
-        self.label.hide()
+        if label_title=='': self.label.hide()
 
         allQHBoxLayout  = QHBoxLayout()
         allQHBoxLayout.setContentsMargins(0,5,0,0)
@@ -64,9 +64,9 @@ class RenderMainWindow (QBaseMainWindow):
         self.edit.returnPressed.connect(self.app.confirmAction)
 
     def chooseAction(self, request={}):
-        _, __, ___, slots=self.parse_request(request)
-        item=slots[0]['value']['value']
-        self.edit.setText(item)
+        slot_names=request['slot_names']
+        text=slot_names.get('item', '')
+        self.edit.setText(text)
         self.show()
         self.edit.setFocus()
 
@@ -75,5 +75,11 @@ class RenderMainWindow (QBaseMainWindow):
         self.browser.setHtml('')
         self.hide()
 
-    def setHtml(self, html):
+    def showAction(self, request):
+        self.show()
+        self.browser.show()
+        self.edit.setFocus()
+
+    def set_html(self, html):
         self.browser.setHtml(html)
+        # self.browser.loadHtml(html)

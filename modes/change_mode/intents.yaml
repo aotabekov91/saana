@@ -7,7 +7,7 @@ values:
   - [TasksMode, tasks]
   - [AIMode, question, ai]
   - [TranlatorMode, translator, translate]
-  - [LookupMode, look up, definition]
+  - [LookupMode, look up, definition, meaning, def]
   - [WikiMode, archive, wiki]
   - [BookmarksMode, bookmarks]
   - [WindowsMode, manager, windows, i3, window]

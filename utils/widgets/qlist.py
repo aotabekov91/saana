@@ -186,6 +186,11 @@ class ListMainWindow (QBaseMainWindow):
             crow+=1
             self.list.setCurrentRow(crow)
 
+    def showAction(self, request={}):
+        self.list.show()
+        self.show()
+        self.edit.setFocus()
+
     def keyPressEvent(self, event):
         if self.list.hasFocus():
             if event.key()==Qt.Key_J:

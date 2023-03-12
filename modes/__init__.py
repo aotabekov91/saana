@@ -9,8 +9,8 @@ from . import tasks
 from . import notify
 from . import wiki
 from . import bookmarks
+from . import open_ai
+from . import lookup
 
 from .app_modes import qutebrowser
 
-# from . import open_ai #todo
-# from . import lookup
