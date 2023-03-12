@@ -68,6 +68,8 @@ utterances:
   - go down
   - down
   - dawn
+  - below
+  - lower
 
 ---
 type: intent
@@ -76,6 +78,8 @@ utterances:
   - move up
   - go up
   - up
+  - above
+  - higher
 
 ---
 type: intent
