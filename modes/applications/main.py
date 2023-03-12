@@ -44,14 +44,7 @@ class ApplicationsMode(QBaseMode):
             self.set_window(item.itemData['id'])
             self.ui.edit.clear()
             self.ui.hide()
-
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'CheckerMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
-
+            self.checkAction(request)
 
     def set_window(self, wid):
         tree=asyncio.run(self.manager.get_tree())

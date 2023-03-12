@@ -12,12 +12,6 @@ class QBaseMainWindow (QMainWindow):
         self.socket=app.socket
         self.setWindowTitle(window_title)
 
-    def handle_request(self, request):
-        print(f'{self.__class__.__name__}: UI handling request')
-        command=request['command'].split('_')[-1]
-        action=getattr(self, command, False)
-        if action: action(request)
-
     def move_to_center(self):
         qtRectangle = self.frameGeometry()
         centerPoint = QDesktopWidget().availableGeometry().center()

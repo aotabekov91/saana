@@ -6,6 +6,7 @@ import asyncio
 from i3ipc.aio import Connection
 
 from speechToCommand.utils.moder import BaseMode
+from speechToCommand.utils.helper import osAppCommand
 
 class QutebrowserMode(BaseMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -17,82 +18,72 @@ class QutebrowserMode(BaseMode):
                  config=config)
 
         self.window_class='qutebrowser'
-        self.manager=asyncio.run(Connection().connect())
 
-
+    @osAppCommand
     def backwardAction(self, request={}):
-        if self.check_window_class():
-            os.popen('xdotool getactivewindow key shift+h')
+        return 'xdotool getactivewindow key shift+h'
 
+    @osAppCommand
     def forwardAction(self, request={}):
-        if self.check_window_class():
-            os.popen('xdotool getactivewindow key shift+l')
+        return 'xdotool getactivewindow key shift+l'
 
+    @osAppCommand
     def chooseAction(self, request):
-        if self.check_window_class():
-            slot_names=request.get('slot_names', {})
-            text=slot_names.get('item', '')
-            os.popen(f'xdotool getactivewindow type o " "{text}')
+        slot_names=request.get('slot_names', {})
+        text=slot_names.get('item', '')
+        return f'xdotool getactivewindow type o " "{text}'
 
+    @osAppCommand
     def openTabAction(self, request):
-        if self.check_window_class():
-            slot_names=request.get('slot_names', {})
-            text=slot_names.get('text', ' ')
-            os.popen(f'xdotool getactivewindow type o -t " "{text}')
+        slot_names=request.get('slot_names', {})
+        text=slot_names.get('text', ' ')
+        return f'xdotool getactivewindow type o -t " "{text}'
 
-    def nextTabAction(self, request):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow key shift+j')
+    @osAppCommand
+    def moveLeftAction(self, request):
+        return f'xdotool getactivewindow key shift+j'
 
-    def prevTabAction(self, request):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow key shift+k')
+    @osAppCommand
+    def moveRightAction(self, request):
+        return f'xdotool getactivewindow key shift+k'
 
+    @osAppCommand
     def doneAction(self, request):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow type d')
+        return f'xdotool getactivewindow type d'
 
+    @osAppCommand
     def hintAction(self, request={}):
-        if self.check_window_class():
-            slot_names=request.get('slot_names', {})
-            hint=slot_names.get('hint', None)
-            if hint:
-                hint=''.join([h[0] for h in hint.split(' ')])
-            else:
-                hint='f'
-            os.popen(f'xdotool getactivewindow type {hint}')
+        slot_names=request.get('slot_names', {})
+        hint=slot_names.get('hint', None)
+        if hint:
+            hint=''.join([h[0] for h in hint.split(' ')])
+        else:
+            hint='f'
+        return f'xdotool getactivewindow type {hint}'
 
-    def zoomInAction(self, request={}):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow type +')
-
-    def zoomOutAction(self, request={}):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow type -')
-
+    @osAppCommand
     def moveDownAction(self, request={}):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow key ctrl+f') 
+        return f'xdotool getactivewindow key ctrl+f'
 
+    @osAppCommand
     def moveUpAction(self, request={}):
-        if self.check_window_class():
-            os.popen(f'xdotool getactivewindow key ctrl+b') 
+        return f'xdotool getactivewindow key ctrl+b'
 
+    @osAppCommand
     def quickmarkAction(self, request={}):
-        if self.check_window_class():
-            slot_names=request.get('slot_names', {})
-            mark=slot_names.get('mark', '')
-            os.popen(f'xdotool getactivewindow type m {mark}') 
+        slot_names=request.get('slot_names', {})
+        mark=slot_names.get('mark', '')
+        return f'xdotool getactivewindow type m {mark}'
 
+    @osAppCommand
     def hintTabAction(self, request={}):
-        if self.check_window_class():
-            slot_names=request.get('slot_names', {})
-            hint=slot_names.get('hint', None)
-            if hint:
-                hint=''.join([h[0] for h in hint.split(' ')])
-            else:
-                hint='F'
-            os.popen(f'xdotool getactivewindow type {hint}')
+        slot_names=request.get('slot_names', {})
+        hint=slot_names.get('hint', None)
+        if hint:
+            hint=''.join([h[0] for h in hint.split(' ')])
+        else:
+            hint='F'
+        return f'xdotool getactivewindow type {hint}'
 
 if __name__=='__main__':
     app=QutebrowserMode(port=33333)

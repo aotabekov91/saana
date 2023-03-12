@@ -12,9 +12,21 @@ slots:
 utterances:
   - hint 
   - hint [hint](emily lee)
+  - hint [hint](e l)
+  - hint [hint](k a)
+  - hint [hint](c d)
   - hint [hint](sarah adams)
   - hint [hint](book big)
   - hint [hint](house luck)
+  - link [hint](c d)
+  - link [hint](sarah adams)
+  - link [hint](book big)
+  - link [hint](house luck)
+  - hint [hint](a)
+  - hint [hint](amanada)
+  - hint [hint](d b)
+  - link [hind](susan)
+  - hint [hint](s adams)
 
 ---
 type: intent
@@ -26,12 +38,19 @@ utterances:
   - hint new
   - hint knew
   - hint page
-  - hint tab
+  - hint knew [hint](a a)
+  - hint knew [hint](a)
+  - hint new [hint](amanada)
+  - hint new [hint](d b)
+  - link page [hind](susan)
+  - hint page [hint](s adams)
   - hint new [hint](emily lee)
   - hint knew [hint](emily lee)
-  - hint tab [hint](sarah adams)
   - hint page [hint](book big)
   - hint capital [hint](house luck)
+  - link new [hint](go kayla)
+  - link knew [hint](see adams)
+  - link page [hint](big big)
 
 ---
 type: intent
@@ -58,15 +77,3 @@ utterances:
   - open knew [text](find new music samples) 
   - open tab [text](where is new jersey)
   - open page [text](emily lee birth place?)
-
----
-type: intent
-name: QutebrowserMode_nextTabAction 
-utterances:
-  - tab 
-
----
-type: intent
-name: QutebrowserMode_prevTabAction 
-utterances:
-  - previous tab 

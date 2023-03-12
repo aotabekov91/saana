@@ -97,8 +97,11 @@ class Handler:
                 mode_store=self.mode_store_data.get(r['mode_name'], {})
                 data=mode_store.get(r['data_name'], {})
                 msg={'status':'ok', 'action':'accessStoreData', 'data':data}
+            elif r['command']=='getModePort':
+                mode_data=self.modes.get(r['mode_name'], {})
+                data=mode_data.get('port', None)
+                msg={'status':'ok', 'action':'getModePort', 'data':data}
             elif r['command']=='registerMode':
-
                 self.modes[r['mode_name']]=r
                 self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
@@ -171,10 +174,8 @@ class Handler:
                 rs+=[intender.recv_json()]
 
             chosen=None
-            # chosen=rs[0]
             for i, r in enumerate(rs):
                 print(f'Intender {i}: ', r)
-                # if chosen['i_prob']<r['i_prob']: chosen=r
                 if r['mode_name']!=None:
                     chosen=r
                     break

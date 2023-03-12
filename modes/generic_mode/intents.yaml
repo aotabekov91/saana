@@ -67,6 +67,7 @@ utterances:
   - move down
   - go down
   - down
+  - dawn
 
 ---
 type: intent
@@ -118,6 +119,8 @@ name: GenericMode_backwardAction
 utterances:
   - space shift
   - backward 
+  - back
+  - beck 
   - previous
 
 ---
@@ -125,6 +128,8 @@ type: intent
 name: GenericMode_closeAction
 utterances:
   - close
+  - clause
+  - cloth
 
 ---
 type: intent

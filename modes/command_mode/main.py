@@ -22,17 +22,12 @@ class CommandMode(QBaseMode):
         self.ui.addWidgetsToList(self.commands)
 
     def confirmAction(self, request={}):
-        item=self.ui.list.currentItem()
-        subprocess.Popen(item.itemData['id'])
-        self.ui.edit.clear()
-        self.ui.hide()
-
-        self.parent_socket.send_json({'command':'setModeAction',
-                                      'mode_name':'CheckerMode',
-                                      'mode_action':'checkAction',
-                                      })
-        respond=self.parent_socket.recv_json()
-        print(respond)
+        if self.ui.isVisible():
+            item=self.ui.list.currentItem()
+            subprocess.Popen(item.itemData['id'])
+            self.ui.edit.clear()
+            self.ui.hide()
+            self.checkAction(request)
 
     def get_commands(self):
         proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)

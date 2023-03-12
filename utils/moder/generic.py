@@ -140,10 +140,3 @@ class GenericWindow:
                  'mode_name':mode_name})
         respond=self.parent.parent_socket.recv_json()
         print(respond)
-
-    def check_window_class(self):
-        self.set_current_window()
-        if self.current_window.window_class==self.parent.window_class:
-            return True
-        else:
-            self.checkAction({})
