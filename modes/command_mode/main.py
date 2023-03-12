@@ -1,3 +1,4 @@
+import os
 import sys
 import subprocess
 
@@ -28,6 +29,11 @@ class CommandMode(QBaseMode):
             self.ui.edit.clear()
             self.ui.hide()
             self.checkAction(request)
+
+    def runApplication(self, request):
+        slot_names=request['slot_names']
+        app=slot_names.get('app', None)
+        if app: os.popen(app)
 
     def get_commands(self):
         proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)

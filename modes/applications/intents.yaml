@@ -20,14 +20,3 @@ slots:
 utterances:
   - Open application [app](cute browser)
   - Open application [app](email)
-
----
-type: intent
-name: ApplicationsMode_runApplication
-slots:
-  - name: app
-    entity: app
-utterances:
-  - Open [app](terminal)
-  - Run [app](browser)
-  - New [app](google chrome)

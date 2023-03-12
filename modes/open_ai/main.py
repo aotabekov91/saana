@@ -51,9 +51,8 @@ class AIMode(QBaseMode):
                  config=config)
 
         self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
-        # self.ui.edit.textChanged.connect(self.uiEditTextChanged)
-        self.ui.show()
-
+        # todo
+        self.ui.edit.textChanged.connect(self.uiEditTextChanged)
         self.set_answerer()
 
     def set_answerer(self):

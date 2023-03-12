@@ -3,23 +3,21 @@ type: entity
 name: app
 automatically_extensible: yes
 values:
+  - ['kitty ranger', ranger]
   - [kitty, terminal, console]
   - [qutebrowser, browser, cute]
   - [google-chrome, chrome, google, 'google chrome']
-  - [pdf, sioyek, document]
-  - [email, thunderbird, bird, thunder]
-  - [music, mpv]
+  - [sioyek, pdf, sioyek, document]
+  - [thunderbird, email, thunderbird, bird, thunder]
+  - [mpv, music, mpv]
 
 ---
 type: intent
-name: ApplicationsMode_openApplication
+name: CommandMode_runApplication
 slots:
   - name: app
     entity: app
 utterances:
-  - Open application [app](cute browser)
-  - Run application [app](cute browser)
-  - new application [app](cute browser)
-  - new [app](cute browser)
-  - Open [app](email)
-  - Run [app](email)
+  - Open [app](terminal)
+  - Run [app](browser)
+  - New [app](google chrome)

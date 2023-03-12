@@ -146,7 +146,7 @@ class GenericMode(BaseMode):
     def inputAction(self, request):
         slot_names=request.get('slot_names', {})
         text=slot_names.get('input', '')
-        return 'xdotool getactivewindow type {text}'
+        return f'xdotool getactivewindow type {text}'
         
     def checkAction(self, request):
         self.set_current_window()
