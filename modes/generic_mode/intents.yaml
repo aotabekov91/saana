@@ -20,7 +20,6 @@ type: intent
 name: GenericMode_hideAction
 utterances:
   - hide
-  - close
   - disappear
 
 ---
@@ -125,7 +124,7 @@ utterances:
 type: intent
 name: GenericMode_closeAction
 utterances:
-  - close window
+  - close
 
 ---
 type: intent

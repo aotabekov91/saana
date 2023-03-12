@@ -30,6 +30,10 @@ class CheckerMode(BaseMode):
         elif window_class=='feh':
 
             mode_name='FehMode'
+            
+        elif window_class in ['kitty', 'tmux']:
+
+            mode_name='GenericMode'
 
         else:
 
@@ -39,14 +43,6 @@ class CheckerMode(BaseMode):
                                       'mode_name':mode_name})
         respond=self.parent_socket.recv_json()
         print(respond)
-
-        self.parent_socket.send_json({'command':'setModeAction',
-                                      'mode_name':mode_name,
-                                      'slot_names': 'activateMode'
-                                      })
-        respond=self.parent_socket.recv_json()
-        print(respond)
-
 
 if __name__=='__main__':
     app=CheckerMode(port=33333, parent_port=8888)

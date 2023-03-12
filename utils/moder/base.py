@@ -24,7 +24,7 @@ class BaseMode:
             super(BaseMode, self).__init__()
 
         self.ui=None
-        self.generic=GenericWindow()
+        self.generic=GenericWindow(parent_port=parent_port)
 
         self.info=info
         self.port=port

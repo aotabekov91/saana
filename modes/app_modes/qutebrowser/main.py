@@ -23,12 +23,14 @@ class QutebrowserMode(BaseMode):
         if self.generic.current_window.window_class=='qutebrowser':
             return True
         else:
+            if self.parent_port:
+                self.parent_socket.send_json({'command':'setModeAction',
+                                              'mode_name':'CheckerMode',
+                                              'mode_action':'checkAction',
+                                              })
+                respond=self.parent_socket.recv_json()
+                print(respond)
             return False
-
-    def activateAction(self, request):
-        if self.check_window_class():
-            self.generic.set_current_window()
-            self.current_window=self.generic.current_window
 
     def backwardAction(self, request={}):
         if self.check_window_class():

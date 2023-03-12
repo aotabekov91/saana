@@ -138,8 +138,6 @@ class Handler:
         self.sockets[r['mode_name']]=socket
 
     def act(self, mode_name, command_name, slot_names={}, intent_data={}):
-        if not self.current_mode in [None, 'GenericMode']:
-            mode_name=self.current_mode
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
