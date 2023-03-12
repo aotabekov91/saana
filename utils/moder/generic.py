@@ -7,6 +7,8 @@ import subprocess
 import asyncio
 from i3ipc.aio import Connection
 
+from speechToCommand.utils.helper import osGenericCommand
+
 class GenericWindow:
 
     def __init__(self, parent=None):
@@ -71,8 +73,12 @@ class GenericWindow:
     def removeAction(self, request):
         os.popen('xdotool getactivewindow key BackSpace')
 
+    # def moveDownAction(self, request):
+    #     os.popen('xdotool getactivewindow key Down')
+
+    @osGenericCommand
     def moveDownAction(self, request):
-        os.popen('xdotool getactivewindow key Down')
+        return 'xdotool getactivewindow key Down'
 
     def moveUpAction(self, request):
         os.popen('xdotool getactivewindow key Up')
@@ -125,3 +131,10 @@ class GenericWindow:
                  'mode_name':mode_name})
         respond=self.parent.parent_socket.recv_json()
         print(respond)
+
+    def check_window_class(self):
+        self.set_current_window()
+        if self.current_window.window_class==self.parent.window_class:
+            return True
+        else:
+            self.checkAction({})

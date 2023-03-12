@@ -11,5 +11,5 @@ from . import generic_mode
 # from . import bookmarks
 # from . import open_ai #todo
 
-from .app_modes import qutebrowser
+# from .app_modes import qutebrowser
 # from . import lookup

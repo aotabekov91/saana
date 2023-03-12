@@ -16,21 +16,9 @@ class QutebrowserMode(BaseMode):
                  parent_port=parent_port, 
                  config=config)
 
+        self.window_class='qutebrowser'
         self.manager=asyncio.run(Connection().connect())
 
-    def check_window_class(self):
-        self.generic.set_current_window()
-        if self.generic.current_window.window_class=='qutebrowser':
-            return True
-        else:
-            if self.parent_port:
-                self.parent_socket.send_json({'command':'setModeAction',
-                                              'mode_name':'CheckerMode',
-                                              'mode_action':'checkAction',
-                                              })
-                respond=self.parent_socket.recv_json()
-                print(respond)
-            return False
 
     def backwardAction(self, request={}):
         if self.check_window_class():
