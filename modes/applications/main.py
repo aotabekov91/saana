@@ -19,75 +19,55 @@ class ApplicationsMode(QBaseMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.kind=None
-        self.apps=self.get_applications_data()
+        self.manager=asyncio.run(Connection().connect())
 
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
 
-    def openAction(self, request={}):
-        self.kind='open'
-        self.ui.list.clear()
-        self.ui.addWidgetsToList(self.apps)
-        self.ui.show()
-        self.ui.setFocus()
-
     def chooseAction(self, request={}):
-        app_name=request['slot_names'].get('app', '')
-        if self.kind=='show':
-            self.dlist=self.get_windows_data()
-        elif self.kind=='open':
-            self.dlist=self.apps
-        self.ui.addWidgetsToList(self.dlist)
-        self.ui.edit.setText(app_name)
-        self.ui.show()
-        self.ui.edit.setFocus()
+        if self.ui.isVisible():
+            app_name=request['slot_names'].get('app', '')
+            dlist=self.get_windows_data()
+            self.ui.addWidgetsToList(dlist)
+            self.ui.edit.setText(app_name)
+            self.ui.show()
+            self.ui.edit.setFocus()
 
     def showAction(self, request={}):
-        self.kind='show'
-        self.dlist=self.get_windows_data()
-        self.ui.addWidgetsToList(self.dlist)
+        dlist=self.get_windows_data()
+        self.ui.addWidgetsToList(dlist)
         self.ui.show()
         self.ui.edit.setFocus()
 
     def confirmAction(self, request={}):
-        item=self.ui.list.currentItem()
-        self.set_window(item.itemData['id'])
-        self.ui.edit.clear()
-        self.ui.hide()
+        if self.ui.isVisible():
+            item=self.ui.list.currentItem()
+            self.set_window(item.itemData['id'])
+            self.ui.edit.clear()
+            self.ui.hide()
 
-    async def get_windows(self):
-        i3=await Connection().connect()
-        tree=await i3.get_tree()
+            self.parent_socket.send_json({'command':'setModeAction',
+                                          'mode_name':'CheckerMode',
+                                          'mode_action':'checkAction',
+                                          })
+            respond=self.parent_socket.recv_json()
+            print(respond)
+
+
+    def set_window(self, wid):
+        tree=asyncio.run(self.manager.get_tree())
+        w=tree.find_by_id(wid)
+        asyncio.run(w.command('focus'))
+
+    def get_windows(self):
+        tree=asyncio.run(self.manager.get_tree())
         windows={}
         for w in tree:
             if w.name in ['', None]: continue
             windows[w]=w.name
-        return windows, tree
-
-    def set_window(self, wid):
-        if self.kind=='show':
-            windows, tree=asyncio.run(self.get_windows())
-            w=tree.find_by_id(wid)
-            asyncio.run(w.command('focus'))
-        elif self.kind=='open':
-            subprocess.Popen(wid)
-
-    def get_applications_data(self):
-        proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)
-        applications=proc.stdout.readlines()
-        apps=[]
-        for app in applications:
-            info={}
-            app=app.decode().strip('\n').split(' ')
-            app_name=app[0]
-            app_version=' '.join(app[1:])
-            info['top']=app_name
-            info['id']=app_name
-            apps+=[info]
-        return apps
+        return windows 
 
     def get_windows_data(self):
-        windows, _=asyncio.run(self.get_windows())
+        windows=self.get_windows()
         items=[]
         for i3_window, name in windows.items():
             if i3_window.type!='con': continue
@@ -96,15 +76,6 @@ class ApplicationsMode(QBaseMode):
             workspace=i3_window.workspace().name
             items+=[{'top':name, 'down':f'Workspace {workspace}', 'id':i3_window.id}]
         return items
-
-    # todo opening apps
-    def runApplication(self, request):
-        slot_names=request['slot_names']
-        app=slot_names.get('app', None)
-        if app:
-            floating='--class floating'*(app=='kitty')
-            command=f'exec {app} {floating}' 
-            asyncio.run(self.manager.command(command))
 
 if __name__=='__main__':
     app=ApplicationsMode(port=33333)

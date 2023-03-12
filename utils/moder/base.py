@@ -4,10 +4,10 @@ import zmq
 import time
 import inspect
 
-from inspect import getsourcefile
 from os.path import abspath
-
 from configparser import ConfigParser
+
+from .generic import GenericWindow
 
 class BaseMode:
 
@@ -24,6 +24,8 @@ class BaseMode:
             super(BaseMode, self).__init__()
 
         self.ui=None
+        self.generic=GenericWindow()
+
         self.info=info
         self.port=port
         self.config=config
@@ -89,6 +91,9 @@ class BaseMode:
             elif self.ui and (self.ui.isVisible() or 'showAction' in action):
                 self.ui.handle_request(request)
                 msg={"status":f"{self.__class__.__name__}'s UI handled request"}
+            elif 'GenericMode' in mode_name:
+                self.generic.handle_request(request)
+                msg={"status":f"{self.__class__.__name__}'s generic window handled request"}
             else:
                 msg={"status":"not understood"}
 

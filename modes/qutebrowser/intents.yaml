@@ -1,0 +1,126 @@
+---
+type: entity
+name: hint
+automatically_extensible: yes 
+
+---
+type: intent
+name: QutebrowserMode_hintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - hint 
+  - hint [hint](emily lee)
+  - hint [hint](sarah adams)
+  - hint [hint](book big)
+  - hint [hint](house luck)
+
+---
+type: intent
+name: QutebrowserMode_hintTabAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - hint new [hint](emily lee)
+  - hint knew [hint](emily lee)
+  - hint tab [hint](sarah adams)
+  - hint page [hint](book big)
+  - hint capital [hint](house luck)
+
+---
+type: intent
+name: QutebrowserMode_goBackAction 
+utterances:
+  - back
+  - beck
+  - go back 
+  - go beck 
+
+---
+type: intent
+name: QutebrowserMode_goForwardAction 
+utterances:
+  - forward
+  - go forward 
+    
+---
+type: intent
+name: QutebrowserMode_openAction 
+slots:
+  - name: text
+    entity: text
+utterances:
+  - open 
+  - open [text](find new music samples) 
+  - open [text](where is new jersey)
+  - open [text](emily lee birth place?)
+---
+type: intent
+name: QutebrowserMode_quickmarkAction 
+slots:
+  - name: mark
+    entity: text
+utterances:
+  - mark 
+  - mark [text](find new music samples) 
+  - mark [text](where is new jersey)
+  - mark [text](grade)
+  - mark [text](interesting)
+---
+type: intent
+name: QutebrowserMode_openTabAction 
+slots:
+  - name: text
+    entity: text
+utterances:
+  - open tab 
+  - open new [text](find new music samples) 
+  - open knew [text](find new music samples) 
+  - open tab [text](where is new jersey)
+  - open page [text](emily lee birth place?)
+
+---
+type: intent
+name: QutebrowserMode_nextTabAction 
+utterances:
+  - next
+  - next tab 
+  - next page 
+
+---
+type: intent
+name: QutebrowserMode_prevTabAction 
+utterances:
+  - previous
+  - previous tab 
+  - previous page 
+
+---
+type: intent
+name: QutebrowserMode_movePageUpAction 
+utterances:
+  - page up
+
+---
+type: intent
+name: QutebrowserMode_movePageDownAction 
+utterances:
+  - page down
+
+---
+type: intent
+name: QutebrowserMode_zoomInAction 
+utterances:
+  - zoom in
+  - closer
+  - bigger
+  - larger
+
+---
+type: intent
+name: QutebrowserMode_zoomOutAction 
+utterances:
+  - zoom out
+  - smaller

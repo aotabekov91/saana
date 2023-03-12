@@ -137,7 +137,7 @@ class Handler:
     def act(self, mode_name, command_name, slot_names={}, intent_data={}):
         if not self.currentMode in [None, 'GenericMode']:
             mode_name=self.currentMode
-        print(mode_name, command_name, slot_names, self.modes.keys())
+        # print(mode_name, command_name, slot_names, self.modes.keys())
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
@@ -171,8 +171,9 @@ class Handler:
                 rs+=[intender.recv_json()]
 
             chosen=None
+            # chosen=rs[0]
             for i, r in enumerate(rs):
-                # if i==0: chosen=r
+                print(f'Intender {i}: ', r)
                 # if chosen['i_prob']<r['i_prob']: chosen=r
                 if r['mode_name']!=None:
                     chosen=r
@@ -214,6 +215,7 @@ class Handler:
         self.running=False
         if close_modes:
             for m in self.modes:
-                socket=self.modes[m]['socket']
-                socket.send_json({'command':'exit'})
-                print(socket.recv_json())
+                socket=self.modes[m].get('socket', None)
+                if socket:
+                    socket.send_json({'command':'exit'})
+                    print(socket.recv_json())

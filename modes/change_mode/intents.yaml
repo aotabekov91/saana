@@ -13,6 +13,8 @@ values:
   - [WindowsMode, manager, windows, i3, window]
   - [ChangeMode, change, changer, overview, all]
   - [GenericMode, generic]
+  - [CommandMode, command, run]
+  - [CheckerMode, checker, check]
 
 ---
 type: intent

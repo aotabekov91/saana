@@ -1,0 +1,5 @@
+---
+type: intent
+name: CheckerMode_checkAction 
+utterances:
+  - check 

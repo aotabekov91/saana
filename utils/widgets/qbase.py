@@ -4,15 +4,19 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from .window import Window
-
-class QBaseMainWindow (Window, QMainWindow):
+class QBaseMainWindow (QMainWindow):
 
     def __init__ (self, app, window_title=''):
         super(QBaseMainWindow, self).__init__()
         self.app=app
         self.socket=app.socket
         self.setWindowTitle(window_title)
+
+    def handle_request(self, request):
+        print(f'{self.__class__.__name__}: UI handling request')
+        command=request['command'].split('_')[-1]
+        action=getattr(self, command, False)
+        if action: action(request)
 
     def move_to_center(self):
         qtRectangle = self.frameGeometry()
@@ -38,3 +42,4 @@ class QBaseMainWindow (Window, QMainWindow):
 
     def doneAction(self, request={}):
         self.hide()
+

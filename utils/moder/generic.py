@@ -5,20 +5,17 @@ import subprocess
 import asyncio
 from i3ipc.aio import Connection
 
-from speechToCommand.utils.moder import BaseMode
+class GenericWindow:
 
-class GenericMode(BaseMode):
-    def __init__(self, port=None, parent_port=None, config=None):
-        super(GenericMode, self).__init__(
-                keyword='generic',
-                info='Generic commands',
-                port=port,
-                parent_port=parent_port,
-                config=config
-                )
-
+    def __init__(self):
         self.current_window=None
         self.manager=asyncio.run(Connection().connect())
+
+    def handle_request(self, request):
+        print(f'{self.__class__.__name__}: UI handling request')
+        command=request['command'].split('_')[-1]
+        action=getattr(self, command, False)
+        if action: action(request)
 
     def run_command(self, command, container=None):
         if container:
@@ -91,7 +88,3 @@ class GenericMode(BaseMode):
 
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))
-
-if __name__=='__main__':
-    app=GenericMode(port=33333, parent_port=44444)
-    app.run()

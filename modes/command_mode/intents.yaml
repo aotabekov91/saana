@@ -1,0 +1,25 @@
+---
+type: entity
+name: app
+automatically_extensible: yes
+values:
+  - [kitty, terminal, console]
+  - [qutebrowser, browser, cute]
+  - [google-chrome, chrome, google, 'google chrome']
+  - [pdf, sioyek, document]
+  - [email, thunderbird, bird, thunder]
+  - [music, mpv]
+
+---
+type: intent
+name: ApplicationsMode_openApplication
+slots:
+  - name: app
+    entity: app
+utterances:
+  - Open application [app](cute browser)
+  - Run application [app](cute browser)
+  - new application [app](cute browser)
+  - new [app](cute browser)
+  - Open [app](email)
+  - Run [app](email)
