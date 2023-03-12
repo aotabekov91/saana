@@ -135,6 +135,7 @@ utterances:
   - clause
   - cloth
   - finish
+  - cause
 
 ---
 type: intent
