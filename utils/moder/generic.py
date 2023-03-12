@@ -56,66 +56,75 @@ class GenericWindow:
         time.sleep(.1)
         self.checkAction(request)
 
+    @osGenericCommand
     def copyAction(self, request):
         class_=os.popen('xdotool getactivewindow getwindowclassname')
         if class_ in ['kitty']:
-            os.popen('xdotool getactivewindow key ctrl+c')
+            return 'xdotool getactivewindow key ctrl+c'
         else:
-            os.popen('xdotool getactivewindow key ctrl+shift+c')
+            return 'xdotool getactivewindow key ctrl+shift+c'
 
+    @osGenericCommand
     def pasteAction(self, request):
         class_=os.popen('xdotool getactivewindow getwindowclassname')
         if class_ in ['kitty']:
-            os.popen('xdotool getactivewindow key ctrl+v')
+            return 'xdotool getactivewindow key ctrl+v'
         else:
-            os.popen('xdotool getactivewindow key ctrl+shift+v')
+            return 'xdotool getactivewindow key ctrl+shift+v'
 
+    @osGenericCommand
     def removeAction(self, request):
-        os.popen('xdotool getactivewindow key BackSpace')
-
-    # def moveDownAction(self, request):
-    #     os.popen('xdotool getactivewindow key Down')
+        return 'xdotool getactivewindow key BackSpace'
 
     @osGenericCommand
     def moveDownAction(self, request):
         return 'xdotool getactivewindow key Down'
 
+    @osGenericCommand
     def moveUpAction(self, request):
-        os.popen('xdotool getactivewindow key Up')
+        return 'xdotool getactivewindow key Up'
 
+    @osGenericCommand
     def moveLeftAction(self, request):
-        os.popen('xdotool getactivewindow key Left')
+        return 'xdotool getactivewindow key Left'
 
+    @osGenericCommand
     def moveRightAction(self, request):
-        os.popen('xdotool getactivewindow key Right')
+        return 'xdotool getactivewindow key Right'
 
     def confirmAction(self, request):
         os.popen('xdotool getactivewindow key Enter')
         time.sleep(.1)
         self.checkAction(request)
 
+    @osGenericCommand
     def escapeAction(self, request):
-        os.popen('xdotool getactivewindow key Escape')
+        return 'xdotool getactivewindow key Escape'
 
+    @osGenericCommand
     def forwardAction(self, request):
-        os.popen('xdotool getactivewindow key space')
+        return 'xdotool getactivewindow key space'
 
+    @osGenericCommand
     def backwardAction(self, request):
-        os.popen('xdotool getactivewindow key shift+space')
+        return 'xdotool getactivewindow key shift+space'
 
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))
     
+    @osGenericCommand
     def zoomInAction(self, request={}):
-        os.popen(f'xdotool getactivewindow type +')
+        return f'xdotool getactivewindow type +'
 
+    @osGenericCommand
     def zoomOutAction(self, request={}):
-        os.popen(f'xdotool getactivewindow type -')
+        return f'xdotool getactivewindow type -'
 
+    @osGenericCommand
     def inputAction(self, request):
         slot_names=request.get('slot_names', {})
         text=slot_names.get('input', '')
-        os.popen('xdotool getactivewindow type {text}')
+        return 'xdotool getactivewindow type {text}'
         
     def checkAction(self, request):
         self.set_current_window()
