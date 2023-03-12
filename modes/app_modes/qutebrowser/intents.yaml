@@ -1,0 +1,72 @@
+---
+type: entity
+name: hint
+automatically_extensible: yes 
+
+---
+type: intent
+name: QutebrowserMode_hintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - hint 
+  - hint [hint](emily lee)
+  - hint [hint](sarah adams)
+  - hint [hint](book big)
+  - hint [hint](house luck)
+
+---
+type: intent
+name: QutebrowserMode_hintTabAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - hint new
+  - hint knew
+  - hint page
+  - hint tab
+  - hint new [hint](emily lee)
+  - hint knew [hint](emily lee)
+  - hint tab [hint](sarah adams)
+  - hint page [hint](book big)
+  - hint capital [hint](house luck)
+
+---
+type: intent
+name: QutebrowserMode_quickmarkAction 
+slots:
+  - name: mark
+    entity: text
+utterances:
+  - mark 
+  - mark [text](find new music samples) 
+  - mark [text](where is new jersey)
+  - mark [text](grade)
+  - mark [text](interesting)
+
+---
+type: intent
+name: QutebrowserMode_openTabAction 
+slots:
+  - name: text
+    entity: text
+utterances:
+  - open tab 
+  - open new [text](find new music samples) 
+  - open knew [text](find new music samples) 
+  - open tab [text](where is new jersey)
+  - open page [text](emily lee birth place?)
+
+---
+type: intent
+name: QutebrowserMode_nextTabAction 
+utterances:
+  - tab 
+
+---
+type: intent
+name: QutebrowserMode_prevTabAction 
+utterances:
+  - previous tab 

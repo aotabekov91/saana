@@ -23,11 +23,17 @@ class CheckerMode(BaseMode):
         self.generic.set_current_window()
         window_class=self.generic.current_window.window_class
 
-        if not window_class in ['qutebrowser']: return
-
-        if 'qutebrowser'==window_class:
+        if window_class=='qutebrowser':
 
             mode_name='QutebrowserMode'
+
+        elif window_class=='feh':
+
+            mode_name='FehMode'
+
+        else:
+
+            return
 
         self.parent_socket.send_json({'command':'setCurrentMode',
                                       'mode_name':mode_name})

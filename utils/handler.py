@@ -17,7 +17,7 @@ class Handler:
         self.mode_store_data={}
         self.sockets={}
 
-        self.currentMode=None
+        self.current_mode=None
         self.previousMode=None
 
         self.load_modes()
@@ -26,8 +26,8 @@ class Handler:
         self.run()
 
     def set_current_mode(self, mode_name):
-        self.previousMode=self.currentMode
-        self.currentMode=mode_name
+        self.previousMode=self.current_mode
+        self.current_mode=mode_name
 
     def load_modes(self):
 
@@ -41,11 +41,14 @@ class Handler:
         for m in modes.__dir__():
             if m.startswith('__'): continue
             mode_package=getattr(modes, m)
-            mode_class=mode_package.get_mode()
-            try:
-                run(mode_class, self.port)
-            except:
-                print(f'Could not load: {mode_class.__name__}')
+            get_mode=getattr(mode_package, 'get_mode', False)
+            if get_mode:
+                mode_class=mode_package.get_mode()
+                try:
+                    run(mode_class, self.port)
+                except:
+                    print(f'Could not load: {mode_class.__name__}')
+
                     
     def set_listener(self):
         self.parent.set_listener()
@@ -65,12 +68,12 @@ class Handler:
         try:
 
             if r['command']=='currentMode':
-                msg={'status':'ok', 'currentMode':self.currentMode}
+                msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='previousMode':
                 msg={'status':'ok', 'previousMode':self.previousMode}
             elif r['command']=='setCurrentMode':
                 self.set_current_mode(r.get('mode_name'))
-                msg={'status':'ok', 'currentMode':self.currentMode}
+                msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='getAllModes':
                 msg={'status':'ok', 'allModes':self.modes}
             elif r['command']=='setModeAction':
@@ -135,9 +138,8 @@ class Handler:
         self.sockets[r['mode_name']]=socket
 
     def act(self, mode_name, command_name, slot_names={}, intent_data={}):
-        if not self.currentMode in [None, 'GenericMode']:
-            mode_name=self.currentMode
-        # print(mode_name, command_name, slot_names, self.modes.keys())
+        if not self.current_mode in [None, 'GenericMode']:
+            mode_name=self.current_mode
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
@@ -196,14 +198,18 @@ class Handler:
 
             if d['text']=='exit': self.parent.exit()
 
+            if self.current_mode is None:
+                self.act('CheckerMode', 'checkAction')
+
             m_name=None
             mode_names=[]
-            if self.currentMode != None:
-                for f in [self.currentMode, 'GenericMode', 'ChangeMode']:
+
+            if self.current_mode != None:
+                for f in [self.current_mode, 'GenericMode', 'ChangeMode']:
                     if not f in mode_names: mode_names+=[f]
                 m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
-                if m_name == 'GenericMode': m_name=self.currentMode
-            if self.currentMode is None or m_name is None:
+                if m_name == 'GenericMode': m_name=self.current_mode
+            if self.current_mode is None or m_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'], None)
 
             print('Understood: ', m_name, c_name) 

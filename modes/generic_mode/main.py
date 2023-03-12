@@ -79,15 +79,27 @@ class GenericMode(BaseMode):
 
     def confirmAction(self, request):
         os.popen('xdotool getactivewindow key Enter')
+        if self.parent_port:
+            self.parent_socket.send_json({'command':'setModeAction',
+                                          'mode_name':'CheckerMode',
+                                          'mode_action':'checkAction',
+                                          })
+            respond=self.parent_socket.recv_json()
+            print(respond)
 
-    def escapeAction(self, request):
+    def cancelAction(self, request):
         os.popen('xdotool getactivewindow key Escape')
 
-    def spaceAction(self, request):
+    def forwardAction(self, request):
         os.popen('xdotool getactivewindow key space')
 
-    def spaceShiftAction(self, request):
+    def backwardAction(self, request):
         os.popen('xdotool getactivewindow key shift+space')
+
+    def inputAction(self, request):
+        slot_names=request.get('slot_names', {})
+        input_=slot_names.get('input', None)
+        if input_: os.popen(f'xdotool getactivewindow type {input_}') 
 
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))

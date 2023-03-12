@@ -4,7 +4,9 @@ from . import applications
 from . import windows_manager
 from . import command_mode
 from . import checker_mode
-from . import qutebrowser
+
+from .app_modes import feh
+from .app_modes import qutebrowser
 
 # from . import keyboard
 # from . import translator

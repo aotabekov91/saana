@@ -98,23 +98,26 @@ utterances:
 
 ---
 type: intent
-name: GenericMode_escapeAction
+name: GenericMode_cancelAction
 utterances:
   - escape 
+  - cancel
 
 ---
 type: intent
-name: GenericMode_spaceAction
+name: GenericMode_forwardAction
 utterances:
   - space 
   - forward
+  - next
 
 ---
 type: intent
-name: GenericMode_spaceShiftAction
+name: GenericMode_backwardAction
 utterances:
   - space shift
   - backward 
+  - previous
 
 ---
 type: intent
@@ -138,3 +141,31 @@ utterances:
   - confirm
   - okay
   - 'yes'
+
+---
+type: intent
+name: GenericMode_zoomInAction 
+utterances:
+  - zoom in
+  - closer
+  - bigger
+  - larger
+
+---
+type: intent
+name: GenericMode_zoomOutAction 
+utterances:
+  - zoom out
+  - smaller
+
+---
+type: intent
+name: GenericMode_inputAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+  - input [input](show new application)
+  - text [input](browser open do something)
+  - text [input](hello)
