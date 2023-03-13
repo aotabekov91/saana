@@ -30,6 +30,14 @@ class Handler:
         self.previousMode=self.current_mode
         self.current_mode=mode_name
 
+    def set_current_window(self, window_class):
+
+        for mode_name, mode_data in self.modes.items():
+            if window_class in mode_data['window_classes']:
+                self.set_current_mode(mode_name)
+                return
+        self.set_current_mode('GenericMode')
+                
     def load_modes(self):
 
         def run(mode_class, parent_port):
@@ -76,6 +84,11 @@ class Handler:
             elif r['command']=='setCurrentMode':
                 self.set_current_mode(r.get('mode_name'))
                 msg={'status':'ok', 'currentMode':self.current_mode}
+            elif r['command']=='setCurrentWindow':
+                self.set_current_window(r.get('window_class'))
+                msg={'status':'ok',
+                     'info':'updated mode based on window_class',
+                     'currentMode':self.currentMode}
             elif r['command']=='getAllModes':
                 msg={'status':'ok', 'allModes':self.modes}
             elif r['command']=='setModeAction':
@@ -107,18 +120,6 @@ class Handler:
                 self.modes[r['mode_name']]=r
                 self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
-
-
-                # self.parent.intender_socket_1.send_json(r)
-                # self.parent.intender_socket_2.send_json(r)
-                # self.parent.intender_socket_3.send_json(r)
-                # respond1=self.parent.intender_socket_1.recv_json()
-                # respond2=self.parent.intender_socket_2.recv_json()
-                # respond3=self.parent.intender_socket_3.recv_json()
-                # print('Respond from Intender: ', respond1)
-                # print('Respond from Intender: ', respond2)
-                # print('Respond from Intender: ', respond3)
-
 
                 msg={'status':'ok', 'action': 'registeredMode'}
 

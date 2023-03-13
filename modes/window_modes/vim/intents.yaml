@@ -1,0 +1,42 @@
+---
+type: intent
+name: VimMode_markAction 
+utterances:
+  - mark 
+
+---
+type: intent
+name: GenericMode_showHintAction 
+slots:
+utterances:
+  - hint 
+
+---
+type: intent
+name: GenericMode_followHintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - follow [hint](lee)
+  - follow [hint](emma)
+  - follow [hint](city)
+  - follow [hint](emily lee)
+  - follow [hint](sarah adams)
+  - follow [hint](book big)
+  - follow [hint](house luck)
+
+---
+type: intent
+name: GenericMode_createHintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - create [hint](lee)
+  - create [hint](emma)
+  - create [hint](city)
+  - create [hint](emily lee)
+  - create [hint](sarah adams)
+  - create [hint](book big)
+  - create [hint](house luck)

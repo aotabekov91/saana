@@ -17,7 +17,8 @@ class BaseMode:
                  info=None, 
                  port=None, 
                  parent_port=None, 
-                 config=None, 
+                 config=None,
+                 window_classes=[],
                  argv=None):
         if type(argv)==list:
             super(BaseMode, self).__init__(argv)
@@ -25,12 +26,14 @@ class BaseMode:
             super(BaseMode, self).__init__()
 
         self.ui=None
+        self.current_window=None
         self.manager=asyncio.run(Connection().connect())
 
         self.info=info
         self.port=port
         self.config=config
         self.keyword=keyword
+        self.window_classes=window_classes
         self.intents_path=None
         self.parent_port=parent_port
 
@@ -42,12 +45,31 @@ class BaseMode:
 
         self.register()
 
-    def get_folder(self):
-        file_path=os.path.abspath(inspect.getfile(self.__class__))
-        return os.path.dirname(file_path).replace('\\', '/')
+    def set_config(self):
+        if self.info is None: self.info=self.__class__.__name__
+        if self.config is None:
+            file_path=os.path.abspath(inspect.getfile(self.__class__))
+            mode_path=os.path.dirname(file_path).replace('\\', '/')
+            config_path=f'{mode_path}/config.ini'
+            if os.path.isfile(config_path):
+                self.config=ConfigParser()
+                self.config.read(config_path)
+            else:
+                self.config=ConfigParser()
+        if self.config.has_section('Custom'):
+            if self.config.has_option('Custom', 'info'):
+                self.info=self.config.get('Custom', 'info')
+            if self.config.has_option('Custom', 'keyword'):
+                self.keyword=self.config.get('Custom', 'keyword')
+            if self.config.has_option('Custom', 'port'):
+                self.port=self.config.getint('Custom', 'port')
+            if self.config.has_option('Custom', 'window_classes'):
+                self.window_classes=self.config.getint('Custom', 'window_classes')
 
     def set_intents_path(self):
-        main_path=self.get_folder()
+
+        file_path=os.path.abspath(inspect.getfile(self.__class__))
+        main_path=os.path.dirname(file_path).replace('\\', '/')
 
         path=f'{main_path}/intents.yaml'
         if os.path.isfile(path): self.intents_path=path
@@ -68,6 +90,7 @@ class BaseMode:
                     'keyword':self.keyword,
                     'info': self.info,
                     'port': self.port,
+                    'window_classes': self.window_classes,
                     'intents_path': self.intents_path})
 
                 respond=self.parent_socket.recv_json()
@@ -89,6 +112,11 @@ class BaseMode:
         if hasattr(self, 'ui'):
             ui_func=getattr(self.ui, action, False)
 
+        cond1='GenericMode' in mode_name and self.parent_port
+        cond2=self.__class__.__name__!='GenericMode'
+
+        window_class=self.get_current_window()
+
         try:
             if mode_func:
                 mode_func(request)
@@ -97,43 +125,31 @@ class BaseMode:
                 ui_func(request)
                 msg={"status":f"{self.__class__.__name__}'s UI handled request"}
 
-            elif 'GenericMode' in mode_name and self.parent_port:
-                msg={"status":f"{self.__class__.__name__}: Sending request to generic"}
-                self.parent_socket.send_json(
-                        {'command':'setModeAction',
-                         'mode_name':'GenericMode',
-                         'mode_action':'handleCustomRequest',
-                         'intent_data':request}
-                        )
-                print(self.parent_socket.recv_json())
             else:
-                msg={"status":"not understood"}
+
+                if window_class in self.window_classes:
+
+                    msg={"status":f"{self.__class__.__name__}: Sending request to {window_class}"}
+                    
+                    check_respond=self.checkAction(request)
+                    mode_name=check_respond['currentMode']
+
+                    self.parent_socket.send_json(
+                            {'command':'setModeAction',
+                             'mode_name':mode_name,
+                             'mode_action':request['command'],
+                             'slot_names': request['slot_names'],
+                             'intent_data':request['intent_data']})
+
+                else:
+
+                    msg={"status":"not understood"}
 
         except:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
 
         print(msg)
-
-    def set_config(self):
-        if self.info is None: self.info=self.__class__.__name__
-        if self.config is None:
-            file_path=os.path.abspath(inspect.getfile(self.__class__))
-            mode_path=os.path.dirname(file_path).replace('\\', '/')
-            config_path=f'{mode_path}/config.ini'
-            if os.path.isfile(config_path):
-                self.config=ConfigParser()
-                self.config.read(config_path)
-            else:
-                self.config=ConfigParser()
-
-        if self.config.has_section('Custom'):
-            if self.config.has_option('Custom', 'info'):
-                self.info=self.config.get('Custom', 'info')
-            if self.config.has_option('Custom', 'keyword'):
-                self.keyword=self.config.get('Custom', 'keyword')
-            if self.config.has_option('Custom', 'port'):
-                self.port=self.config.getint('Custom', 'port')
 
     def set_connection(self):
         self.socket = zmq.Context().socket(zmq.PULL)
@@ -149,14 +165,18 @@ class BaseMode:
         tree=asyncio.run(self.manager.get_tree())
         return tree.find_focused()
 
+    def set_current_window(self):
+        tree=asyncio.run(self.manager.get_tree())
+        self.current_window=tree.find_focused()
+
     def checkAction(self, request):
-        if self.parent_port:
-            self.parent_socket.send_json({'command':'setModeAction',
-                                          'mode_name':'GenericMode',
-                                          'mode_action':'checkAction',
-                                          })
-            respond=self.parent_socket.recv_json()
-            print(respond)
+        self.set_current_window()
+        window_class=self.current_window.window_class
+        if not self.parent_port: return
+        self.parent_socket.send_json(
+                {'command':'setCurrentWindow',
+                 'window_class':window_class})
+        return self.parent_socket.recv_json()
 
     def run(self):
         self.running=True

@@ -8,25 +8,17 @@ from i3ipc.aio import Connection
 from speechToCommand.utils.moder import BaseMode
 from speechToCommand.utils.helper import osAppCommand
 
-class QutebrowserMode(BaseMode):
+from ..vim import VimMode
+
+class QutebrowserMode(VimMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(QutebrowserMode, self).__init__(
                  keyword='browser', 
                  info='Qutebrowser', 
                  port=port, 
                  parent_port=parent_port, 
-                 config=config)
-
-        self.window_class='qutebrowser'
-        self.manager=asyncio.run(Connection().connect())
-
-    @osAppCommand
-    def moveLeftAction(self, request={}):
-        return 'xdotool getactivewindow key shift+k'
-    
-    @osAppCommand
-    def moveRightAction(self, request={}):
-        return 'xdotool getactivewindow key shift+j'
+                 config=config,
+                 window_classes=['qutebrowser'])
 
     @osAppCommand
     def backwardAction(self, request={}):
@@ -37,42 +29,46 @@ class QutebrowserMode(BaseMode):
         return 'xdotool getactivewindow key shift+l'
 
     @osAppCommand
-    def openAction(self, request):
-        return f'xdotool getactivewindow type o " "'
-
-    @osAppCommand
     def openTabAction(self, request):
         return f'xdotool getactivewindow type o -t " "'
+
+    @osAppCommand
+    def moveLeftAction(self, request):
+        return f'xdotool getactivewindow key shift+j'
+
+    @osAppCommand
+    def moveRightAction(self, request):
+        return f'xdotool getactivewindow key shift+k'
 
     @osAppCommand
     def doneAction(self, request):
         return f'xdotool getactivewindow type d'
 
     @osAppCommand
-    def hintAction(self, request={}):
-        slot_names=request.get('slot_names', {})
-        hint=slot_names.get('hint', None)
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-        else:
-            hint='f'
-        return f'xdotool getactivewindow type {hint}'
-
-    @osAppCommand
-    def hintTabAction(self, request={}):
-        slot_names=request.get('slot_names', {})
-        hint=slot_names.get('hint', None)
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-        else:
-            hint='F'
-        return f'xdotool getactivewindow type {hint}'
-
-    @osAppCommand
     def markAction(self, request={}):
-        slot_names=request.get('slot_names', {})
-        mark=slot_names.get('mark', '')
-        return f'xdotool getactivewindow type m {mark}'
+        return f'xdotool getactivewindow type m'
+    
+    @osAppCommand
+    def showHintAction(self, request={}):
+        return f'xdotool getactivewindow type f'
+
+    @osAppCommand
+    def followHintAction(self, request={}):
+        slot_names=request['slot_names']
+        hint=slot_names.get('hint', None)
+        if hint:
+            hint=''.join([h[0] for h in hint.split(' ')])
+            return f'xdotool getactivewindow type {hint}'
+
+    @osAppCommand
+    def createHintAction(self, request={}):
+        slot_names=request['slot_names']
+        hint=slot_names.get('hint', None)
+        os.popen(f'xdotool getactivewindow key Escape')
+        os.popen(f'xdotool getactivewindow type F')
+        if hint:
+            hint=''.join([h[0] for h in hint.split(' ')])
+            return f'xdotool getactivewindow type {hint}'
 
 if __name__=='__main__':
     app=QutebrowserMode(port=33333)

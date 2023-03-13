@@ -1,0 +1,222 @@
+type: entity
+name: item
+automatically_extensible: yes
+
+---
+type: intent
+name: GenericMode_openAction
+utterances:
+  - open
+
+---
+type: intent
+name: GenericMode_openTabAction 
+utterances:
+  - new 
+  - knew 
+
+---
+type: intent
+name: GenericMode_showAction
+utterances:
+  - show
+  - display
+
+---
+type: intent
+name: GenericMode_hideAction
+utterances:
+  - hide
+  - disappear
+
+---
+type: intent
+name: GenericMode_doneAction
+utterances:
+  - done
+
+---
+type: intent
+name: GenericMode_chooseAction
+slots:
+  - name: item
+    entity: item
+utterances:
+  - choose [item](task work research)
+  - choose [item](application)
+  - choose [item](browser)
+  - choose [item](window browser)
+
+---
+type: intent
+name: GenericMode_copyAction
+utterances:
+  - copy
+
+---
+type: intent
+name: GenericMode_pasteAction
+utterances:
+  - paste
+
+---
+type: intent
+name: GenericMode_removeAction
+utterances:
+  - remove
+  - delete
+  - erase
+
+---
+type: intent
+name: GenericMode_moveDownAction
+utterances:
+  - move down
+  - go down
+  - down
+  - dawn
+  - below
+  - lower
+
+---
+type: intent
+name: GenericMode_moveUpAction
+utterances:
+  - move up
+  - go up
+  - up
+  - above
+  - higher
+
+---
+type: intent
+name: GenericMode_moveLeftAction
+utterances:
+  - move left 
+  - left 
+
+---
+type: intent
+name: GenericMode_moveRightAction
+utterances:
+  - move right 
+  - right 
+
+---
+type: intent
+name: GenericMode_fullscreenAction
+utterances:
+  - full screen
+  - fullscreen 
+
+---
+type: intent
+name: GenericMode_cancelAction
+utterances:
+  - escape 
+  - cancel
+
+---
+type: intent
+name: GenericMode_forwardAction
+utterances:
+  - forward
+  - next
+
+---
+type: intent
+name: GenericMode_backwardAction
+utterances:
+  - backward 
+  - back
+  - beck 
+  - previous
+
+---
+type: intent
+name: GenericMode_closeAction
+utterances:
+  - close
+  - clause
+  - cloth
+  - finish
+  - cause
+
+---
+type: intent
+name: GenericMode_floatingToggleAction
+utterances:
+  - float
+  - floating
+  - toggle
+  - toggle floating
+
+---
+type: intent
+name: GenericMode_confirmAction
+utterances:
+  - confirm
+  - okay
+  - 'yes'
+
+---
+type: intent
+name: GenericMode_zoomInAction 
+utterances:
+  - zoom in
+  - closer
+  - bigger
+  - larger
+
+---
+type: intent
+name: GenericMode_zoomOutAction 
+utterances:
+  - zoom out
+  - smaller
+
+---
+type: intent
+name: GenericMode_checkAction 
+utterances:
+  - check
+  - cast
+  - determine 
+
+---
+type: intent
+name: GenericMode_inputAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+  - input [input](show new application)
+  - text [input](browser open do something)
+  - text [input](hello)
+
+---
+type: entity
+name: hint
+automatically_extensible: yes 
+
+---
+type: intent
+name: GenericMode_hintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - hint 
+
+---
+type: intent
+name: GenericMode_followAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - follow [hint](emily lee)
+  - follow [hint](sarah adams)
+  - follow [hint](book big)
+  - follow [hint](house luck)

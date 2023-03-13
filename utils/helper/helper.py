@@ -3,7 +3,7 @@ import os
 def osAppCommand(func):
     def inner(self, request):
         cwindow=self.get_current_window()
-        if cwindow.window_class==self.window_class:
+        if cwindow.window_class in self.window_classes:
             cmd=func(self, request)
             if cmd: os.popen(cmd)
         else:
