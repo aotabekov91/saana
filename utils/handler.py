@@ -32,11 +32,18 @@ class Handler:
 
     def set_current_window(self, window_class):
 
+        mode_names=[]
+        modes=[]
         for mode_name, mode_data in self.modes.items():
             if window_class in mode_data['window_classes']:
-                self.set_current_mode(mode_name)
-                return
-        self.set_current_mode('GenericMode')
+                mode_names+=[mode_name]
+                modes+=[mode_name]
+            elif mode_data['window_classes']=='all':
+                mode_names+=[mode_name]
+        mode_names+=['GenericMode']
+        modes+=['GenericMode']
+        self.set_current_mode(modes[0])
+        return mode_names
                 
     def load_modes(self):
 
@@ -85,10 +92,10 @@ class Handler:
                 self.set_current_mode(r.get('mode_name'))
                 msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='setCurrentWindow':
-                self.set_current_window(r.get('window_class'))
+                mode_names=self.set_current_window(r.get('window_class'))
                 msg={'status':'ok',
                      'info':'updated mode based on window_class',
-                     'currentMode':self.currentMode}
+                     'mode_names':mode_names}
             elif r['command']=='getAllModes':
                 msg={'status':'ok', 'allModes':self.modes}
             elif r['command']=='setModeAction':
@@ -96,7 +103,8 @@ class Handler:
                 mode_action=r['mode_action']
                 intent_data=r.get('intent_data', {})
                 slot_names=r.get('slot_names', {})
-                self.act(mode_name, mode_action, slot_names, intent_data)
+                own_only=r.get('own_only', False)
+                self.act(mode_name, mode_action, slot_names, intent_data, own_only)
                 msg={'status':'ok', 'action':'setModeAction', 'info': r}
             elif r['command']=='notify':
                 self.act('NotifyMode', 'notifyAction', r, r)   
@@ -143,12 +151,14 @@ class Handler:
         socket.connect(f'tcp://localhost:{r["port"]}')
         self.sockets[r['mode_name']]=socket
 
-    def act(self, mode_name, command_name, slot_names={}, intent_data={}):
+    def act(self, mode_name, command_name, slot_names={}, intent_data={}, own_only=False):
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
                               'slot_names':slot_names,
-                              'intent_data':intent_data})
+                              'intent_data':intent_data,
+                              'own_only': own_only
+                              })
 
     def run(self):
 
@@ -182,7 +192,7 @@ class Handler:
             chosen=None
             for i, r in enumerate(rs):
                 print(f'Intender {i}: ', r)
-                if r['mode_name']!=None:
+                if 'mode_name' in r and r['mode_name'] is not None:
                     chosen=r
                     break
 

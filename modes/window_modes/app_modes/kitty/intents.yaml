@@ -10,18 +10,10 @@ utterances:
 
 ---
 type: intent
-name: GenericMode_openTabAction 
-utterances:
-  - new 
-  - knew 
-
----
-type: intent
 name: GenericMode_showAction
 utterances:
   - show
   - display
-  - this way
 
 ---
 type: intent
@@ -71,31 +63,20 @@ utterances:
 ---
 type: intent
 name: GenericMode_moveDownAction
-slots:
-  - name: repeat
-    entity: snips/number 
 utterances:
   - move down
-  - move down [repeat](three) 
-  - move down [repeat](three) times
+  - go down
   - down
-  - down [repeat](five) times
-  - down [repeat](eight) 
   - dawn
-  - dawn [repeat](five)
-  - dawn [repeat](five) times
-  - below 
-  - below [repeat](three)
-  - below [repeat](eleven) row
-  - though
-  - lower [repeat](ten) times
-  - lower 
+  - below
+  - lower
 
 ---
 type: intent
 name: GenericMode_moveUpAction
 utterances:
   - move up
+  - go up
   - up
   - above
   - higher
@@ -134,10 +115,6 @@ name: GenericMode_forwardAction
 utterances:
   - forward
   - next
-  - ante
-  - nex
-  - nice
-  - nick
 
 ---
 type: intent
@@ -147,7 +124,6 @@ utterances:
   - back
   - beck 
   - previous
-  - post
 
 ---
 type: intent
@@ -155,7 +131,6 @@ name: GenericMode_closeAction
 utterances:
   - close
   - clause
-  - cool
   - cloth
   - finish
   - cause
@@ -200,7 +175,6 @@ utterances:
   - check
   - cast
   - determine 
-  - identify
 
 ---
 type: intent
@@ -239,78 +213,3 @@ utterances:
   - follow [hint](sarah adams)
   - follow [hint](book big)
   - follow [hint](house luck)
-
----
-type: intent
-name: GenericMode_playAction 
-utterances:
-  - play
-
----
-type: intent
-name: GenericMode_pauseAction 
-utterances:
-  - pause
-  - stop
-
----
-type: intent
-name: GenericMode_muteAction 
-utterances:
-  - mute
-  - newt
-  - silent
-
----
-type: intent
-name: GenericMode_increaseVolumeAction 
-utterances:
-  - louder
-  - increase volume
-  - increase tone
-  - raise
-
----
-type: intent
-name: GenericMode_decreaseVolumeAction 
-utterances:
-  - decrease volume
-  - decrease tone
-  - lower
-
----
-type: intent
-name: GenericMode_selectAction
-utterances:
-  - select
-
----
-type: intent
-name: GenericMode_startAction
-utterances:
-  - start
-
----
-type: intent
-name: GenericMode_finishAction
-utterances:
-  - finish
-
----
-type: intent
-name: GenericMode_saveAction
-utterances:
-  - save
-
----
-type: intent
-name: GenericMode_refreshAction
-utterances:
-  - refresh
-
----
-type: intent
-name: GenericMode_gotoAction
-utterances:
-  - go to
-  - go

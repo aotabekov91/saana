@@ -15,6 +15,7 @@ values:
   - [GenericMode, generic]
   - [CommandMode, command, run, execute]
   - [CheckerMode, checker, check]
+  - [PlayerMode, player, music]
 
 ---
 type: intent

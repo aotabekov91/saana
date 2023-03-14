@@ -106,45 +106,38 @@ class BaseMode:
         print(f'{self.__class__.__name__} received request: {request}')
         command=request['command'].rsplit('_', 1)
         mode_name, action=command[0], command[-1]
-
         mode_func=getattr(self, action, False)
         ui_func=None
         if hasattr(self, 'ui'):
             ui_func=getattr(self.ui, action, False)
 
-        cond1='GenericMode' in mode_name and self.parent_port
-        cond2=self.__class__.__name__!='GenericMode'
-
-        window_class=self.get_current_window()
-
         try:
+            msg=None
             if mode_func:
                 mode_func(request)
                 msg={"status":f"{self.__class__.__name__} handled request"}
             elif ui_func and (self.ui.isVisible() or 'showAction' in action):
                 ui_func(request)
                 msg={"status":f"{self.__class__.__name__}'s UI handled request"}
-
-            else:
-
-                if window_class in self.window_classes:
-
-                    msg={"status":f"{self.__class__.__name__}: Sending request to {window_class}"}
-                    
-                    check_respond=self.checkAction(request)
-                    mode_name=check_respond['currentMode']
-
-                    self.parent_socket.send_json(
-                            {'command':'setModeAction',
-                             'mode_name':mode_name,
-                             'mode_action':request['command'],
-                             'slot_names': request['slot_names'],
-                             'intent_data':request['intent_data']})
-
+            check_respond=self.checkAction(request)
+            if not msg and not request['own_only'] and check_respond:
+                mode_names=check_respond.get('mode_names', [])
+                mode_name=self.__class__.__name__
+                mode_names.pop(mode_name.index(mode_name))
+                msg={"status":f"{self.__class__.__name__}: Sending to other modes"} 
+                if len(mode_names)>0:
+                    for mode_name in mode_names:
+                        msg={"status":f"{self.__class__.__name__}: Sending to {mode_name}"}
+                        self.parent_socket.send_json(
+                                {'command':'setModeAction',
+                                 'mode_name':mode_name,
+                                 'mode_action': request['command'],
+                                 'slot_names': request['slot_names'],
+                                 'intent_data': request['intent_data'],
+                                 'own_only': True})
+                        respond=self.parent_socket.recv_json()
                 else:
-
                     msg={"status":"not understood"}
-
         except:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
@@ -163,20 +156,20 @@ class BaseMode:
 
     def get_current_window(self):
         tree=asyncio.run(self.manager.get_tree())
-        return tree.find_focused()
+        window=tree.find_focused()
+        return getattr(window, 'window_class', None)
 
     def set_current_window(self):
         tree=asyncio.run(self.manager.get_tree())
         self.current_window=tree.find_focused()
 
     def checkAction(self, request):
-        self.set_current_window()
-        window_class=self.current_window.window_class
-        if not self.parent_port: return
-        self.parent_socket.send_json(
-                {'command':'setCurrentWindow',
-                 'window_class':window_class})
-        return self.parent_socket.recv_json()
+        window_class=self.get_current_window()
+        if window_class and self.parent_port:
+            self.parent_socket.send_json(
+                    {'command':'setCurrentWindow',
+                     'window_class':window_class})
+            return self.parent_socket.recv_json()
 
     def run(self):
         self.running=True

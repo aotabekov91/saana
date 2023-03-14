@@ -93,7 +93,7 @@ class Intender(SnipsNLUEngine):
                      }
             elif r['command']=='exit':
                 self.exit()
-                msg={'status':'nok', 'info':'exiting'}
+                msg={'status':'ok', 'info':'exiting'}
             else:
                 msg={'status':'nok', 'info':'request not understood'}
 

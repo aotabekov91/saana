@@ -1,6 +1,7 @@
 from . import change_mode
 from .window_modes import generic
-from .window_modes import qutebrowser
+# from .window_modes import qutebrowser
+# from .window_modes import player_ctl
 
 # from . import applications
 # from . import windows_manager
@@ -13,5 +14,3 @@ from .window_modes import qutebrowser
 # from . import bookmarks
 # from . import open_ai #todo browser is not shown
 # from . import lookup
-
-

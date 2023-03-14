@@ -4,9 +4,9 @@ from speechToCommand.utils.helper import osAppCommand
 
 from ..vim import VimMode
 
-class QutebrowserMode(VimMode):
+class SioyekMode(VimMode):
     def __init__(self, port=None, parent_port=None, config=None):
-        super(QutebrowserMode, self).__init__(
+        super(SioyekMode, self).__init__(
                  keyword='browser', 
                  info='Qutebrowser', 
                  port=port, 
@@ -23,16 +23,8 @@ class QutebrowserMode(VimMode):
         return 'xdotool getactivewindow key shift+l'
 
     @osAppCommand
-    def openTabAction(self, request):
+    def openAction(self, request):
         return f'xdotool getactivewindow type o -t " "'
-
-    @osAppCommand
-    def moveLeftAction(self, request):
-        return f'xdotool getactivewindow key shift+j'
-
-    @osAppCommand
-    def moveRightAction(self, request):
-        return f'xdotool getactivewindow key shift+k'
 
     @osAppCommand
     def doneAction(self, request):
@@ -65,5 +57,5 @@ class QutebrowserMode(VimMode):
             return f'xdotool getactivewindow type {hint}'
 
 if __name__=='__main__':
-    app=QutebrowserMode(port=33333)
+    app=SioyekMode(port=33333)
     app.run()

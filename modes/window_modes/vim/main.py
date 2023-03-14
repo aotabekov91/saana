@@ -7,12 +7,10 @@ import subprocess
 import asyncio
 from i3ipc.aio import Connection
 
-from speechToCommand.utils.moder import BaseMode
 from speechToCommand.utils.helper import osAppCommand
+from speechToCommand.utils.window import BaseGenericMode
 
-from speechToCommand.modes.window_modes.generic import GenericMode 
-
-class VimMode(GenericMode):
+class VimMode(BaseGenericMode):
     def __init__(self, keyword='vimmode', info='VimMode', port=None, parent_port=None, config=None, window_classes=[]):
         super(VimMode, self).__init__(
                 keyword=keyword,

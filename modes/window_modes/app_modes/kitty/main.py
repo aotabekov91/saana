@@ -1,31 +1,31 @@
 import os
 import sys
+import zmq
 import time
+import subprocess
 
 import asyncio
+from i3ipc.aio import Connection
 
-from speechToCommand.utils.helper import repeat
+from speechToCommand.utils.moder import BaseMode
 from speechToCommand.utils.helper import osGenericCommand
 
-from speechToCommand.utils.window import BaseGenericMode
-
-class GenericMode(BaseGenericMode):
+class GenericMode(BaseMode):
     def __init__(self,
                  keyword='generic',
                  info='Generic window commands',
                  port=None,
                  parent_port=None,
-                 config=None, 
-                 window_classes=[]):
+                 config=None):
 
         super(GenericMode, self).__init__(
                 keyword=keyword,
                 info=info,
                 port=port,
                 parent_port=parent_port,
-                config=config,
-                window_classes=window_classes,
+                config=config
                 )
+
 
     def showAction(self, request):
         if self.current_window:
@@ -53,20 +53,27 @@ class GenericMode(BaseGenericMode):
 
     @osGenericCommand
     def copyAction(self, request):
-        return 'xdotool getactivewindow key ctrl+c'
+        class_=os.popen('xdotool getactivewindow getwindowclassname')
+        if class_ in ['kitty']:
+            return 'xdotool getactivewindow key ctrl+c'
+        else:
+            return 'xdotool getactivewindow key ctrl+shift+c'
 
     @osGenericCommand
     def pasteAction(self, request):
-        return 'xdotool getactivewindow key ctrl+v'
+        class_=os.popen('xdotool getactivewindow getwindowclassname')
+        if class_ in ['kitty']:
+            return 'xdotool getactivewindow key ctrl+v'
+        else:
+            return 'xdotool getactivewindow key ctrl+shift+v'
 
     @osGenericCommand
     def removeAction(self, request):
         return 'xdotool getactivewindow key BackSpace'
 
     @osGenericCommand
-    @repeat
     def moveDownAction(self, request):
-        return 'xdotool getactivewindow key --repeat {repeat} Down'
+        return 'xdotool getactivewindow key Down'
 
     @osGenericCommand
     def moveUpAction(self, request):
@@ -108,17 +115,27 @@ class GenericMode(BaseGenericMode):
     def zoomOutAction(self, request={}):
         return f'xdotool getactivewindow type -'
 
-    #todo input widget
     @osGenericCommand
     def inputAction(self, request):
         slot_names=request.get('slot_names', {})
         text=slot_names.get('input', '')
         return f'xdotool getactivewindow type {text}'
-
-    @osGenericCommand 
-    def openTabAction(self, request):
-        pass
         
+    def checkAction(self, request):
+        self.set_current_window()
+        window_class=self.current_window.window_class
+        if not self.parent_port: return
+        if not self.config.has_section('Custom'): return
+        if not self.config.has_option('Custom', window_class): return
+
+        mode_name=self.config.get('Custom', window_class)
+
+        self.parent_socket.send_json(
+                {'command':'setCurrentMode',
+                 'mode_name':mode_name})
+        respond=self.parent_socket.recv_json()
+        print(respond)
+
 if __name__=='__main__':
     app=GenericMode(port=33333, parent_port=44444)
     app.run()
