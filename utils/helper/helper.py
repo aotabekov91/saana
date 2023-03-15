@@ -4,24 +4,22 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-def repeat(func):
-    def inner(self, request):
-        cmd=func(self, request)
-        slot_names=request['slot_names']
-        times=slot_names.get('repeat', 1)
-        cmd=cmd.format(repeat=times)
-        print(cmd, slot_names)
-        return cmd.format(repeat=times)
-    return inner
-
 def osAppCommand(func):
     def inner(self, request):
         cond1=self.window_classes=='all'
         window_class=self.get_current_window()
         cond2=window_class in self.window_classes
         if cond1 or cond2:
+            repeat_func=getattr(self, 'repeat', None)
+            if repeat_func:
+                times=repeat_func(request)
+            else:
+                times=1
             cmd=func(self, request)
-            if cmd: os.popen(cmd)
+            if cmd:
+                cmd=cmd.format(repeat=times)
+                print(cmd, times)
+                os.popen(cmd)
         else:
             self.checkAction({})
     return inner 
@@ -29,7 +27,14 @@ def osAppCommand(func):
 def osGenericCommand(func):
     def inner(self, request):
         cmd=func(self, request)
-        if cmd: os.popen(cmd)
+        repeat_func=getattr(self, 'repeat', None)
+        if repeat_func:
+            times=repeat_func(request)
+        else:
+            times=1
+        if cmd:
+            cmd=cmd.format(repeat=times)
+            os.popen(cmd)
     return inner 
 
 class ZMQListener(QObject):

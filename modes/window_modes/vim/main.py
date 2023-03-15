@@ -11,7 +11,14 @@ from speechToCommand.utils.helper import osAppCommand
 from speechToCommand.utils.window import BaseGenericMode
 
 class VimMode(BaseGenericMode):
-    def __init__(self, keyword='vimmode', info='VimMode', port=None, parent_port=None, config=None, window_classes=[]):
+    def __init__(self,
+                 keyword='vimmode', 
+                 info='VimMode', 
+                 port=None, 
+                 parent_port=None, 
+                 config=None, 
+                 window_classes=['vim', 'ranger']):
+
         super(VimMode, self).__init__(
                 keyword=keyword,
                 info=info,
@@ -43,27 +50,27 @@ class VimMode(BaseGenericMode):
 
     @osAppCommand
     def moveDownAction(self, request):
-        return 'xdotool getactivewindow key j'
+        return 'xdotool getactivewindow key {repeat}j'
 
     @osAppCommand
     def moveUpAction(self, request):
-        return 'xdotool getactivewindow key k'
+        return 'xdotool getactivewindow key {repeat}k'
 
     @osAppCommand
     def moveLeftAction(self, request):
-        return 'xdotool getactivewindow key h'
+        return 'xdotool getactivewindow key {repeat}h'
 
     @osAppCommand
     def moveRightAction(self, request):
-        return 'xdotool getactivewindow key l'
+        return 'xdotool getactivewindow key {repeat}l'
 
     @osAppCommand
     def forwardAction(self, request):
-        return 'xdotool getactivewindow key ctrl+f'
+        return 'xdotool getactivewindow key {repeat}ctrl+f'
 
     @osAppCommand
     def backwardAction(self, request):
-        return 'xdotool getactivewindow key ctrl+b'
+        return 'xdotool getactivewindow key {repeat}ctrl+b'
 
 if __name__=='__main__':
     app=VimMode(port=33333, parent_port=44444)

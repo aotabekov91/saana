@@ -7,12 +7,12 @@ from ..vim import VimMode
 class SioyekMode(VimMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(SioyekMode, self).__init__(
-                 keyword='browser', 
-                 info='Qutebrowser', 
+                 keyword='document', 
+                 info='Sioyek', 
                  port=port, 
                  parent_port=parent_port, 
                  config=config,
-                 window_classes=['qutebrowser'])
+                 window_classes=['sioyek'])
 
     @osAppCommand
     def backwardAction(self, request={}):

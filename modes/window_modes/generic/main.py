@@ -4,7 +4,6 @@ import time
 
 import asyncio
 
-from speechToCommand.utils.helper import repeat
 from speechToCommand.utils.helper import osGenericCommand
 
 from speechToCommand.utils.window import BaseGenericMode
@@ -51,74 +50,85 @@ class GenericMode(BaseGenericMode):
         time.sleep(.1)
         self.checkAction(request)
 
+    def repeat(self, request):
+        slot_names=request['slot_names']
+        return slot_names.get('repeat', 1)
+
     @osGenericCommand
     def copyAction(self, request):
-        return 'xdotool getactivewindow key ctrl+c'
+        return 'xdotool getactivewindow key --repeat {repeat} ctrl+c'
 
     @osGenericCommand
     def pasteAction(self, request):
-        return 'xdotool getactivewindow key ctrl+v'
+        return 'xdotool getactivewindow key --repeat {repeat} ctrl+v'
 
     @osGenericCommand
     def removeAction(self, request):
-        return 'xdotool getactivewindow key BackSpace'
+        return 'xdotool getactivewindow key --repeat {repeat} BackSpace'
 
     @osGenericCommand
-    @repeat
     def moveDownAction(self, request):
         return 'xdotool getactivewindow key --repeat {repeat} Down'
 
     @osGenericCommand
     def moveUpAction(self, request):
-        return 'xdotool getactivewindow key Up'
+        return 'xdotool getactivewindow key --repeat {repeat} Up'
 
     @osGenericCommand
     def moveLeftAction(self, request):
-        return 'xdotool getactivewindow key Left'
+        return 'xdotool getactivewindow key --repeat {repeat} Left'
 
     @osGenericCommand
     def moveRightAction(self, request):
-        return 'xdotool getactivewindow key Right'
+        return 'xdotool getactivewindow key --repeat {repeat} Right'
 
     def confirmAction(self, request):
-        os.popen('xdotool getactivewindow key Enter')
+        os.popen('xdotool getactivewindow key --repeat {repeat} Enter')
         time.sleep(.1)
         self.checkAction(request)
 
     @osGenericCommand
     def escapeAction(self, request):
-        return 'xdotool getactivewindow key Escape'
+        return 'xdotool getactivewindow key --repeat {repeat} Escape'
 
     @osGenericCommand
     def forwardAction(self, request):
-        return 'xdotool getactivewindow key space'
+        return 'xdotool getactivewindow key --repeat {repeat} space'
 
     @osGenericCommand
     def backwardAction(self, request):
-        return 'xdotool getactivewindow key shift+space'
+        return 'xdotool getactivewindow key --repeat {repeat} shift+space'
 
     def fullscreenAction(self, request):
         asyncio.run(self.manager.command('fullscreen toggle'))
     
     @osGenericCommand
     def zoomInAction(self, request={}):
-        return f'xdotool getactivewindow type +'
+        return 'xdotool getactivewindow key --repeat {repeat} plus'
 
     @osGenericCommand
     def zoomOutAction(self, request={}):
-        return f'xdotool getactivewindow type -'
+        return 'xdotool getactivewindow key --repeat {repeat} minus'
 
-    #todo input widget
-    @osGenericCommand
     def inputAction(self, request):
-        slot_names=request.get('slot_names', {})
-        text=slot_names.get('input', '')
-        return f'xdotool getactivewindow type {text}'
+        if self.parent_port:
+            self.parent_socket.send_json({
+                    'command': 'setModeAction',
+                    'mode_name' : 'InputMode',
+                    'mode_action': 'showAction',
+                    'slot_names': {'client': self.__class__.__name__,
+                                   'action':'setInputAction'}
+                    })
+            print(self.parent_socket.recv_json())
 
-    @osGenericCommand 
-    def openTabAction(self, request):
-        pass
-        
+    @osGenericCommand
+    def setInputAction(self, request):
+        slot_names=request['slot_names']
+        text=slot_names.get('text', '')
+        cmd=f'xdotool getactivewindow type {text}'
+        print(cmd)
+        return cmd
+
 if __name__=='__main__':
     app=GenericMode(port=33333, parent_port=44444)
     app.run()

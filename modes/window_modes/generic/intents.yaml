@@ -94,25 +94,54 @@ utterances:
 ---
 type: intent
 name: GenericMode_moveUpAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
   - move up
+  - move up [repeat](three) 
+  - move up [repeat](three) times
   - up
+  - up [repeat](five) times
+  - up [repeat](eight) 
+  - up [repeat](five) times
+  - higher [repeat](ten) times
   - above
-  - higher
 
 ---
 type: intent
 name: GenericMode_moveLeftAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
   - move left 
   - left 
+  - move left
+  - move left [repeat](three) 
+  - move left [repeat](three) times
+  - left
+  - left [repeat](five) times
+  - left [repeat](eight) 
+  - left [repeat](five) times
+
 
 ---
 type: intent
 name: GenericMode_moveRightAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
   - move right 
   - right 
+  - move right
+  - move right [repeat](three) 
+  - move right [repeat](three) times
+  - right
+  - right [repeat](five) times
+  - right [repeat](eight) 
+  - right [repeat](five) times
 
 ---
 type: intent
@@ -131,7 +160,16 @@ utterances:
 ---
 type: intent
 name: GenericMode_forwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
+  - forward [repeat](five) times
+  - forward [repeat](eight) 
+  - forward [repeat](five) times
+  - next [repeat](five) times
+  - next [repeat](eight) 
+  - next [repeat](five) times
   - forward
   - next
   - ante
@@ -142,7 +180,19 @@ utterances:
 ---
 type: intent
 name: GenericMode_backwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
+  - backward [repeat](five) times
+  - backward [repeat](eight) 
+  - backward [repeat](five) times
+  - back [repeat](five) times
+  - back [repeat](eight) 
+  - back [repeat](five) times
+  - beck [repeat](five) times
+  - beck [repeat](eight) 
+  - beck [repeat](five) times
   - backward 
   - back
   - beck 
