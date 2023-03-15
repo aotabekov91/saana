@@ -30,6 +30,7 @@ class QBaseMode(BaseMode, QApplication):
                  port=None, 
                  parent_port=None, 
                  config=None,
+                 window_classes=[],
                  argv=[]):
 
         super(QBaseMode, self).__init__(

@@ -50,9 +50,6 @@ class GenericMode(BaseGenericMode):
         time.sleep(.1)
         self.checkAction(request)
 
-    def repeat(self, request):
-        slot_names=request['slot_names']
-        return slot_names.get('repeat', 1)
 
     @osGenericCommand
     def copyAction(self, request):
@@ -88,7 +85,7 @@ class GenericMode(BaseGenericMode):
         self.checkAction(request)
 
     @osGenericCommand
-    def escapeAction(self, request):
+    def cancelAction(self, request):
         return 'xdotool getactivewindow key --repeat {repeat} Escape'
 
     @osGenericCommand
@@ -125,7 +122,7 @@ class GenericMode(BaseGenericMode):
     def setInputAction(self, request):
         slot_names=request['slot_names']
         text=slot_names.get('text', '')
-        cmd=f'xdotool getactivewindow type {text}'
+        cmd=f'xdotool getactivewindow type "{text}"'
         print(cmd)
         return cmd
 

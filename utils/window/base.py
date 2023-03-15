@@ -28,6 +28,10 @@ class BaseGenericMode(BaseMode):
                 window_classes=window_classes,
                 argv=argv,
                 )
+
+    def repeat(self, request):
+        slot_names=request['slot_names']
+        return slot_names.get('repeat', 1)
         
 if __name__=='__main__':
     app=GenericMode(port=33333, parent_port=44444)

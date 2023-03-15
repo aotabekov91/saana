@@ -27,6 +27,10 @@ class QutebrowserMode(VimMode):
         return f'xdotool getactivewindow type o -t " "'
 
     @osAppCommand
+    def openAction(self, request):
+        return f'xdotool getactivewindow type o " "'
+
+    @osAppCommand
     def moveLeftAction(self, request):
         return f'xdotool getactivewindow key shift+j'
 
@@ -39,20 +43,16 @@ class QutebrowserMode(VimMode):
         return f'xdotool getactivewindow type d'
 
     @osAppCommand
+    def refreshAction(self, request={}):
+        return 'xdotool getactivewindow type r'
+
+    @osAppCommand
     def markAction(self, request={}):
-        return f'xdotool getactivewindow type m'
+        return 'xdotool getactivewindow type m'
     
     @osAppCommand
     def showHintAction(self, request={}):
         return f'xdotool getactivewindow type f'
-
-    @osAppCommand
-    def followHintAction(self, request={}):
-        slot_names=request['slot_names']
-        hint=slot_names.get('hint', None)
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-            return f'xdotool getactivewindow type {hint}'
 
     @osAppCommand
     def createHintAction(self, request={}):

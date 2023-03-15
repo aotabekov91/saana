@@ -9,10 +9,11 @@ def osAppCommand(func):
         cond1=self.window_classes=='all'
         window_class=self.get_current_window()
         cond2=window_class in self.window_classes
+        print(cond1, cond2, window_class)
         if cond1 or cond2:
             repeat_func=getattr(self, 'repeat', None)
             if repeat_func:
-                times=repeat_func(request)
+                times=int(repeat_func(request))
             else:
                 times=1
             cmd=func(self, request)

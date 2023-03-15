@@ -12,8 +12,10 @@ utterances:
 type: intent
 name: GenericMode_openTabAction 
 utterances:
-  - new 
-  - knew 
+  - tab 
+  - tap 
+  - tep 
+  - teb 
 
 ---
 type: intent
@@ -63,10 +65,16 @@ utterances:
 ---
 type: intent
 name: GenericMode_removeAction
+slots:
+  - name: repeat
+    entity: snips/number 
 utterances:
   - remove
   - delete
   - erase
+  - remove [repeat](ten)
+  - delete [repeat](three)
+  - erase [repeat](thousand)
 
 ---
 type: intent
@@ -255,14 +263,9 @@ utterances:
 ---
 type: intent
 name: GenericMode_inputAction
-slots:
-  - name: input
-    entity: item
 utterances:
-  - type [input](task work research)
-  - input [input](show new application)
-  - text [input](browser open do something)
-  - text [input](hello)
+  - input
+
 
 ---
 type: entity
@@ -271,7 +274,7 @@ automatically_extensible: yes
 
 ---
 type: intent
-name: GenericMode_hintAction 
+name: GenericMode_showHintAction 
 slots:
   - name: hint
     entity: hint
@@ -280,7 +283,7 @@ utterances:
 
 ---
 type: intent
-name: GenericMode_followAction 
+name: GenericMode_followHintAction 
 slots:
   - name: hint
     entity: hint
@@ -289,6 +292,18 @@ utterances:
   - follow [hint](sarah adams)
   - follow [hint](book big)
   - follow [hint](house luck)
+
+---
+type: intent
+name: GenericMode_createHintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - create [hint](emily lee)
+  - create [hint](sarah adams)
+  - create [hint](book big)
+  - create [hint](house luck)
 
 ---
 type: intent
@@ -364,3 +379,45 @@ name: GenericMode_gotoAction
 utterances:
   - go to
   - go
+
+---
+type: intent
+name: GenericMode_markAction 
+utterances:
+  - mark 
+
+---
+type: intent
+name: GenericMode_showHintAction 
+utterances:
+  - hint 
+
+---
+type: intent
+name: GenericMode_followHintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - follow [hint](lee)
+  - follow [hint](emma)
+  - follow [hint](city)
+  - follow [hint](emily lee)
+  - follow [hint](sarah adams)
+  - follow [hint](book big)
+  - follow [hint](house luck)
+
+---
+type: intent
+name: GenericMode_createHintAction 
+slots:
+  - name: hint
+    entity: hint
+utterances:
+  - create [hint](lee)
+  - create [hint](emma)
+  - create [hint](city)
+  - create [hint](emily lee)
+  - create [hint](sarah adams)
+  - create [hint](book big)
+  - create [hint](house luck)

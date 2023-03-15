@@ -13,7 +13,7 @@ class InputMainWindow (QBaseMainWindow):
     def __init__ (self, app, window_title='', label_title=''):
         super(InputMainWindow, self).__init__(app, window_title)
 
-        self.setGeometry(0, 0, 700, 20)
+        self.setGeometry(0, 0, 700, 10)
 
         self.info=QWidget()
         self.label= QLabel()
@@ -24,7 +24,7 @@ class InputMainWindow (QBaseMainWindow):
         self.label.hide()
 
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(0,5,0,0)
+        allQHBoxLayout.setContentsMargins(0,0,0,0)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
         self.info.setLayout(allQHBoxLayout)

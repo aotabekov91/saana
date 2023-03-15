@@ -1,3 +1,4 @@
+import re
 import sys
 import time
 
@@ -15,14 +16,33 @@ class InputMode(QBaseMode):
                  info='Input', 
                  port=port, 
                  parent_port=parent_port, 
-                 config=config)
+                 config=config, 
+                 window_classes='all')
 
         self.client=None
         self.ui=InputMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
 
+    def set_mode(self, mode_name):
+        if self.parent_socket:
+            self.parent_socket.send_json(
+                    {'command':'setCurrentMode', 'mode_name':mode_name})
+            respond=self.parent_socket.recv_json()
+            print(respond)
+
     def showAction(self, request={}):
+        self.set_mode(self.__class__.__name__)
         self.client=request['slot_names'].get('client', None)
         self.action=request['slot_names'].get('action', None)
+        self.ui.show()
+        self.ui.edit.setFocus()
+
+    def writeAction(self, request={}):
+        slot_names=request['slot_names']
+        text=slot_names.get('input', '')
+        edit_text=self.ui.edit.text()
+        new_text=' '.join([edit_text, text])
+        new_text=re.sub('  *', ' ', new_text)
+        self.ui.edit.setText(new_text)
         self.ui.show()
         self.ui.edit.setFocus()
 
@@ -34,6 +54,7 @@ class InputMode(QBaseMode):
             time.sleep(0.1)
 
             if self.parent_port:
+                self.set_mode(self.client)
                 self.parent_socket.send_json({
                     'command': 'setModeAction',
                     'mode_name': self.client,

@@ -2,6 +2,7 @@ from . import change_mode
 from . import input
 
 from .window_modes import generic
+from .window_modes import vim
 from .window_modes import qutebrowser
 # from .window_modes import player_ctl
 

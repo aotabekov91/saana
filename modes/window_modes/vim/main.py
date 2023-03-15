@@ -30,11 +30,15 @@ class VimMode(BaseGenericMode):
 
     @osAppCommand
     def showHintAction(self, request):
-        raise
+        return 'xdotool getactivewindow type ..w'
 
     @osAppCommand
     def followHintAction(self, request):
-        raise
+        slot_names=request['slot_names']
+        hint=slot_names.get('hint', None)
+        if hint:
+            hint=''.join([h[0] for h in hint.split(' ')])
+            return f'xdotool getactivewindow type {hint}'
 
     @osAppCommand
     def createHintAction(self, request):
@@ -42,35 +46,35 @@ class VimMode(BaseGenericMode):
 
     @osAppCommand
     def markAction(self, request):
-        raise
+        return 'xdotool getactivewindow type m'
 
     @osAppCommand
     def gotoMarkAction(self, request):
-        raise
+        return 'xdotool getactivewindow type `'
 
     @osAppCommand
     def moveDownAction(self, request):
-        return 'xdotool getactivewindow key {repeat}j'
+        return 'xdotool getactivewindow type {repeat}j'
 
     @osAppCommand
     def moveUpAction(self, request):
-        return 'xdotool getactivewindow key {repeat}k'
+        return 'xdotool getactivewindow type {repeat}k'
 
     @osAppCommand
     def moveLeftAction(self, request):
-        return 'xdotool getactivewindow key {repeat}h'
+        return 'xdotool getactivewindow type {repeat}h'
 
     @osAppCommand
     def moveRightAction(self, request):
-        return 'xdotool getactivewindow key {repeat}l'
+        return 'xdotool getactivewindow type {repeat}l'
 
     @osAppCommand
     def forwardAction(self, request):
-        return 'xdotool getactivewindow key {repeat}ctrl+f'
+        return 'xdotool getactivewindow type {repeat}ctrl+f'
 
     @osAppCommand
     def backwardAction(self, request):
-        return 'xdotool getactivewindow key {repeat}ctrl+b'
+        return 'xdotool getactivewindow type {repeat}ctrl+b'
 
 if __name__=='__main__':
     app=VimMode(port=33333, parent_port=44444)
