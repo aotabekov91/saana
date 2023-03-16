@@ -9,13 +9,11 @@ values:
   - [TranlatorMode, translator, translate]
   - [LookupMode, look up, definition, meaning, def]
   - [WikiMode, archive, wiki]
-  - [BookmarksMode, bookmarks]
-  - [WindowsMode, manager, windows, i3, window]
-  - [ChangeMode, change, changer, overview, all]
+  - [BookmarksMode, bookmarks, bookmark]
+  - [WindowsMode, manager, windows, i3, 'i three', window]
   - [GenericMode, generic]
+  - [PlayerMode, player]
   - [CommandMode, command, run, execute]
-  - [CheckerMode, checker, check]
-  - [PlayerMode, player, music]
 
 ---
 type: intent
@@ -24,7 +22,6 @@ slots:
   - name: mode
     entity: mode
 utterances:
-  - activate [mode]
   - change [mode]
   - change a [mode]
   - change to [mode]

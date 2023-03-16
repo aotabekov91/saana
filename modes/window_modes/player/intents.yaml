@@ -1,0 +1,37 @@
+---
+type: intent
+name: PlayerMode_playAction 
+utterances:
+  - play
+
+---
+type: intent
+name: PlayerMode_pauseAction 
+utterances:
+  - pause
+  - stop
+
+---
+type: intent
+name: PlayerMode_muteAction 
+utterances:
+  - mute
+  - newt
+  - silent
+
+---
+type: intent
+name: PlayerMode_increaseVolumeAction 
+utterances:
+  - louder
+  - increase volume
+  - increase tone
+  - raise
+
+---
+type: intent
+name: PlayerMode_decreaseVolumeAction 
+utterances:
+  - decrease volume
+  - decrease tone
+  - lower

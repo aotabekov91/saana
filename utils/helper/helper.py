@@ -4,26 +4,28 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-def osAppCommand(func):
-    def inner(self, request):
-        cond1=self.window_classes=='all'
-        window_class=self.get_current_window()
-        cond2=window_class in self.window_classes
-        print(cond1, cond2, window_class)
-        if cond1 or cond2:
-            repeat_func=getattr(self, 'repeat', None)
-            if repeat_func:
-                times=int(repeat_func(request))
+
+def osAppCommand(checkActionOnFinish=False):
+    def _osAppCommand(func):
+        def inner(self, request):
+            cond1=self.window_classes=='all'
+            window=self.get_current_window()
+            cond2=window.window_class in self.window_classes
+            if cond1 or cond2:
+                repeat_func=getattr(self, 'repeat', None)
+                if repeat_func:
+                    times=int(repeat_func(request))
+                else:
+                    times=1
+                cmd=func(self, request)
+                if cmd:
+                    cmd=cmd.format(repeat=times)
+                    os.popen(cmd)
+                    if checkActionOnFinish: self.checkAction()
             else:
-                times=1
-            cmd=func(self, request)
-            if cmd:
-                cmd=cmd.format(repeat=times)
-                print(cmd, times)
-                os.popen(cmd)
-        else:
-            self.checkAction({})
-    return inner 
+                self.checkAction({})
+        return inner 
+    return _osAppCommand
 
 def osGenericCommand(func):
     def inner(self, request):

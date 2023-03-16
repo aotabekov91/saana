@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from .qbase import QBaseMainWindow
+from .qmainwindow import QBaseMainWindow
 
 class QCustomListItem (QWidget):
     def __init__ (self, parent = None):
@@ -79,6 +79,7 @@ class ListMainWindow (QBaseMainWindow):
         self.edit=QLineEdit()
         self.edit.textChanged.connect(self.inputTextChanged)
         self.edit.returnPressed.connect(self.returnPressed)
+        # self.edit.keyPressEvent=self.keyPressEvent
 
         self.label.hide()
         self.dlist=[]
@@ -174,17 +175,17 @@ class ListMainWindow (QBaseMainWindow):
             self.show()
             self.setFocus()
 
-    def moveUpAction(self, request={}):
-        crow=self.list.currentRow()
-        if crow>0:
-            crow-=1
-            self.list.setCurrentRow(crow)
+    # def moveUpAction(self, request={}):
+    #     crow=self.list.currentRow()
+    #     if crow>0:
+    #         crow-=1
+    #         self.list.setCurrentRow(crow)
 
-    def moveDownAction(self, request={}):
-        crow=self.list.currentRow()
-        if crow-1<self.list.count():
-            crow+=1
-            self.list.setCurrentRow(crow)
+    # def moveDownAction(self, request={}):
+    #     crow=self.list.currentRow()
+    #     if crow-1<self.list.count():
+    #         crow+=1
+    #         self.list.setCurrentRow(crow)
 
     def showAction(self, request={}):
         self.list.show()
@@ -192,7 +193,9 @@ class ListMainWindow (QBaseMainWindow):
         self.edit.setFocus()
 
     def keyPressEvent(self, event):
-        if self.list.hasFocus():
+        if event.key()==Qt.Key_Escape:
+            self.hide()
+        elif self.list.hasFocus():
             if event.key()==Qt.Key_J:
                 self.moveDownAction()
             elif event.key()==Qt.Key_K:
@@ -206,5 +209,10 @@ class ListMainWindow (QBaseMainWindow):
                 self.moveUpAction()
             elif event.key() == Qt.Key_M:
                 self.returnPressed.emit()
+        elif self.edit.hasFocus():
+            if event.key() in [Qt.Key_Down, Qt.Key_Up]:
+                self.list.keyPressEvent(event)
+            else:
+                self.edit.keyPressEvent(event)
         else:
             super().keyPressEvent(event)

@@ -6,15 +6,12 @@ utterances:
   - todo
   - to do
   - to does
-  - show todos
 
 ---
 type: intent
 name: WikiMode_showWikis
 utterances:
   - wikis  
-  - files
-  - show wikis
   - wiki
 
 ---

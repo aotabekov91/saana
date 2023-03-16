@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineWidgets import *
 
-from .qbase import QBaseMainWindow
+from .qmainwindow import QBaseMainWindow
 
 class Browser(QWebEngineView):
     def __init__(self):

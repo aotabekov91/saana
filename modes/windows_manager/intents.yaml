@@ -15,6 +15,7 @@ values:
   - ['10', ten, october]
   - ['11', eleven, november, special]
   - ['12', twelve, december]
+
 ---
 type: entity
 name: window
@@ -22,21 +23,6 @@ automatically_extensible: yes
 values:
   - [left, l, lana]
   - [right, r, rita]
-  - [a, amanda]
-  - [b, berta]
-  - [s, sam]
-  - [m, mike]
-  - [n, nike]
-  - [c, cyndia]
-  - [e, emily]
-
----
-type: entity
-name: command
-automatically_extensible: no
-values:
-  - 'split horizontal'
-  - 'split vertical'
 
 ---
 type: intent
@@ -75,13 +61,3 @@ slots:
 utterances:
   - focus [window](left)  
   - focus [window](right)  
-  - focus [window](c)  
-  - focused [window](right)  
-  - focused [window](d)  
-
----
-type: intent
-name: WindowsMode_showFocusKeys
-utterances:
-  - focus keys
-  - keys

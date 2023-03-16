@@ -4,6 +4,9 @@ import json
 import time
 import threading
 
+import asyncio
+from i3ipc.aio import Connection
+
 from multiprocessing import Process
 
 from speechToCommand import modes
@@ -13,13 +16,14 @@ class Handler:
         self.parent=parent
         self.port=parent.handler_port
         self.socket=self.parent.handler_socket
+        self.manager=asyncio.run(Connection().connect())
 
         self.modes={}
         self.mode_store_data={}
         self.sockets={}
 
         self.current_mode=None
-        self.previousMode=None
+        self.previous_mode=None
 
         self.load_modes()
 
@@ -27,24 +31,28 @@ class Handler:
         self.run()
 
     def set_current_mode(self, mode_name):
-        self.previousMode=self.current_mode
+        self.previous_mode=self.current_mode
         self.current_mode=mode_name
 
-    def set_current_window(self, window_class):
+    def set_current_window(self):
+
+        tree=asyncio.run(self.manager.get_tree())
+        window=tree.find_focused()
+        window_class=getattr(window, 'window_class', None)
+
+        if window_class is None: return
 
         mode_names=[]
         modes=[]
         for mode_name, mode_data in self.modes.items():
             if window_class in mode_data['window_classes']:
                 mode_names+=[mode_name]
-                modes+=[mode_name]
-            elif mode_data['window_classes']=='all':
-                mode_names+=[mode_name]
-        mode_names+=['GenericMode']
-        modes+=['GenericMode']
-        self.set_current_mode(modes[0])
-        return mode_names
-                
+
+        if len(mode_names)>0:
+            self.set_current_mode(mode_names[0])
+        else:
+            self.set_current_mode('GenericMode')
+
     def load_modes(self):
 
         def run(mode_class, parent_port):
@@ -68,13 +76,16 @@ class Handler:
                     
     def set_intender_data(self):
         modes_data=list(self.modes.values())
-        for i in range(1, 4):
+        # for i in range(1, 4):
+        for i in range(1, 2):
             intender_socket=getattr(self.parent, f'intender_socket_{i}')
             intender_socket.send_json(
                     {'command':'registerModes',
                      'modes_data':modes_data}
                     )
-        for i in range(1, 4):
+
+        # for i in range(1, 4):
+        for i in range(1, 2):
             intender_socket=getattr(self.parent, f'intender_socket_{i}')
             respond=intender_socket.recv_json()
             print(respond)
@@ -87,15 +98,13 @@ class Handler:
             if r['command']=='currentMode':
                 msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='previousMode':
-                msg={'status':'ok', 'previousMode':self.previousMode}
+                msg={'status':'ok', 'previousMode':self.previous_mode}
             elif r['command']=='setCurrentMode':
                 self.set_current_mode(r.get('mode_name'))
                 msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='setCurrentWindow':
-                mode_names=self.set_current_window(r.get('window_class'))
-                msg={'status':'ok',
-                     'info':'updated mode based on window_class',
-                     'mode_names':mode_names}
+                self.set_current_window()
+                msg={'status':'ok', 'info':'updated mode based on window_class',}
             elif r['command']=='getAllModes':
                 msg={'status':'ok', 'allModes':self.modes}
             elif r['command']=='setModeAction':
@@ -175,7 +184,7 @@ class Handler:
 
     def handle(self):
 
-        def parse(text, mode_name):
+        def parse(text, mode_name=None):
             msg={'command':'parse', 'text':text, 'mode_name':mode_name}
             if not mode_name or type(mode_name)==str:
                 mode_name=[mode_name]
@@ -207,28 +216,30 @@ class Handler:
 
         self.running=True
 
+        self.set_current_window()
+
         while self.running:
 
             d=listen()
 
             if d['text']=='exit': self.parent.exit()
 
-            if self.current_mode is None:
-                self.act('CheckerMode', 'checkAction')
+            # m_name=None
+            # mode_names=[]
+            # if self.current_mode != None:
+            #     for f in [self.current_mode, 'GenericMode', 'ChangeMode']:
+            #         if not f in mode_names: mode_names+=[f]
+            #     m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
+            #     if m_name == 'GenericMode': m_name=self.current_mode
+            # if self.current_mode is None or m_name is None:
+            #     m_name, c_name, s_names, i_data = parse(d['text'], None)
 
-            m_name=None
-            mode_names=[]
-
+            m_name, c_name, s_names, i_data = parse(d['text'])
             if self.current_mode != None:
-                for f in [self.current_mode, 'GenericMode', 'ChangeMode']:
-                    if not f in mode_names: mode_names+=[f]
-                m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
-                if m_name == 'GenericMode': m_name=self.current_mode
-            if self.current_mode is None or m_name is None:
-                m_name, c_name, s_names, i_data = parse(d['text'], None)
+                m_name=self.current_mode
 
             print('Understood: ', m_name, c_name) 
-            if m_name:
+            if c_name:
                 self.set_current_mode(m_name)
                 self.act(m_name, c_name, s_names, i_data)
 

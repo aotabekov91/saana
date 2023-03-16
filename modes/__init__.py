@@ -1,19 +1,21 @@
+from . import input_mode
 from . import change_mode
-from . import input
+from . import generic_mode
 
-from .window_modes import generic
+from . import applications
+from . import windows_manager
+# from . import command_mode
+from . import keyboard
+from . import translator
+from . import tasks
+from . import notify
+from . import wiki
+from . import bookmarks
+from . import open_ai #todo browser is not shown
+from . import lookup
+
 from .window_modes import vim
 from .window_modes import qutebrowser
-# from .window_modes import player_ctl
-
-# from . import applications
-# from . import windows_manager
-# from . import command_mode
-# from . import keyboard
-# from . import translator
-# from . import tasks
-# from . import notify
-# from . import wiki
-# from . import bookmarks
-# from . import open_ai #todo browser is not shown
-# from . import lookup
+from .window_modes import player
+from .window_modes import sioyek
+from .window_modes import feh

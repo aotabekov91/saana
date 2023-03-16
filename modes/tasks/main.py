@@ -72,7 +72,7 @@ class TasksMode(QBaseMode):
 
     def set_config(self):
         super().set_config()
-        main_path=self.get_folder()
+        main_path=self.get_mode_folder()
         quotes_path=f'{main_path}/{self.config.get("Custom", "quotes_path")}'
         self.quotes= json.load(open(quotes_path))
         self.sound_path=f'{main_path}/{self.config.get("Custom", "sound_path")}'

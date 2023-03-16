@@ -8,7 +8,7 @@ import asyncio
 from i3ipc.aio import Connection
 
 from speechToCommand.utils.helper import osAppCommand
-from speechToCommand.utils.window import BaseGenericMode
+from speechToCommand.utils.moder import BaseGenericMode
 
 class VimMode(BaseGenericMode):
     def __init__(self,
@@ -17,7 +17,7 @@ class VimMode(BaseGenericMode):
                  port=None, 
                  parent_port=None, 
                  config=None, 
-                 window_classes=['vim', 'ranger']):
+                 window_classes=['vim', 'ranger', 'kitty', 'tmux']):
 
         super(VimMode, self).__init__(
                 keyword=keyword,
@@ -28,53 +28,56 @@ class VimMode(BaseGenericMode):
                 window_classes=window_classes,
                 )
 
-    @osAppCommand
-    def showHintAction(self, request):
-        return 'xdotool getactivewindow type ..w'
+    @osAppCommand()
+    def refreshAction(self, request={}):
+        return 'xdotool getactivewindow type r'
 
-    @osAppCommand
-    def followHintAction(self, request):
-        slot_names=request['slot_names']
-        hint=slot_names.get('hint', None)
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-            return f'xdotool getactivewindow type {hint}'
-
-    @osAppCommand
-    def createHintAction(self, request):
-        raise
-
-    @osAppCommand
-    def markAction(self, request):
+    @osAppCommand()
+    def markSetAction(self, request={}):
+        self.activateInput(self.setTextInitialsAction)
         return 'xdotool getactivewindow type m'
 
-    @osAppCommand
-    def gotoMarkAction(self, request):
-        return 'xdotool getactivewindow type `'
+    @osAppCommand()
+    def markJumpAction(self, request):
+        self.activateInput(self.setTextInitialsAction)
+        return f'xdotool getactivewindow type `'
 
-    @osAppCommand
+    @osAppCommand()
+    def hintJumpAction(self, request):
+        self.activateInput(self.setTextInitialsAction)
+        return 'xdotool getactivewindow type ..w'
+
+    @osAppCommand()
     def moveDownAction(self, request):
         return 'xdotool getactivewindow type {repeat}j'
 
-    @osAppCommand
+    @osAppCommand()
     def moveUpAction(self, request):
         return 'xdotool getactivewindow type {repeat}k'
 
-    @osAppCommand
+    @osAppCommand()
     def moveLeftAction(self, request):
         return 'xdotool getactivewindow type {repeat}h'
 
-    @osAppCommand
+    @osAppCommand()
     def moveRightAction(self, request):
         return 'xdotool getactivewindow type {repeat}l'
 
-    @osAppCommand
+    @osAppCommand()
     def forwardAction(self, request):
         return 'xdotool getactivewindow type {repeat}ctrl+f'
 
-    @osAppCommand
+    @osAppCommand()
     def backwardAction(self, request):
         return 'xdotool getactivewindow type {repeat}ctrl+b'
+
+    @osAppCommand()
+    def gotoBeginAction(self, request={}):
+        return 'xdotool getactivewindow key --repeat 2 g'
+
+    @osAppCommand()
+    def gotoEndAction(self, request={}):
+        return 'xdotool getactivewindow type G'
 
 if __name__=='__main__':
     app=VimMode(port=33333, parent_port=44444)

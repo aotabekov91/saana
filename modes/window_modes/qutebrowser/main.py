@@ -14,55 +14,47 @@ class QutebrowserMode(VimMode):
                  config=config,
                  window_classes=['qutebrowser'])
 
-    @osAppCommand
+    @osAppCommand()
     def backwardAction(self, request={}):
         return 'xdotool getactivewindow key shift+h'
 
-    @osAppCommand
+    @osAppCommand()
     def forwardAction(self, request={}):
         return 'xdotool getactivewindow key shift+l'
 
-    @osAppCommand
+    @osAppCommand()
     def openTabAction(self, request):
         return f'xdotool getactivewindow type o -t " "'
 
-    @osAppCommand
+    @osAppCommand()
     def openAction(self, request):
         return f'xdotool getactivewindow type o " "'
 
-    @osAppCommand
+    @osAppCommand()
     def moveLeftAction(self, request):
         return f'xdotool getactivewindow key shift+j'
 
-    @osAppCommand
+    @osAppCommand()
     def moveRightAction(self, request):
         return f'xdotool getactivewindow key shift+k'
 
-    @osAppCommand
+    @osAppCommand()
     def doneAction(self, request):
         return f'xdotool getactivewindow type d'
 
-    @osAppCommand
+    @osAppCommand()
     def refreshAction(self, request={}):
         return 'xdotool getactivewindow type r'
 
-    @osAppCommand
-    def markAction(self, request={}):
-        return 'xdotool getactivewindow type m'
-    
-    @osAppCommand
-    def showHintAction(self, request={}):
-        return f'xdotool getactivewindow type f'
+    @osAppCommand()
+    def hintJumpAction(self, request={}):
+        super().hintJumpAction(request)
+        return 'xdotool getactivewindow type f'
 
-    @osAppCommand
-    def createHintAction(self, request={}):
-        slot_names=request['slot_names']
-        hint=slot_names.get('hint', None)
-        os.popen(f'xdotool getactivewindow key Escape')
-        os.popen(f'xdotool getactivewindow type F')
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-            return f'xdotool getactivewindow type {hint}'
+    @osAppCommand()
+    def hintJumpNewAction(self, request={}):
+        self.activateInput(self.setTextInitialsAction)
+        return f'xdotool getactivewindow type F'
 
 if __name__=='__main__':
     app=QutebrowserMode(port=33333)

@@ -1,5 +1,6 @@
 import os
 
+from sioyek import sioyek
 from speechToCommand.utils.helper import osAppCommand
 
 from ..vim import VimMode
@@ -14,47 +15,64 @@ class SioyekMode(VimMode):
                  config=config,
                  window_classes=['sioyek'])
 
-    @osAppCommand
+        self.sioyek=sioyek.Sioyek(
+                self.config.get('Custom', 'binary_path'),
+                self.config.get('Custom', 'local_database_path'),
+                self.config.get('Custom', 'shared_database_path'),
+                )
+
+
+    @osAppCommand()
     def backwardAction(self, request={}):
-        return 'xdotool getactivewindow key shift+h'
+        self.sioyek.prev_state()
 
-    @osAppCommand
+    @osAppCommand()
     def forwardAction(self, request={}):
-        return 'xdotool getactivewindow key shift+l'
+        self.sioyek.next_state()
 
-    @osAppCommand
+    @osAppCommand()
+    def moveLeftAction(self, request={}):
+        return 'xdotool getactivewindow  type {repeat}H'
+
+    @osAppCommand()
+    def moveRightAction(self, request={}):
+        return 'xdotool getactivewindow  type {repeat}L'
+
+    @osAppCommand()
     def openAction(self, request):
-        return f'xdotool getactivewindow type o -t " "'
+        self.sioyek.open_prev_doc()
 
-    @osAppCommand
+    @osAppCommand()
+    def openTabAction(self, request):
+        return f'xdotool getactivewindow key Ctrl+o'
+
+    @osAppCommand()
     def doneAction(self, request):
-        return f'xdotool getactivewindow type d'
+        self.sioyek.quit()
 
-    @osAppCommand
-    def markAction(self, request={}):
-        return f'xdotool getactivewindow type m'
-    
-    @osAppCommand
-    def showHintAction(self, request={}):
-        return f'xdotool getactivewindow type f'
+    @osAppCommand()
+    def fitAction(self, request):
+        return f'xdotool getactivewindow key equal'
 
-    @osAppCommand
+    @osAppCommand()
+    def hintJumpAction(self, request={}):
+        super().showHintAction(request)
+        return 'xdotool getactivewindow type v'
+
+    @osAppCommand()
     def followHintAction(self, request={}):
         slot_names=request['slot_names']
-        hint=slot_names.get('hint', None)
+        hint=slot_names.get('text', None)
+        print(request)
         if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
+            hint=hint.strip()
+            hint=''.join([h[0] for h in hint.split(' ') if h!=''])
+            print(hint)
             return f'xdotool getactivewindow type {hint}'
 
-    @osAppCommand
+    @osAppCommand()
     def createHintAction(self, request={}):
-        slot_names=request['slot_names']
-        hint=slot_names.get('hint', None)
-        os.popen(f'xdotool getactivewindow key Escape')
-        os.popen(f'xdotool getactivewindow type F')
-        if hint:
-            hint=''.join([h[0] for h in hint.split(' ')])
-            return f'xdotool getactivewindow type {hint}'
+        raise
 
 if __name__=='__main__':
     app=SioyekMode(port=33333)

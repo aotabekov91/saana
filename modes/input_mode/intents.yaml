@@ -1,0 +1,9 @@
+---
+type: intent
+name: InputMode_writeAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+  - pipe [input](task work research)
