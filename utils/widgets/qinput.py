@@ -1,5 +1,3 @@
-import time
-
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -12,26 +10,51 @@ class InputMainWindow (QBaseMainWindow):
 
     def __init__ (self, app, window_title='', label_title=''):
         super(InputMainWindow, self).__init__(app, window_title)
+        self.label_title=label_title
+        self.set_ui()
+        self.setStyleSheet(self.style_sheet)
+        self.setCentralWidget()
 
-        self.setGeometry(0, 0, 700, 10)
+    def set_ui(self):
 
-        self.info=QWidget()
+        self.setGeometry(0, 0, 700, 100)
+
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.style_sheet='''
+            QWidget{
+                font-size: 22;
+                color: white;
+                border-width: 0px;
+                border-radius: 0px;
+                border-color: transparent;
+                background-color: transparent;
+                }
+            QCustomListItem{
+                background-color: transparent;
+                }
+            QLineEdit{
+                border-style: outset;
+                }
+                '''
+
+        self.main=QWidget()
         self.label= QLabel()
-        self.label.setText(label_title)
+        self.label.setText(self.label_title)
+
         self.edit=QLineEdit()
 
-        self.label.hide()
-
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(0,0,0,0)
+        allQHBoxLayout.setContentsMargins(10,0,0,0)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
-        self.info.setLayout(allQHBoxLayout)
 
-        self.setCentralWidget(self.info)
+        self.main.setLayout(allQHBoxLayout)
 
         self.edit.returnPressed.connect(self.returnPressed)
         self.returnPressed.connect(self.app.confirmAction)
-
+    
+    def setCentralWidget(self):
+        super().setCentralWidget(self.main)
         self.move_to_center()
-        # self.adjustSize()
