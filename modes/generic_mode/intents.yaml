@@ -1,6 +1,8 @@
 type: entity
 name: item
 automatically_extensible: yes
+values:
+  - [pronunciation, pronounce, pronouns]
 
 ---
 type: intent
@@ -22,6 +24,8 @@ type: intent
 name: GenericMode_showAction
 utterances:
   - show
+  - sure
+  - so
   - display
   - this way
 
@@ -246,10 +250,6 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - zoom in
-  - zoom in [repeat](three)
-  - closer
-  - closer [repeat](nine)
   - bigger
   - bigger [repeat](eleven)
   - larger
@@ -317,6 +317,7 @@ type: intent
 name: GenericMode_lockAction
 utterances:
   - lock
+  - disable
     
 ---
 type: intent
@@ -324,10 +325,42 @@ name: GenericMode_unlockAction
 utterances:
   - unlock
   - dislock
+  - enable
 
 ---
 type: intent
 name: GenericMode_informationAction
+slots:
+  - name: meta
+    entity: item
 utterances:
   - information
+  - information [meta](up)
+  - information [meta](down)
+  - information [meta](image)
 
+---
+type: intent
+name: GenericMode_soundAction
+slots:
+  - name: meta
+    entity: item
+utterances:
+  - sound
+  - sound [meta](top)
+  - sound [meta](down)
+  - sound [meta](down)
+  - sound [meta](image)
+  - sound [meta](pronunciation)
+  - found
+  - found [meta](top)
+  - found [meta](down)
+  - found [meta](down)
+  - found [meta](image)
+  - found [meta](pronunciation)
+  - voice
+  - voice [meta](top)
+  - voice [meta](down)
+  - voice [meta](down)
+  - voice [meta](image)
+  - voice [meta](pronunciation)

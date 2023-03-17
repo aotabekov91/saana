@@ -1,16 +1,15 @@
 import sys
 import zmq
 
-from playsound import playsound
 from multiprocessing import Process
 
-from .utils import *
+from .anki_notes import *
 from generator import finish_processes
 
-from speechToCommand.utils.moder import QBaseMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.widgets import ListMainWindow
 
-class LookupMode(QBaseMode):
+class LookupMode(QBaseGenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(LookupMode, self).__init__(
@@ -22,42 +21,31 @@ class LookupMode(QBaseMode):
 
         self.lan='en'
         self.word=None
-        self.notes=None
 
         self.ui=ListMainWindow(self, 'Lookup - own_floating', 'Word: ')
 
     def lookupAction(self, request):
         slot_names=request['slot_names']
-        self.word=slot_names.get('word', '')
-        self.lan=slot_names.get('lan', 'en')
+        lan=slot_names.get('lan', None)
+        if lan:
+            self.lan=lan
+            self.activateInput('getTextAction')
 
-        self.ui.edit.setText(self.word)
+    def getTextAction(self, request):
+        text=super().getTextAction(request)
+        self.ui.edit.setText(text)
         self.ui.show()
+        self.confirmAction(request)
 
-    def playPronunciationAction(self, request):
-        if self.notes:
-            sounds_list=self.notes[0].get('audio')
-            if len(sounds_list)>0:
-                sound_path=sounds_list[0]['path']
-                playsound(sound_path, block=False)
-
-    def playSoundAction(self, request):
-        if self.ui.isVisible():
-            item=self.ui.list.currentItem()
-            if not item: return
-            sounds_list=item.itemData.get('sound', [])
-            if len(sounds_list)>1:
-                sound_path=sounds_list[1]['path']
-                playsound(sound_path, block=False)
 
     def submitToAnki(self, request):
-            pass
-            # todo
-            # asyncio.run(anki_submit(anki_notes))
+        pass
+        # todo
+        # asyncio.run(anki_submit(anki_notes))
 
     def refreshAction(self, request):
-            # todo, e.g., after images have been downloaded
-            pass
+        # todo, e.g., after images have been downloaded
+        pass
 
     def confirmAction(self, request={}):
         processes=[]
@@ -69,7 +57,7 @@ class LookupMode(QBaseMode):
 
     def doneAction(self, request={}):
         self.ui.label.setText('')
-        super().ui.doneAction()
+        self.ui.doneAction()
 
     def set_label(self, notes):
 
@@ -98,10 +86,25 @@ class LookupMode(QBaseMode):
             self.dlist+=[{'top':n['fields']['Meaning'],
                'down': n['fields'].get('Example I'),
                'icon': n.get('picture_loc'),
-               'sound': n.get('audio'),
+                'sound_pronunciation': self.get_sound_path(n),
+                'sound_down': self.get_sound_path(n, 'example'),
+                'sound_top': self.get_sound_path(n, 'meaning'),
                 'note': n,
                }]
         self.ui.addWidgetsToList(self.dlist)
+
+    def get_sound_path(self, n, kind='pronunciation'):
+        sounds_list=n.get('audio')
+        if len(sounds_list)>0:
+            if kind=='pronunciation':
+                for f in sounds_list:
+                    if 'Sound' in f['fields']: return f['path']
+            elif kind=='example':
+                for f in sounds_list:
+                    if 'Example I sound' in f['fields']: return f['path']
+            elif kind=='meaning':
+                for f in sounds_list:
+                    if 'Meaning_s' in f['fields']: return f['path']
 
 if __name__ == '__main__':
     app = LookupMode(port=33333)

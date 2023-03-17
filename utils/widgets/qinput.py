@@ -19,7 +19,6 @@ class InputMainWindow (QBaseMainWindow):
         self.label= QLabel()
         self.label.setText(label_title)
         self.edit=QLineEdit()
-        self.edit.returnPressed.connect(self.returnPressed)
 
         self.label.hide()
 

@@ -32,7 +32,7 @@ class BaseGenericMode(BaseMode):
 
     def confirmAction(self, request):
         os.popen('xdotool getactivewindow key Enter')
-        self.checkAction(request, delay=0.1)
+        self.checkAction(request)
 
     @osGenericCommand
     def cancelAction(self, request):
@@ -88,7 +88,7 @@ class BaseGenericMode(BaseMode):
     def floatingToggleAction(self, request):
         asyncio.run(self.manager.command('floating toggle'))
 
-    def checkAction(self, request={}, delay=0.1):
+    def checkAction(self, request={}, delay=0.05):
         if self.parent_port:
             time.sleep(delay)
             self.parent_socket.send_json(
@@ -112,15 +112,15 @@ class BaseGenericMode(BaseMode):
 
     def closeAction(self, request):
         asyncio.run(self.manager.command('kill'))
-        self.checkAction(request, delay=0.1)
+        self.checkAction(request)
 
     def hideAction(self, request):
         asyncio.run(self.manager.command('move scratchpad'))
-        self.checkAction(request, delay=0.1)
+        self.checkAction(request)
 
     def doneAction(self, request):
         self.hideAction(request)
-        self.checkAction(request, delay=0.1)
+        self.checkAction(request)
 
     @osGenericCommand
     def inputAction(self, request):
@@ -140,14 +140,20 @@ class BaseGenericMode(BaseMode):
         text=slot_names.get('text', '')
         cmd=f'xdotool getactivewindow type "{text}"'
         return cmd
+    
+    def getTextAction(self, request):
+        slot_names=request['slot_names']
+        return slot_names.get('text', '').strip()
+
+    @osGenericCommand
+    def setTextAction(self, request):
+        text=self.getTextAction(request)
+        if text: return f'xdotool getactivewindow type {text}'
 
     @osGenericCommand
     def setTextInitialsAction(self, request):
-        slot_names=request['slot_names']
-        text=slot_names.get('text', '')
-        text=text.strip()
+        text=self.getTextAction(request)
         if text:
-            text=text.strip()
             text=''.join([h[0] for h in text.split(' ') if h!=''])
             return f'xdotool getactivewindow type {text}'
 

@@ -4,26 +4,63 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from playsound import playsound
 from .qmainwindow import QBaseMainWindow
+
+rest='''
+    QLabel{
+        color: white;
+        background-color: gray;
+        border-radius: 10px;
+        border-width: 2px;
+        }
+    QLabel:focus{
+        font: bold; 
+        }
+    QLineEdit {
+        color: #ffffff;
+        border-style: outset;
+        border-radius: 10px;
+        border-width: 2px;
+        border-color: blue; 
+        background-color: gray;
+        border-color: #ffffff;
+        }
+    QListWidget{
+        color: rgba(0,0,0,1.);
+        background-color: rgba(0,0,0,1.);
+        border-width: 0px;
+        }
+    QListWidget::item:selected {
+        color: yellow;
+        background-color: transparent;
+        border-width: 3px;
+        }
+    QListWidget::item{
+        background-color: transparent;
+        border-style: outset;
+        border-radius: 10px;
+        border-width: 2px;
+        }
+        '''
 
 class QCustomListItem (QWidget):
     def __init__ (self, parent = None):
         super(QCustomListItem, self).__init__(parent)
 
         self.textQVBoxLayout = QVBoxLayout()
-        self.textQVBoxLayout.setSpacing(0)
+        self.textQVBoxLayout.setSpacing(10)
+        self.textQVBoxLayout.setContentsMargins(5,5,5,5)
+
         self.textUpQLabel    = QLabel()
         self.textUpQLabel.setWordWrap(True)
-        self.textUpQLabel.setStyleSheet('''color: rgb(0, 0, 255);''')
         self.textDownQLabel  = QLabel()
         self.textDownQLabel.setWordWrap(True)
-        self.textDownQLabel.setStyleSheet('''color: rgb(255, 0, 0);''')
         self.textQVBoxLayout.addWidget(self.textUpQLabel)
+        self.textQVBoxLayout.addStretch()
         self.textQVBoxLayout.addWidget(self.textDownQLabel)
 
         self.allQHBoxLayout  = QHBoxLayout()
-        self.allQHBoxLayout.setSpacing(5)
-        self.textQVBoxLayout.setContentsMargins(4,2,2,4)
         self.iconQLabel      = QLabel()
         self.allQHBoxLayout.addWidget(self.iconQLabel, 0)
         self.allQHBoxLayout.addLayout(self.textQVBoxLayout, 1)
@@ -33,12 +70,6 @@ class QCustomListItem (QWidget):
         self.textDownQLabel.hide()
         self.iconQLabel.hide()
 
-    def getTextDown(self):
-        return self.textDownQLabel.text()
-
-    def getTextUp(self):
-        return self.textUpQLabel.text()
-
     def setTextDown (self, text):
         self.textDownQLabel.setText(text)
         self.textDownQLabel.adjustSize()
@@ -46,7 +77,7 @@ class QCustomListItem (QWidget):
 
     def setTextUp (self, text):
         self.textUpQLabel.setText(text)
-        self.textUpQLabel.adjustSize()
+        self.textDownQLabel.adjustSize()
         self.textUpQLabel.show()
 
     def setIcon (self, imagePath):
@@ -59,8 +90,9 @@ class QCustomListItem (QWidget):
         upHint=self.textUpQLabel.sizeHint().height()
         downHint=self.textDownQLabel.sizeHint().height()
         iconHint=self.iconQLabel.sizeHint().height()
-        hint_height=upHint+downHint+iconHint
-        return QSize(600, hint_height)
+        hint_height=upHint+downHint
+        # return QSize(600, hint_height)
+        return QSize(600, 70)
 
 
 class ListMainWindow (QBaseMainWindow):
@@ -73,19 +105,52 @@ class ListMainWindow (QBaseMainWindow):
 
         self.setGeometry(0, 0, 700, 500)
 
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.setStyleSheet('''
+            QWidget{
+                font-size: 20;
+                color: white;
+                border-width: 0px;
+                border-radius: 0px;
+                border-color: transparent;
+                background-color: transparent;
+                }
+            QCustomListItem{
+                background-color: transparent;
+                }
+            QLineEdit{
+                border-style: outset;
+                }
+            QListWidget::item{
+                color: transparent;
+                background-color: tranparent;
+                }
+            QListWidget::item:selected {
+                color: blue;
+                background-color: blue;
+                }
+                '''
+                           )
+
+
         self.info=QWidget()
         self.label= QLabel()
         self.label.setText(label_title)
-        self.edit=QLineEdit()
-        self.edit.textChanged.connect(self.inputTextChanged)
-        self.edit.returnPressed.connect(self.returnPressed)
-        # self.edit.keyPressEvent=self.keyPressEvent
+        # self.label.hide()
 
-        self.label.hide()
+        self.edit=QLineEdit()
+
+        # font=self.edit.font()
+        # font.setPointSize(16)
+        # self.edit.setFont(font)
+
         self.dlist=[]
 
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(0,5,0,0)
+        allQHBoxLayout.setContentsMargins(5,2,0,2)
+        allQHBoxLayout.setSpacing(10)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
         self.info.setLayout(allQHBoxLayout)
@@ -96,35 +161,31 @@ class ListMainWindow (QBaseMainWindow):
         self.list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         layout=QVBoxLayout()
-        layout.setContentsMargins(5,0,5,5)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0,0,0,0)
         layout.addWidget(self.info)
         layout.addWidget(self.list)
 
         self.main=QWidget()
         self.main.setLayout(layout)
+
+        self.main.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setStyleSheet('background-color: transparent; ')
+        # self.main.setStyleSheet('background-color: transparent')
+        self.main.setWindowFlags(Qt.FramelessWindowHint)
+        self.main.setWindowOpacity(1.)
+        self.list.setAttribute(Qt.WA_TranslucentBackground)
+        self.list.setWindowFlags(Qt.FramelessWindowHint)
+        self.list.setWindowOpacity(1.)
+
         self.setCentralWidget(self.main)
 
+        self.edit.textChanged.connect(self.inputTextChanged)
+        self.edit.returnPressed.connect(self.returnPressed)
         self.edit.returnPressed.connect(self.returnPressed)
         self.returnPressed.connect(self.app.confirmAction)
 
         self.move_to_center()
-        self.adjustSize()
-
-    def adjustSize(self):
-        pass
-
-        # try:
-        #     heightHint=self.list.sizeHintForRow(0)
-        # except:
-        #     heightHint=0
-        # hint=heightHint*self.list.count()+4
-        # # for i in range(
-        #     # heightHint+=self.list.sizeHintForRow(i)
-        # # heightHint+=2*self.list.frameWidth()
-        # # if self.width()>heightHint:
-        #     # self.setGeometry(0,0,800,heightHint)
-        #     # self.setHeight(heightHint)
-        # self.setMinimumHeight(hint)
 
     def inputTextChanged(self, text):
         self.list.clear()
@@ -136,11 +197,19 @@ class ListMainWindow (QBaseMainWindow):
                 dlist+=[w]
         self.addWidgetsToList(dlist, False)
 
+    def sizeHint(self):
+        hint=super().sizeHint()
+        height=self.list.count()*70
+        hint.setHeight(height)
+        hint.setWidth(self.size().width())
+        return hint
+
     def addWidgetsToList(self, dList, save=True):
         if save: self.dlist=dList
         self.list.clear()
         for d in dList:
             self.addWidgetToList(d)
+
         self.list.setCurrentRow(0)
         self.adjustSize()
 
@@ -151,9 +220,9 @@ class ListMainWindow (QBaseMainWindow):
         item.itemData=w
 
         widget.setTextUp(w['top'])
-        if w.get('down', False):
-            widget.setTextDown(w['down'])
-            widget.textDownQLabel.show()
+
+        widget.setTextDown(w.get('down', ''))
+
         if w.get('icon', False):
             widget.setIcon(w['icon'])
             widget.iconQLabel.show()
@@ -161,6 +230,7 @@ class ListMainWindow (QBaseMainWindow):
         item.setSizeHint(widget.getHintSize())
         self.list.addItem(item)
         self.list.setItemWidget(item, widget)
+        return widget
 
     def doneAction(self, request={}):
         self.list.clear()
@@ -175,22 +245,31 @@ class ListMainWindow (QBaseMainWindow):
             self.show()
             self.setFocus()
 
-    # def moveUpAction(self, request={}):
-    #     crow=self.list.currentRow()
-    #     if crow>0:
-    #         crow-=1
-    #         self.list.setCurrentRow(crow)
+    def moveUpAction(self, request={}):
+        crow=self.list.currentRow()
+        if crow>0:
+            crow-=1
+            self.list.setCurrentRow(crow)
 
-    # def moveDownAction(self, request={}):
-    #     crow=self.list.currentRow()
-    #     if crow-1<self.list.count():
-    #         crow+=1
-    #         self.list.setCurrentRow(crow)
+    def moveDownAction(self, request={}):
+        crow=self.list.currentRow()
+        if crow-1<self.list.count():
+            crow+=1
+            self.list.setCurrentRow(crow)
 
     def showAction(self, request={}):
         self.list.show()
         self.show()
         self.edit.setFocus()
+
+    def soundAction(self, request):
+        if self.isVisible():
+            item=self.list.currentItem()
+            if item:
+                meta=request['slot_names'].get('meta', 'top')
+                sound_path=item.itemData.get(f'sound_{meta}', None)
+                if sound_path:
+                    playsound(sound_path, block=False)
 
     def keyPressEvent(self, event):
         if event.key()==Qt.Key_Escape:

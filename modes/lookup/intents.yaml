@@ -1,50 +1,21 @@
 ---
 type: entity
-name: word
-automatically_extensible: yes
-
----
-type: entity
 name: lan
 automatically_extensible: no
 values:
   - [en, english]
-  - [ru, russian]
   - [de, german]
+  - [ru, russian]
   - [tr, turkish]
 
 ---
 type: intent
 name: LookupMode_lookupAction
 slots:
-  - name: word
-    entity: word
   - name: lan
     entity: lan
 utterances:
-  - definition [lan](english) [word](word)
-  - meaning [lan](english) [word](hour)
-  - definition [word](word) [lan](english)
-  - meaning [word](hygiene) [lan](english)
-  - def [word](word) [lan](english)
-  - def [lan](english)
-  - meaning [word](hygiene) [lan](english)
-  - meaning [lan](english)
-  - definitin [lan](german)
+  - definition [lan](english)
   - definition [lan](russian)
-  - meaning [word](oblique) [lan](english)
-  - meaing [word](bleak) [lan](german)
-
----
-type: intent
-name: LookupMode_playPronunciationAction
-utterances:
-  - pronounce
-  - pronouns
-  - pronunciation 
-
----
-type: intent
-name: LookupMode_playSoundAction
-utterances:
-  - sound 
+  - meaning [lan](german)
+  - meaning [lan](turkish)

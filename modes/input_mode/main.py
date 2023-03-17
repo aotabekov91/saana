@@ -37,9 +37,6 @@ class InputMode(QBaseMode):
         print('Client:', self.client, self.client_action)
 
     def showAction(self, request={}):
-        self.set_mode(self.__class__.__name__)
-        self.client=request['slot_names'].get('client', None)
-        self.client_action=request['slot_names'].get('action', None)
         self.ui.show()
         self.ui.edit.setFocus()
 
@@ -69,7 +66,8 @@ class InputMode(QBaseMode):
                 'mode_action': self.client_action,
                 'slot_names': {'text':text},
                 })
-            print(self.parent_socket.recv_json())
+            respond=self.parent_socket.recv_json()
+            print(respond)
 
 
 if __name__=='__main__':

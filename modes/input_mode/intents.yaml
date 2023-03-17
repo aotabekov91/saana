@@ -7,3 +7,4 @@ slots:
 utterances:
   - type [input](task work research)
   - pipe [input](task work research)
+  - pop [input](task work research)

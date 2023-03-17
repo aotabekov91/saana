@@ -22,7 +22,6 @@ class BookmarkMode(QBaseMode):
         self.bookmarks=self.get_bookmarks()
 
         self.ui=ListMainWindow(self, 'Bookmarks - own_floating', 'Bookmark: ')
-        self.ui.returnPressed.connect(self.confirmAction)
         self.ui.addWidgetsToList(self.bookmarks)
 
     def confirmAction(self, request={}):
@@ -30,7 +29,6 @@ class BookmarkMode(QBaseMode):
         citem=self.ui.list.currentItem()
         subprocess.Popen(['xdg-open', citem.itemData['id']])
         self.ui.hide()
-
 
     def deleteAction(self, request={}):
         pass
