@@ -3,6 +3,8 @@ from . import change_mode
 from . import generic_mode
 
 from . import applications
+from . import open_ai #todo browser is not shown
+
 # from . import windows_manager
 # from . import command_mode
 # from . import tasks
@@ -12,7 +14,6 @@ from . import applications
 # from . import keyboard
 # from . import translator
 # from . import notify
-# from . import open_ai #todo browser is not shown
 
 # from .window_modes import vim
 # from .window_modes import qutebrowser

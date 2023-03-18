@@ -20,15 +20,7 @@ class ApplicationsMode(QBaseGenericMode):
                  config=config)
 
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
-
-    # def chooseAction(self, request={}):
-    #     if self.ui.isVisible():
-    #         app_name=request['slot_names'].get('app', '')
-    #         dlist=self.get_windows_data()
-    #         self.ui.addWidgetsToList(dlist)
-    #         self.ui.edit.setText(app_name)
-    #         self.ui.show()
-    #         self.ui.edit.setFocus()
+        self.showAction()
 
     def showAction(self, request={}):
         dlist=self.get_windows_data()

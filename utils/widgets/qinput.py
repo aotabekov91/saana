@@ -24,14 +24,11 @@ class InputMainWindow (QBaseMainWindow):
 
         self.style_sheet='''
             QWidget{
-                font-size: 22;
+                font-size: 16px;
                 color: white;
                 border-width: 0px;
                 border-radius: 0px;
                 border-color: transparent;
-                background-color: transparent;
-                }
-            QCustomListItem{
                 background-color: transparent;
                 }
             QLineEdit{
@@ -39,14 +36,14 @@ class InputMainWindow (QBaseMainWindow):
                 }
                 '''
 
-        self.main=QWidget()
+        self.main=QWidget(objectName='input')
         self.label= QLabel()
         self.label.setText(self.label_title)
 
         self.edit=QLineEdit()
 
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(10,0,0,0)
+        allQHBoxLayout.setContentsMargins(15,7,0,7)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
 

@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineWidgets import *
 
-from .qmainwindow import QBaseMainWindow
+from .qinput import InputMainWindow
 
 class Browser(QWebEngineView):
     def __init__(self):
@@ -25,43 +25,66 @@ class Browser(QWebEngineView):
         """
 
     def loadHtml(self, html):
-        here = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
-        base_path = os.path.join(os.path.dirname(here), 'dummy').replace('\\', '/')
-        self.url = QUrl('file:///' + base_path)
-        self.page().setHtml(html, baseUrl=self.url)
+        self.page().setHtml(html)#, baseUrl=self.url)
 
-class RenderMainWindow (QBaseMainWindow):
+    def loadCSS(self, path, name='css'):
+
+        path = QFile(path)
+        if not path.open(QFile.ReadOnly | QFile.Text):
+            return
+        css = path.readAll().data().decode("utf-8")
+
+        SCRIPT = """
+        (function() {
+        css = document.createElement('style');
+        css.type = 'text/css';
+        css.id = "%s";
+        document.head.appendChild(css);
+        css.innerText = `%s`;
+        })()
+        """ % (name, css)
+
+        script = QWebEngineScript()
+        self.page().runJavaScript(
+                SCRIPT, QWebEngineScript.ApplicationWorld)
+        script.setName(name)
+        script.setSourceCode(SCRIPT)
+        script.setInjectionPoint(QWebEngineScript.DocumentReady)
+        script.setRunsOnSubFrames(True)
+        script.setWorldId(QWebEngineScript.ApplicationWorld)
+        self.page().scripts().insert(script)
+
+class RenderMainWindow (InputMainWindow):
     def __init__ (self, app, window_title='', label_title=''):
-        super(RenderMainWindow, self).__init__(app, window_title)
+        super(RenderMainWindow, self).__init__(app, window_title, label_title)
 
-        self.setGeometry(0, 0, 800, 600)
+    def set_ui(self):
 
-        self.info=QWidget()
-        self.label= QLabel()
-        self.label.setText(label_title)
-        self.edit=QLineEdit()
-        if label_title=='': self.label.hide()
-
-        allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(0,5,0,0)
-        allQHBoxLayout.addWidget(self.label, 0)
-        allQHBoxLayout.addWidget(self.edit, 0)
-        self.info.setLayout(allQHBoxLayout)
+        super().set_ui()
+        self.info=self.main
+        self.setGeometry(0, 0, 700, 100)
 
         self.browser = Browser()
 
+        self.style_sheet += '''
+            QWebEngineView{
+                color: transparent;
+                background-color: black;
+                }
+                '''
+
         layout=QVBoxLayout()
-        layout.setContentsMargins(5,0,5,5)
-        layout.setSpacing(0)
-        layout.addWidget(self.info, 7)
-        layout.addWidget(self.browser, 93)
+        layout.setContentsMargins(0,0,0,0)
+        layout.setSpacing(5)
+
+        # layout.addWidget(self.info)
+        # layout.addWidget(self.browser)
+
+        layout.addWidget(self.info, 10)
+        layout.addWidget(self.browser, 90)
 
         self.main=QWidget()
         self.main.setLayout(layout)
-
-        self.setCentralWidget(self.main)
-
-        self.edit.returnPressed.connect(self.app.confirmAction)
 
     def chooseAction(self, request={}):
         slot_names=request['slot_names']
@@ -80,6 +103,9 @@ class RenderMainWindow (QBaseMainWindow):
         self.browser.show()
         self.edit.setFocus()
 
+    def set_css(self, css):
+        self.browser.loadCSS(css)
+
     def set_html(self, html):
-        self.browser.setHtml(html)
-        # self.browser.loadHtml(html)
+        # self.browser.setHtml(html)
+        self.browser.loadHtml(html)

@@ -1,12 +1,20 @@
 import os
+import sys
 import time
 import openai
 
-from speechToCommand.utils.moder import QBaseMode
-from speechToCommand.utils.widgets.qrender import RenderMainWindow 
+
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QTimer, QDateTime
+
+from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.widgets.qrender import RenderMainWindow 
 
 class AIAnswer(QObject):
     
@@ -48,12 +56,16 @@ class AIMode(QBaseMode):
                  info='AIMode', 
                  port=port, 
                  parent_port=parent_port, 
-                 config=config)
+                 config=config,
+                 argv=sys.argv)
+
+        self.set_answerer()
 
         self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
-        # todo
         self.ui.edit.textChanged.connect(self.uiEditTextChanged)
-        self.set_answerer()
+        self.ui.set_css(self.css_path)
+        self.ui.set_html(self.get_html())
+        self.ui.show()
 
     def set_answerer(self):
         self.answerer=AIAnswer(self)
@@ -62,6 +74,11 @@ class AIMode(QBaseMode):
         self.answerer.answered.connect(self.update)
         self.answer_thread.started.connect(self.answerer.loop)
         QTimer.singleShot(0, self.answer_thread.start)
+
+    def set_config(self):
+        super().set_config()
+        main_path=self.get_mode_folder()
+        self.css_path=f'{main_path}/{self.config.get("Custom", "css_path")}'
 
     @pyqtSlot(str, str)
     def update(self, question, answer):
@@ -89,8 +106,8 @@ class AIMode(QBaseMode):
                     <meta name="keywords" content="html tutorial template">
                 </head>
                 <body>
-                    <p>{}</p>
-                    <p>{}</p>
+                    <p>Question: {}</p>
+                    <p>Answer: {}</p>
                 </body>
         </html>
         '''.format(question, answer)
