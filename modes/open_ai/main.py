@@ -3,18 +3,15 @@ import sys
 import time
 import openai
 
+from tendo import singleton
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QTimer, QDateTime
-
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import QBaseGenericMode
 from speechToCommand.utils.widgets.qrender import RenderMainWindow 
+
 
 class AIAnswer(QObject):
     
@@ -48,7 +45,7 @@ class AIAnswer(QObject):
         except:
             return ''
 
-class AIMode(QBaseMode):
+class AIMode(QBaseGenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(AIMode, self).__init__(
@@ -62,10 +59,11 @@ class AIMode(QBaseMode):
         self.set_answerer()
 
         self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
-        self.ui.edit.textChanged.connect(self.uiEditTextChanged)
         self.ui.set_css(self.css_path)
         self.ui.set_html(self.get_html())
-        self.ui.show()
+
+    def hideAction(self, request={}):
+        self.ui.hide()
 
     def set_answerer(self):
         self.answerer=AIAnswer(self)
@@ -82,37 +80,30 @@ class AIMode(QBaseMode):
 
     @pyqtSlot(str, str)
     def update(self, question, answer):
-        html=self.get_html(question, answer)
+        html=self.get_html(answer)
         self.ui.set_html(html)
         self.ui.show()
 
     def confirmAction(self, request=None):
         question=self.ui.edit.text()
         self.answerer.question=question
-        html=self.get_html(question, 'Waiting...')
+        html=self.get_html(' ... ')
         self.ui.set_html(html)
 
-    def uiEditTextChanged(self, text):
-        html=self.get_html(text, '')
-        self.ui.set_html(html)
-
-    def get_html(self, question='', answer=''):
+    def get_html(self, answer=''):
         html='''
         <!doctype html>
             <html>
                 <head>
-                    <title>Our Funky HTML Page</title>
-                    <meta name="description" content="Our first page">
-                    <meta name="keywords" content="html tutorial template">
+                    <title>OpenAI</title>
                 </head>
                 <body>
-                    <p>Question: {}</p>
                     <p>Answer: {}</p>
                 </body>
         </html>
-        '''.format(question, answer)
+        '''.format(answer)
         return html
 
 if __name__=='__main__':
-    app=AIMode(port=33333)
+    app=AIMode()
     app.run()

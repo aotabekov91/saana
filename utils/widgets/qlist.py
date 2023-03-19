@@ -7,6 +7,20 @@ from PyQt5.QtWidgets import *
 from playsound import playsound
 from .qinput import InputMainWindow
 
+class QCustomListWidget(QListWidget):
+
+    def sizeHint(self):
+
+        hint=QSize(700, 0)
+        if self.count()>0:
+            item=self.item(0)
+            item_height = item.sizeHint().height()
+            total_height=self.count()*item_height
+            if total_height > 500:
+                total_height=(500//item_height)*item_height
+            total_height+=hint.height()
+            hint.setHeight(total_height)
+        return hint
 
 class QCustomListItem (QWidget):
     def __init__(self, parent=None):
@@ -50,15 +64,6 @@ class QCustomListItem (QWidget):
         self.iconQLabel.adjustSize()
         self.iconQLabel.show()
 
-    # def getHintSize(self):
-    #     upHint = self.textUpQLabel.sizeHint().height()
-    #     downHint = self.textDownQLabel.sizeHint().height()
-    #     iconHint = self.iconQLabel.sizeHint().height()
-    #     hint_height = upHint+downHint
-    #     if iconHint>hint_height: hint_height=iconHint
-    #     return QSize(600, hint_height)
-    #     # return QSize(600, 70)
-
 
 class ListMainWindow (InputMainWindow):
 
@@ -76,9 +81,6 @@ class ListMainWindow (InputMainWindow):
         self.setGeometry(0, 0, 700, 500)
 
         self.style_sheet += '''
-            QWidget#input{
-                background-color: green;
-                }
             QListWidget::item{
                 color: transparent;
                 background-color: transparent;
@@ -89,14 +91,16 @@ class ListMainWindow (InputMainWindow):
                 }
                 '''
 
-        self.list = QListWidget()
+        self.list = QCustomListWidget() 
         self.list.setWordWrap(True)
+        self.list.setSpacing(0)
         self.list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         layout = QVBoxLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
+
         layout.addWidget(self.info)
         layout.addWidget(self.list)
 
@@ -118,38 +122,29 @@ class ListMainWindow (InputMainWindow):
     def sizeHint(self):
 
         hint=self.info.sizeHint()
-        hint.setWidth(700)
         if self.list.count()>0:
-            item=self.list.item(0)
-            item_height = item.sizeHint().height()
-            total_height=self.list.count()*item_height
-            if total_height > 500:
-                total_height=(500//item_height)*item_height
-            total_height+=hint.height()
-            hint.setHeight(total_height)
+            list_hint=self.list.sizeHint()
+            hint=QSize(700, hint.height()+list_hint.height())
         return hint
 
     def addWidgetsToList(self, dList, save=True):
-        if save:
-            self.dlist = dList
         self.list.clear()
+        if save: self.dlist = dList
+        if len(dList)==0: dList=[{'top': 'No matches are found'}]
         widgets=[]
         for d in dList:
             widgets+=[self.addWidgetToList(d)]
-
         width=self.size().width()
         height=0
         for i, w in enumerate(widgets):
             if w.sizeHint().height()>height:
                 height=w.sizeHint().height()
-
         hint=QSize(width, height)
         for i in range(len(widgets)):
             item=self.list.item(i)
             item.setSizeHint(hint)
-
         self.list.setCurrentRow(0)
-        self.list.setSpacing(0)
+
         self.adjustSize()
 
     def addWidgetToList(self, w):

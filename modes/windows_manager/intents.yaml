@@ -3,18 +3,36 @@ type: entity
 name: workspace
 automatically_extensible: no
 values:
-  - ['1', one, monday, odd, january]
-  - ['2', two, tuesday, even, february]
-  - ['3', three, wednesday, march]
-  - ['4', four, thursday, april]
-  - ['5', five, friday, may]
-  - ['6', six, saturday, june]
-  - ['7', seve, sunday, july]
-  - ['8', eight, august]
-  - ['9', nine, september]
-  - ['10', ten, october]
-  - ['11', eleven, november, special]
-  - ['12', twelve, december]
+  - ['1', one, monday]
+  - ['2', two, to, too, tuesday]
+  - ['3', three, wednesday]
+  - ['4', four, for, thursday]
+  - ['5', five, friday]
+  - ['6', six, saturday]
+  - ['7', seve, sunday]
+  - ['8', eight]
+  - ['9', nine]
+  - ['10', ten]
+  - ['11', eleven, special]
+  - ['12', twelve]
+
+---
+type: entity
+name: month
+automatically_extensible: no
+values:
+  - [january]
+  - [february]
+  - [march]
+  - [april]
+  - [may]
+  - [june]
+  - [july]
+  - [august]
+  - [september]
+  - [october]
+  - [november]
+  - [december]
 
 ---
 type: entity
@@ -43,12 +61,12 @@ type: intent
 name: WindowsMode_moveToWorkspaceAction
 slots:
   - name: workspace
-    entity: workspace
+    entity: month
 utterances:
   - resided [workspace](june)
-  - reside  [workspace](one)
-  - recite  [workspace](one)
-  - ree side  [workspace](one)
+  - reside  [workspace](may)
+  - recite  [workspace](march)
+  - ree side  [workspace](january)
 
 ---
 type: intent

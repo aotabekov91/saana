@@ -18,6 +18,7 @@ class GenericMode(BaseGenericMode):
                 parent_port=parent_port,
                 config=config,
                 )
+        print(self.port, self.parent_port)
 
 if __name__=='__main__':
     app=GenericMode(port=33333, parent_port=44444)

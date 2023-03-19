@@ -24,7 +24,7 @@ class WindowsMode(BaseGenericMode):
         window=slot_names.get('window', None)
         if window in ['left', 'right']:
             asyncio.run(self.manager.command(f'focus {window}'))
-        self.checkAction()
+        self.checkAction(delay=0.5)
 
     @osAppCommand()
     def hintJumpAction(self, request):
@@ -32,16 +32,25 @@ class WindowsMode(BaseGenericMode):
         return 'i3-easyfocus -a'
 
     def changeWorkspaceAction(self, request):
+
         slot_names=request['slot_names']
         workspace=slot_names.get('workspace', None)
+
         if workspace:
             workspace=int(workspace)
             asyncio.run(self.manager.command(f'workspace {workspace}'))
-            self.checkAction(request)
+            self.checkAction(request, delay=0.5)
 
     def moveToWorkspaceAction(self, request):
+
+        match={'january': 1, 'february':2, 'march':3, 
+               'april':4, 'may':5, 'june':6, 
+               'july':7, 'august':8, 'september':9, 
+               'october':10, 'november':11, 'december':12}
+
         slot_names=request['slot_names']
-        workspace=slot_names.get('workspace', None)
+        month=slot_names.get('workspace', None)
+        workspace=match.get(month, None)
         if workspace:
             workspace=int(workspace)
             command=f'move container to workspace {workspace}; workspace {workspace}'

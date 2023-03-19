@@ -1,19 +1,20 @@
 ---
 type: entity
 name: app
-automatically_extensible: yes
+automatically_extensible: no
 values:
   - ['kitty ranger', ranger]
   - [kitty, terminal, console]
   - [qutebrowser, browser, cute]
-  - [google-chrome, chrome, google, 'google chrome']
+  - [google-chrome, chrome, google, google chrome]
   - [sioyek, pdf, sioyek, document]
   - [thunderbird, email, thunderbird, bird, thunder]
   - [mpv, music, mpv]
+  - [anki, cards, card, carts, cart, carp, anti]
 
 ---
 type: intent
-name: CommandMode_runApplication
+name: CommandMode_runApplicationAction
 slots:
   - name: app
     entity: app

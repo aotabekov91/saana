@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.widgets import MessageMainWindow
 
 class NotifyMode(QBaseMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -15,26 +16,21 @@ class NotifyMode(QBaseMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.msgBox = QMessageBox()
-        self.msgBox.setGeometry(0, 0, 400, 200)
-        # self.moveToCenter()
+        self.ui =  MessageMainWindow(self, 'Message - own_floating')
 
     def notifyAction(self, request):
+
         slot_names=request['slot_names']
+        mode_name=slot_names.get('mode_name', self.__class__.__name__)
         text=slot_names.get('text', '')
         detail=slot_names.get('detail', '')
         timeout=slot_names.get('timeout', 5000)
-        self.msgBox.setText(text)
-        self.msgBox.setInformativeText(detail)
-        self.msgBox.show()
-        QTimer.singleShot(timeout, self.msgBox.hide)
 
-    def moveToCenter(self):
-        screenGeometry = QApplication.desktop().availableGeometry()
-        screenGeo = screenGeometry.bottomRight()
-        msgGeo = QRect(QPoint(0,0), QSize(300, 200)) 
-        msgGeo.moveTopRight(screenGeo)
-        self.msgBox.move(msgGeo.topLeft())
+        self.ui.set_title(mode_name)
+        self.ui.set_information(text)
+        self.ui.set_detail(detail)
+        self.ui.set_timer(timeout)
+        self.ui.show()
 
 if __name__=='__main__':
     app=NotifyMode(port=33333)

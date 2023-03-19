@@ -1,30 +1,30 @@
-# question entity
+# answer entity
 ---
 type: entity
-name: requestType
+name: request
 automatically_extensible: no
 values:
-  - question
+  - answer
   - code
   - image
   - sound
 
-# question entity
+# answer entity
 ---
 type: entity
 name: request
 automatically_extensible: yes
 
-# answer question
+# answer answer
 ---
 type: intent
 name: AIMode_answerQuestion
 slots:
   - name: kind
-    entity: requestType
+    entity: request
   - name: request
     entity: request
 utterances:
-  - question [kind](question) [request](Who is George Washington?)
-  - question [kind](question) [request](What is today's weather in Aachen?)
-  - question [kind](question) [request](What is today?)
+  - answer [kind](answer) [request](Who is George Washington?)
+  - answer [kind](answer) [request](What is today's weather in Aachen?)
+  - answer [kind](answer) [request](What is today?)

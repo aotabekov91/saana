@@ -30,13 +30,16 @@ class CommandMode(QBaseMode):
             self.ui.hide()
             self.checkAction(request)
 
-    def runApplication(self, request):
+    def runApplicationAction(self, request):
         slot_names=request['slot_names']
         app=slot_names.get('app', None)
         if app: os.popen(app)
 
     def get_commands(self):
-        proc=subprocess.Popen(['pacman', '-Qe'], stdout=subprocess.PIPE)
+        proc=subprocess.Popen(['pacman', '-Qe'], 
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.DEVNULL
+                              )
         commandlications=proc.stdout.readlines()
         commands=[]
         for command in commandlications:
@@ -47,7 +50,9 @@ class CommandMode(QBaseMode):
             info['top']=command_name
             info['id']=command_name
             try:
-                proc=subprocess.Popen(['whatis', command_name], stdout=subprocess.PIPE)
+                proc=subprocess.Popen(['whatis', '-l',  command_name], 
+                                      stderr=subprocess.DEVNULL,
+                                      stdout=subprocess.PIPE)
                 desc=proc.stdout.readline().decode()
                 desc=desc.split('-', 1)[-1].strip()
                 info['down']=desc

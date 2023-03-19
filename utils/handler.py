@@ -1,38 +1,88 @@
 import sys
 import zmq
-import json
-import time
+
+
 import threading
 
 import asyncio
 from i3ipc.aio import Connection
 
-from multiprocessing import Process
+from configparser import ConfigParser
 
 from speechToCommand import modes
+from multiprocessing import Process
+
+from speechToCommand.utils.listener import Listener
+from speechToCommand.utils.intender import Intender
 
 class Handler:
-    def __init__(self, parent):
-        self.parent=parent
-        self.port=parent.handler_port
-        self.socket=self.parent.handler_socket
-        self.manager=asyncio.run(Connection().connect())
+    def __init__(self, config=ConfigParser(),
+                 handler_port=None,
+                 intender_port=None,
+                 listener_port=None,
+                 ):
 
         self.modes={}
         self.mode_store_data={}
         self.sockets={}
 
+        self.running=True
+        self.modes_path=None
         self.current_mode=None
         self.previous_mode=None
 
-        self.load_modes()
+        self.manager=asyncio.run(Connection().connect())
 
-        self.running=True
-        self.run()
+        self.config=config
+
+        self.port=handler_port
+        self.intender_port=intender_port 
+        self.listener_port=listener_port 
+
+        self.set_config()
+        self.set_connection()
+
+        self.load_modes()
+        self.listen()
 
     def set_current_mode(self, mode_name):
         self.previous_mode=self.current_mode
         self.current_mode=mode_name
+
+    def set_config(self):
+        if self.config.has_section('General'):
+            if self.config.has_option('General', 'modes_path'):
+                self.modes_path=self.config.get('General', 'modes_path')
+            if not self.port:
+                if self.config.has_option('General', 'handler_port'):
+                    self.port=self.config.getint('General', 'handler_port')
+                else:
+                    random_socket = zmq.Context().socket(zmq.PUSH)
+                    self.port=random_socket.bind_to_random_port(f'tcp://*')
+                    random_socket.close()
+            if not self.listener_port:
+                if self.config.has_option('General', 'listener_port'):
+                    self.listener_port=self.config.getint('General', 'listener_port')
+                else:
+                    random_socket = zmq.Context().socket(zmq.PUSH)
+                    self.listener_port=random_socket.bind_to_random_port(f'tcp://*')
+                    random_socket.close()
+            if not self.intender_port:
+                if self.config.has_option('General', 'intender_port'):
+                    self.intender_port=self.config.getint('General', 'intender_port')
+                else:
+                    random_socket = zmq.Context().socket(zmq.PUSH)
+                    self.intender_port=random_socket.bind_to_random_port(f'tcp://*')
+                    random_socket.close()
+
+            
+    def set_connection(self):
+        self.socket = zmq.Context().socket(zmq.REP)
+        self.socket.bind(f'tcp://*:{self.port}')
+        self.listener_socket = zmq.Context().socket(zmq.PULL)
+        self.listener_socket.connect(f'tcp://localhost:{self.listener_port}')
+        self.intender_socket= zmq.Context().socket(zmq.REQ)
+        self.intender_socket.connect(f'tcp://localhost:{self.intender_port}')
 
     def set_current_window(self):
 
@@ -55,12 +105,15 @@ class Handler:
 
     def load_modes(self):
 
-        def run(mode_class, parent_port):
-            def start(mode_class, parent_port):
-                app=mode_class(parent_port=parent_port)
+        def run(mode_class, kwargs):
+            def start(mode_class, kwargs):
+                app=mode_class(**kwargs)
                 app.run()
-            t=Process(target=start, args=(mode_class, parent_port))
+            t=Process(target=start, args=(mode_class, kwargs))
             t.start()
+
+        run(Listener, {'port':self.listener_port})
+        run(Intender, {'port':self.intender_port, 'modes_path':self.modes_path})
 
         for m in modes.__dir__():
             if m.startswith('__'): continue
@@ -69,30 +122,14 @@ class Handler:
             if get_mode:
                 mode_class=mode_package.get_mode()
                 try:
-                    run(mode_class, self.port)
+                    run(mode_class, {'parent_port': self.port})
                 except:
                     print(f'Could not load: {mode_class.__name__}')
 
-                    
-    def set_intender_data(self):
-        modes_data=list(self.modes.values())
-        # for i in range(1, 4):
-        for i in range(1, 2):
-            intender_socket=getattr(self.parent, f'intender_socket_{i}')
-            intender_socket.send_json(
-                    {'command':'registerModes',
-                     'modes_data':modes_data}
-                    )
-
-        # for i in range(1, 4):
-        for i in range(1, 2):
-            intender_socket=getattr(self.parent, f'intender_socket_{i}')
-            respond=intender_socket.recv_json()
-            print(respond)
-
-
     def respond(self, r):
         
+        if not r['command'] in ['currentMode', 'accessStoreData']:
+            print('Handler request: ', r)
         try:
 
             if r['command']=='currentMode':
@@ -112,15 +149,14 @@ class Handler:
                 mode_action=r['mode_action']
                 intent_data=r.get('intent_data', {})
                 slot_names=r.get('slot_names', {})
-                own_only=r.get('own_only', False)
-                self.act(mode_name, mode_action, slot_names, intent_data, own_only)
+                self.act(mode_name, mode_action, slot_names, intent_data)
                 msg={'status':'ok', 'action':'setModeAction', 'info': r}
             elif r['command']=='notify':
                 self.act('NotifyMode', 'notifyAction', r, r)   
                 msg={'status':'ok', 'action':'setListener'}
-            elif r['command']=='setListener':
-                self.parent.set_listener()
-                msg={'status':'ok', 'action':'setListener'}
+            elif r['command']=='updateListener':
+                self.update_listener()
+                msg={'status':'ok', 'action':'updateListener'}
             elif r['command']=='storeData':
                 mode_store=self.mode_store_data.get(r['mode_name'])
                 mode_store[r['data_name']]=r['data']
@@ -129,20 +165,21 @@ class Handler:
                 mode_store=self.mode_store_data.get(r['mode_name'], {})
                 data=mode_store.get(r['data_name'], {})
                 msg={'status':'ok', 'action':'accessStoreData', 'data':data}
-            elif r['command']=='getModePort':
-                mode_data=self.modes.get(r['mode_name'], {})
-                data=mode_data.get('port', None)
-                msg={'status':'ok', 'action':'getModePort', 'data':data}
+            elif r['command']=='getModePorts':
+                data=[]
+                for r in self.modes.values():
+                    data+=[{r['mode_name']:r['port']}]
+                data+=[{'Handler':self.port}, {'Listener':self.listener_port}]
+                msg={'status':'ok', 'action':'getModePorts', 'data':data}
             elif r['command']=='registerMode':
                 self.modes[r['mode_name']]=r
                 self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
-
-                msg={'status':'ok', 'action': 'registeredMode'}
-
-
+                msg={'status':'ok', 'action': 'registeredMode', 'info': r['mode_name']}
+            elif r['command']=='exit':
+                msg={'status':'ok', 'info':'exiting'}
+                self.exit()
             else:
-
                 msg={'status':'nok', 'info':'request not understood'}
 
         except:
@@ -160,94 +197,68 @@ class Handler:
         socket.connect(f'tcp://localhost:{r["port"]}')
         self.sockets[r['mode_name']]=socket
 
-    def act(self, mode_name, command_name, slot_names={}, intent_data={}, own_only=False):
+    def act(self, mode_name, command_name, slot_names={}, intent_data={}):
         if mode_name in self.modes:
             socket=self.sockets[mode_name]
             socket.send_json({'command': command_name,
                               'slot_names':slot_names,
                               'intent_data':intent_data,
-                              'own_only': own_only
                               })
 
-    def run(self):
+    def listen(self):
 
-        def listen():
+        def start():
             while self.running:
                 self.respond(self.socket.recv_json())
 
-        reporterThread=threading.Thread(target=listen)
-        reporterThread.setDaemon(True)
-        reporterThread.start()
+        handler_thread=threading.Thread(target=start)
+        handler_thread.setDaemon(True)
+        handler_thread.start()
         
-        time.sleep(5)
-        self.set_intender_data()
-
-    def handle(self):
+    def run(self):
 
         def parse(text, mode_name=None):
             msg={'command':'parse', 'text':text, 'mode_name':mode_name}
-            if not mode_name or type(mode_name)==str:
-                mode_name=[mode_name]
-
-            for i, m_name in enumerate(mode_name):
-                intender=getattr(self.parent, f'intender_socket_{i+1}')
-                msg['mode_name']=m_name
-                intender.send_json(msg)
-            rs=[]
-            for i, m_name in enumerate(mode_name):
-                intender=getattr(self.parent, f'intender_socket_{i+1}')
-                rs+=[intender.recv_json()]
-
-            chosen=None
-            for i, r in enumerate(rs):
-                print(f'Intender {i}: ', r)
-                if 'mode_name' in r and r['mode_name'] is not None:
-                    chosen=r
-                    break
-
-            if not chosen: return None, None, {}, {}
-            r=chosen
-
-            if r['status']=='ok':
+            self.intender_socket.send_json(msg)
+            r=self.intender_socket.recv_json()
+            if r['status']=='ok' and  r['mode_name'] is not None:
                 return r['mode_name'], r['c_name'], r['s_names'], r['i_data']
-
-        def listen():
-            return self.parent.listener_socket.recv_json()
+            else: 
+                return None, None, {}, {}
 
         self.running=True
-
         self.set_current_window()
 
         while self.running:
 
-            d=listen()
+            d=self.listener_socket.recv_json()
 
-            if d['text']=='exit': self.parent.exit()
+            if d['text']=='exit': self.exit()
 
-            # m_name=None
-            # mode_names=[]
-            # if self.current_mode != None:
-            #     for f in [self.current_mode, 'GenericMode', 'ChangeMode']:
-            #         if not f in mode_names: mode_names+=[f]
-            #     m_name, c_name, s_names, i_data = parse(d['text'], mode_names) 
-            #     if m_name == 'GenericMode': m_name=self.current_mode
-            # if self.current_mode is None or m_name is None:
-            #     m_name, c_name, s_names, i_data = parse(d['text'], None)
+            c_name=None
 
-            m_name, c_name, s_names, i_data = parse(d['text'])
+            if self.current_mode != None:
+                m_name, c_name, s_names, i_data = parse(d['text'], self.current_mode)
+
+            if c_name is None:
+                m_name, c_name, s_names, i_data = parse(d['text'])
+
+            print('Understood: ', m_name, c_name) 
+
             if self.current_mode != None:
                 m_name=self.current_mode
 
-            print('Understood: ', m_name, c_name) 
             if c_name:
                 self.set_current_mode(m_name)
                 self.act(m_name, c_name, s_names, i_data)
 
     def exit(self, close_modes=True):
         self.running=False
+
+        self.intender_socket.send_json({'command':'exit'})
+        respond=self.intender_socket.recv_json()
+        print(respond)
+
         if close_modes:
-            for m in self.modes:
-                socket=self.modes[m].get('socket', None)
-                if socket:
-                    socket.send_json({'command':'exit'})
-                    print(socket.recv_json())
+            for mode_name in self.modes:
+                self.act(mode_name, 'exit')

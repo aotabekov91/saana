@@ -3,43 +3,30 @@ import zmq
 import json
 import time
 
+import threading
+
 import speech_recognition as sr
 from vosk import Model, KaldiRecognizer
 
-def callback(listener, audio):
-    command=json.loads(listener.recognize_vosk(audio))
-    if command['text']!='':
-        if command['text']=='stop listening':
-            listener.deactivate()
-        else:
-            try:
-                # listener.send_json(command, zmq.NOBLOCK)
-                listener.send_json(command)
-            except:
-                pass
-
 class Listener(sr.Recognizer):
 
-    def __init__(self, parent=None): 
+    def __init__(self, port=None): 
         super().__init__()
-        self.parent=parent
+        self.port=port
+        self.running=False
 
         self.set_connection()
 
         self.set_vosk()
         self.set_microphone()
-        self.run()
 
     def set_connection(self):
         self.socket = zmq.Context().socket(zmq.PUSH)
-        if self.parent.listener_port:
-            self.socket.bind(f'tcp://*:{self.parent.listener_port}')
-        else:
-            self.parent.listener_port=self.socket.bind_to_random_port(f'tcp://*')
+        self.socket.bind(f'tcp://*:{self.port}')
 
     def send_json(self, data):
         print('Listener: ', data['text'])
-        self.socket.send_json(data)
+        self.socket.send_json(data, zmq.NOBLOCK)
 
     def set_vosk(self):
         mode_dir=os.path.dirname(os.path.realpath(__file__))
@@ -58,13 +45,39 @@ class Listener(sr.Recognizer):
             self.adjust_for_ambient_noise(source)
 
     def run(self):
-        self.stopFunction=self.listen_in_background(self.mic, callback)
+        def threaded_listen():
+            with self.mic as s:
+                while self.running:
+                    try: 
+                        audio = self.listen(s, 1, None)
+                    except Exception:  # listening timed out, just try again
+                        pass
+                    else:
+                        if self.running: self.callback(audio)
+
+        self.running=True
+        listener_thread = threading.Thread(target=threaded_listen)
+        listener_thread.daemon = True
+        listener_thread.start()
+
+        listener_thread.join()
+
+    def callback(self, audio):
+        command=json.loads(self.recognize_vosk(audio))
+        if command['text']=='':
+            return
+        elif command['text']=='stop listening':
+            self.exit()
+        else:
+            try:
+                self.send_json(command)
+            except:
+                pass
 
     def exit(self):
-        self.stopFunction()
+        self.running=False
 
 if __name__=='__main__':
+
     listener=Listener(port=33333)
     listener.run()
-    while True:
-        time.sleep(1)

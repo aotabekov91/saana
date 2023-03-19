@@ -4,6 +4,15 @@ automatically_extensible: yes
 values:
   - [pronunciation, pronounce, pronouns]
 
+type: entity
+name: information
+automatically_extensible: no
+values:
+  - [image, photo, picture]
+  - [explanation, explain]
+  - [example, sample]
+  - [word, term, ward]
+
 ---
 type: intent
 name: GenericMode_openAction
@@ -18,6 +27,9 @@ utterances:
   - tap 
   - tep 
   - teb 
+  - cap
+  - cep
+  - pep
 
 ---
 type: intent
@@ -34,6 +46,7 @@ type: intent
 name: GenericMode_hideAction
 utterances:
   - hide
+  - hi
   - disappear
 
 ---
@@ -91,6 +104,8 @@ utterances:
   - move down [repeat](three) 
   - move down [repeat](three) times
   - down
+  - noun
+  - dom
   - down [repeat](five) times
   - down [repeat](eight) 
   - dawn
@@ -273,6 +288,7 @@ name: GenericMode_checkAction
 utterances:
   - check
   - cast
+  - jack
   - determine 
   - identify
 
@@ -332,12 +348,17 @@ type: intent
 name: GenericMode_informationAction
 slots:
   - name: meta
-    entity: item
+    entity: information
 utterances:
-  - information
-  - information [meta](up)
-  - information [meta](down)
   - information [meta](image)
+  - information [meta](explanation)
+  - information [meta](meaning)
+  - meta [meta](image)
+  - meta [meta](explanation)
+  - meta [meta](meaning)
+  - info [info](image)
+  - info [info](explanation)
+  - info [info](meaning)
 
 ---
 type: intent

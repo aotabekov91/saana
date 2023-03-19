@@ -12,8 +12,8 @@ from speechToCommand.utils.moder import BaseGenericMode
 
 class FehMode(BaseGenericMode):
     def __init__(self,
-                 keyword='vimmode', 
-                 info='VimMode', 
+                 keyword='fehmode', 
+                 info='FehMode', 
                  port=None, 
                  parent_port=None, 
                  config=None, 
@@ -30,6 +30,10 @@ class FehMode(BaseGenericMode):
 
     @osAppCommand()
     def playAction(self, request={}):
+        return 'xdotool getactivewindow type h'
+
+    @osAppCommand()
+    def pauseAction(self, request={}):
         return 'xdotool getactivewindow type h'
 
     @osAppCommand()

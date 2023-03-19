@@ -20,7 +20,6 @@ class ApplicationsMode(QBaseGenericMode):
                  config=config)
 
         self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
-        self.showAction()
 
     def showAction(self, request={}):
         dlist=self.get_windows_data()

@@ -158,7 +158,7 @@ class BaseGenericMode(BaseMode):
             return f'xdotool getactivewindow type {text}'
 
     def repeat(self, request):
-        slot_names=request['slot_names']
+        slot_names=request.get('slot_names', {})
         return slot_names.get('repeat', 1)
         
 if __name__=='__main__':

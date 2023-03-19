@@ -33,11 +33,9 @@ class QBaseGenericMode(BaseGenericMode, QBaseApplication):
         sys.exit(self.exec_())
 
     def exit(self, request={}):
-        self.zeromq_listener.wait=False
+        super().exit(request)
         self.zeromq_listener.running=False
-        if self.ui: self.ui.close()
-        self.close()
-
+        sys.exit()
 
 if __name__=='__main__':
     app=QBaseGenericMode(port=33333, parent_port=44444)

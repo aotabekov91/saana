@@ -1,6 +1,6 @@
 ---
 type: entity
-name: lan
+name: keyboard
 automatically_extensible: no
 values:
   - [us, english]
@@ -13,6 +13,6 @@ type: intent
 name: KeyboardMode_changeKeyboard
 slots:
   - name: lan
-    entity: lan
+    entity: keyboard
 utterances:
   - keyboard [lan](english)

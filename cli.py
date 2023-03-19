@@ -20,7 +20,8 @@ class SpeechToCommandCLI:
 
         self.parser=argparse.ArgumentParser()
         self.parser.add_argument('-m', '--modes', action='append')
-        self.parser.add_argument('-p', '--parent', action='append')
+        self.parser.add_argument('-p', '--port', type=int)
+        self.parser.add_argument('-a', '--all', action='append')
 
     def set_config(self):
 
@@ -43,7 +44,17 @@ class SpeechToCommandCLI:
         if self.handler_port:
             self.handler_socket.connect(f'tcp://localhost:{self.handler_port}')
 
-    def run_mode_actions(self, actions):
+    def set_mode_connection(self, port):
+        socket = zmq.Context().socket(zmq.PUSH)
+        socket.connect(f'tcp://localhost:{port}')
+        return socket
+
+    def run_mode_actions_directly(self, actions, port):
+        socket=self.set_mode_connection(port)
+        for mode_action in actions:
+            socket.send_json({'command': mode_action})
+
+    def run_mode_actions_via_parent(self, actions):
         if self.handler_port:
             for mode_action in actions:
                 tmp=mode_action.split('_')
@@ -63,10 +74,12 @@ class SpeechToCommandCLI:
 
     def run(self):
         args=self.parser.parse_args()
-        if args.modes:
-            self.run_mode_actions(args.modes)
-        if args.parent:
-            self.run_handler_actions(args.parent)
+        if args.modes and args.port:
+            self.run_mode_actions_directly(args.modes, args.port)
+        elif args.modes:
+            self.run_mode_actions_via_parent(args.modes)
+        elif args.all:
+            self.run_handler_actions(args.all)
 
 if __name__ == '__main__':
     r=SpeechToCommandCLI()

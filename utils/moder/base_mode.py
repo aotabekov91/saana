@@ -19,6 +19,7 @@ class BaseMode:
                  config=None,
                  window_classes='all',
                  argv=None):
+
         if type(argv)==list:
             super(BaseMode, self).__init__(argv)
         else:
@@ -42,8 +43,8 @@ class BaseMode:
         self.set_config()
         self.set_intents_path()
         self.set_connection()
-
         self.register()
+        print(self.__class__.__name__, self.port, self.parent_port)
 
     def lockAction(self, request):
         self.locked=True
@@ -80,7 +81,6 @@ class BaseMode:
 
         file_path=os.path.abspath(inspect.getfile(self.__class__))
         main_path=os.path.dirname(file_path).replace('\\', '/')
-
         path=f'{main_path}/intents.yaml'
         if os.path.isfile(path): self.intents_path=path
 
@@ -143,57 +143,54 @@ class BaseMode:
 
                 else:
                     msg={"status":"not understood"}
-
-            # check_respond=self.checkAction(request)
-            # if not msg and not request['own_only'] and check_respond:
-            #     mode_names=check_respond.get('mode_names', [])
-            #     mode_name=self.__class__.__name__
-            #     mode_names.pop(mode_name.index(mode_name))
-            #     msg={"status":f"{self.__class__.__name__}: Sending to other modes"} 
-            #     if len(mode_names)>0:
-            #         for mode_name in mode_names:
-            #             msg={"status":f"{self.__class__.__name__}: Sending to {mode_name}"}
-            #             self.parent_socket.send_json(
-            #                     {'command':'setModeAction',
-            #                      'mode_name':mode_name,
-            #                      'mode_action': request['command'],
-            #                      'slot_names': request['slot_names'],
-            #                      'intent_data': request['intent_data'],
-            #                      'own_only': True})
-            #             respond=self.parent_socket.recv_json()
-            #     else:
-            #         msg={"status":"not understood"}
-
         except:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
 
         print(msg)
 
+    def setParentPortAction(self, request={}):
+        slot_names=request['slot_names']
+        parent_port=slot_names.get('parent_port', None)
+        if parent_port:
+            self.parent_port=parent_port
+            self.parent_socket=zmq.Context().socket(zmq.REQ)
+            self.parent_socket.connect(f'tcp://localhost:{self.parent_port}')
+
     def set_connection(self):
-        self.socket = zmq.Context().socket(zmq.PULL)
-        if self.port:
-            self.socket.bind(f'tcp://*:{self.port}')
-        else:
-            self.port=self.socket.bind_to_random_port('tcp://*')
         if self.parent_port:
             self.parent_socket=zmq.Context().socket(zmq.REQ)
             self.parent_socket.connect(f'tcp://localhost:{self.parent_port}')
+        try:
+            self.socket = zmq.Context().socket(zmq.PULL)
+            if self.port:
+                self.socket.bind(f'tcp://*:{self.port}')
+            else:
+                self.port=self.socket.bind_to_random_port('tcp://*')
+        except:
+            print(f'{self.__class__.__name__} is already running')
+            if self.parent_port:
+                socket = zmq.Context().socket(zmq.PUSH)
+                socket.connect(f'tcp://localhost:{self.port}')
+                socket.send_json({'command':'setParentPortAction',
+                                  'slot_names':{'parent_port':self.parent_port}})
+                self.register()
+            sys.exit()
 
     def get_mode_folder(self):
         file_path=os.path.abspath(inspect.getfile(self.__class__))
         return os.path.dirname(file_path).replace('\\', '/')
 
     def run(self):
+        
         self.running=True
         while self.running:
             request = self.socket.recv_json()
             self.handle_request(request)
 
     def exit(self, request=None):
+        print(self.__class__.__name__, 'exiting')
         self.running=False
-        if request:
-            self.socket.send_json({'status':'exiting'})
 
 if __name__=='__main__':
     app=BaseMode(port=33333, parent_port=44444)

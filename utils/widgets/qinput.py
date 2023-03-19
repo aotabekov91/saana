@@ -17,19 +17,22 @@ class InputMainWindow (QBaseMainWindow):
 
     def set_ui(self):
 
-        self.setGeometry(0, 0, 700, 100)
+        self.setGeometry(0, 0, 700, 0)
 
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.style_sheet='''
             QWidget{
-                font-size: 16px;
+                font-size: 18px;
                 color: white;
                 border-width: 0px;
                 border-radius: 0px;
                 border-color: transparent;
                 background-color: transparent;
+                }
+            QWidget#input{
+                background-color: green;
                 }
             QLineEdit{
                 border-style: outset;
@@ -37,13 +40,15 @@ class InputMainWindow (QBaseMainWindow):
                 '''
 
         self.main=QWidget(objectName='input')
+        self.main.adjustSize()
+
         self.label= QLabel()
         self.label.setText(self.label_title)
 
         self.edit=QLineEdit()
 
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(15,7,0,7)
+        allQHBoxLayout.setContentsMargins(10,0,0,0)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
 
@@ -54,4 +59,4 @@ class InputMainWindow (QBaseMainWindow):
     
     def setCentralWidget(self):
         super().setCentralWidget(self.main)
-        self.move_to_center()
+        # self.move_to_center()

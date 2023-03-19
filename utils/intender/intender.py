@@ -1,43 +1,68 @@
+import os
 import sys
 import zmq
 from snips_nlu import SnipsNLUEngine
 from snips_nlu.dataset import Dataset
 
-import configparser
-
 class Intender(SnipsNLUEngine):
 
-    def __init__(self, port):
+    def __init__(self, port, modes_path=[]):
         super(Intender, self).__init__()
 
-        self.modes={}
         self.port=port
+        self.modes_path=modes_path
+        self.intent_files=[]
 
         self.set_connection()
+        self.set_intents()
+        self.update_parser()
 
     def set_connection(self):
         self.socket = zmq.Context().socket(zmq.REP)
         self.socket.bind(f'tcp://*:{self.port}')
 
+    def set_intents(self):
+        if os.path.exists(self.modes_path):
+            for root, dirs, files in os.walk(self.modes_path):
+                path = root.split(os.sep)
+                for file in files:
+                    if 'intents.yaml' in file:
+                        self.intent_files+=[f'{root}/{file}']
+
     def add_mode(self, data):
-        if type(data)==dict: data=[data,]
-        for r in data: 
+        pass
+        # if type(data)==dict: data=[data,]
+        # for r in data: 
 
-            if not r['intents_path']: continue
+            # if not r['intents_path']: continue
 
-            dataset = Dataset.from_yaml_files(language='en', filenames=[r['intents_path']])
-            intent_names=[i.intent_name for i in dataset.intents]
-            self.modes[r['mode_name']]={'dataset':dataset,
-                                        'path': r['intents_path'],
-                                        'intent_names': intent_names,
-                                        }
+            # dataset = Dataset.from_yaml_files(language='en', filenames=[r['intents_path']])
+            # intent_names=[i.intent_name for i in dataset.intents]
+
+            # if not r['intents_path'] in self.intent_files:
+            #     self.intent_files+=[r['intents_path']]
+                # self.update_parser()
+
+            # self.modes[r['mode_name']]={'dataset':dataset,
+            #                             'path': r['intents_path'],
+            #                             'intent_names': intent_names,
+            #                             }
 
     def update_parser(self):
-        yaml_paths=[y['path'] for y in self.modes.values()]
-        dataset = Dataset.from_yaml_files(language='en', filenames=yaml_paths)
+        # yaml_paths=[y['path'] for y in self.modes.values()]
+        # dataset = Dataset.from_yaml_files(language='en', filenames=yaml_paths)
+        dataset = Dataset.from_yaml_files(language='en', filenames=self.intent_files)
+        # dataset = Dataset.from_yaml_files(language='en', filenames=self.intent_files)
         self.fit(dataset.json)
 
     def parse(self, text, m_name=None, prob=.1):
+
+        def get_slot_names(intent_data):
+            slot_name_to_value={}
+            for s in intent_data['slots']:
+                slot_name_to_value[s['slotName']]=s['value']['value']
+            return slot_name_to_value
+
         if m_name:
             mode=self.modes.get(m_name, None)
             if mode:
@@ -56,7 +81,7 @@ class Intender(SnipsNLUEngine):
 
             i_prob=i_data['intent']['probability']
             if prob<i_prob:
-                s_names=self.get_slot_names(i_data)
+                s_names=get_slot_names(i_data)
                 return m_name, c_name, s_names, i_data, i_prob
             else:
                 return None, None, {}, i_data, 0
@@ -64,26 +89,16 @@ class Intender(SnipsNLUEngine):
         else:
             return None, None, {}, i_data, 0
             
-    def get_slot_names(self, intent_data):
-        slot_name_to_value={}
-        for s in intent_data['slots']:
-            slot_name_to_value[s['slotName']]=s['value']['value']
-        return slot_name_to_value
-
     def respond(self, r):
 
+        print(f'{self.__class__.__name__} request:', r)
         try:
 
-            if r['command']=='registerMode':
-                self.add_mode(r)
-                self.update_parser()
-                msg={'status':'ok', 'info':'mode added'}
-            elif r['command']=='registerModes':
+            if r['command']=='registerModes':
                 self.add_mode(r['modes_data'])
-                self.update_parser()
                 msg={'status':'ok', 'info':'mode added'}
             elif r['command']=='parse':
-                r=self.parse(r['text'], r['mode_name'])
+                r=self.parse(r['text'], r.get('mode_name', None))
                 msg={'status':'ok',
                      'mode_name': r[0],
                      'c_name': r[1],
@@ -92,11 +107,10 @@ class Intender(SnipsNLUEngine):
                      'i_prob': r[4],
                      }
             elif r['command']=='exit':
-                self.exit()
                 msg={'status':'ok', 'info':'exiting'}
+                self.exit()
             else:
                 msg={'status':'nok', 'info':'request not understood'}
-
 
         except:
 
@@ -113,15 +127,7 @@ class Intender(SnipsNLUEngine):
         self.running=True
         while self.running:
             request=self.socket.recv_json()
-            print(request)
             self.respond(request)
 
     def exit(self):
         self.running=False
-
-def test_intender_instance():
-    config_path='/home/adam/bin/python/speechToCommand/config.ini'
-    config=configparser.ConfigParser()
-    config.read(config_path)
-    intender=Intender(loader.load_modes())
-    return intender

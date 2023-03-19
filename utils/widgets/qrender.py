@@ -62,6 +62,7 @@ class RenderMainWindow (InputMainWindow):
 
         super().set_ui()
         self.info=self.main
+
         self.setGeometry(0, 0, 700, 100)
 
         self.browser = Browser()
@@ -74,17 +75,17 @@ class RenderMainWindow (InputMainWindow):
                 '''
 
         layout=QVBoxLayout()
+        layout.setSpacing(0)
         layout.setContentsMargins(0,0,0,0)
-        layout.setSpacing(5)
 
-        # layout.addWidget(self.info)
-        # layout.addWidget(self.browser)
+        self.setFixedSize(QSize(700, 500))
 
-        layout.addWidget(self.info, 10)
-        layout.addWidget(self.browser, 90)
+        layout.addWidget(self.info)
+        layout.addWidget(self.browser)
 
         self.main=QWidget()
         self.main.setLayout(layout)
+
 
     def chooseAction(self, request={}):
         slot_names=request['slot_names']
@@ -107,5 +108,4 @@ class RenderMainWindow (InputMainWindow):
         self.browser.loadCSS(css)
 
     def set_html(self, html):
-        # self.browser.setHtml(html)
         self.browser.loadHtml(html)

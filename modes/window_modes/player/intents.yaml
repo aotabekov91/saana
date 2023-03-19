@@ -24,14 +24,14 @@ type: intent
 name: PlayerMode_increaseVolumeAction 
 utterances:
   - louder
-  - increase volume
-  - increase tone
+  - increase
   - raise
+  - high
 
 ---
 type: intent
 name: PlayerMode_decreaseVolumeAction 
 utterances:
-  - decrease volume
-  - decrease tone
+  - decrease
   - lower
+  - low

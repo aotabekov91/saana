@@ -21,6 +21,7 @@ class InputMode(QBaseMode):
 
         self.client=None
         self.ui=InputMainWindow(self, 'InputMode - own_floating', 'Inputs: ')
+        self.ui.setFixedSize(700, 30)
 
     def set_mode(self, mode_name):
         if self.parent_port:
@@ -34,7 +35,6 @@ class InputMode(QBaseMode):
         self.set_mode(self.__class__.__name__)
         self.client=request['slot_names'].get('client', None)
         self.client_action=request['slot_names'].get('action', None)
-        print('Client:', self.client, self.client_action)
 
     def showAction(self, request={}):
         self.ui.show()
@@ -58,7 +58,7 @@ class InputMode(QBaseMode):
         self.ui.hide()
         time.sleep(0.1)
 
-        if self.parent_port:
+        if self.parent_port and self.client:
             self.set_mode(self.client)
             self.parent_socket.send_json({
                 'command': 'setModeAction',
@@ -68,6 +68,8 @@ class InputMode(QBaseMode):
                 })
             respond=self.parent_socket.recv_json()
             print(respond)
+        self.client=None
+
 
 
 if __name__=='__main__':

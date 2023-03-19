@@ -5,15 +5,17 @@ automatically_extensible: no
 values:
   - [ApplicationsMode, applications]
   - [TasksMode, tasks]
-  - [AIMode, question, ai]
+  - [AIMode, question, ai, a i]
   - [TranlatorMode, translator, translate]
   - [LookupMode, look up, definition, meaning, def]
   - [WikiMode, archive, wiki]
   - [BookmarksMode, bookmarks, bookmark]
-  - [WindowsMode, manager, windows, i3, 'i three', window]
+  - [WindowsMode, manager, windows, i3, i three, window]
   - [GenericMode, generic]
   - [PlayerMode, player]
   - [CommandMode, command, run, execute]
+  - [NotifyMode, notify, not for, not fly,  inform]
+  - [InputMode, input]
 
 ---
 type: intent
