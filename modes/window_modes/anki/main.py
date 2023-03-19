@@ -119,6 +119,24 @@ class AnkiMode(BaseGenericMode):
         respond=self.anki_socket.recv_json()
         print(respond)
 
+        data=self.get_card_data()
+        if not data: return
+
+        nid=data['nid']
+        new_data={}
+
+        for field, value in data['field_values'].items():
+            if 'xx' in value:
+                new_data[field]=re.sub('xxx*', ', dieses Wort, ', value) 
+
+        if len(new_data)>0:
+
+            self.anki_socket.send_json(
+                    {'command':'updateNote', 'data':new_data, 'nid':nid})
+            respond=self.anki_socket.recv_json()
+            print(respond)
+
+
     @osAppCommand()
     def generateAction(self, request={}):
 

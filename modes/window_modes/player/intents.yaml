@@ -33,5 +33,6 @@ type: intent
 name: PlayerMode_decreaseVolumeAction 
 utterances:
   - decrease
+  - decrees
   - lower
   - low

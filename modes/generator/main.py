@@ -52,16 +52,20 @@ class GeneratorMode(BaseGenericMode):
         def run():
             self.running=True
             while self.running:
-                kind, save_path, text =self.queue.get()
-                print('GeneratorMode received order: ', kind,  text, save_path)
-                if kind=='sound':
-                    self.synthesize_sound(text, save_path)
-                elif kind=='image':
-                    self.synthesize_image(text, save_path)
-                elif kind=='joke':
-                    self.synthesize_joke()
-                elif kind=='quote':
-                    self.synthesize_quote()
+                try:
+
+                    kind, save_path, text =self.queue.get()
+                    print('GeneratorMode received order: ', kind,  text, save_path)
+                    if kind=='sound':
+                        self.synthesize_sound(text, save_path)
+                    elif kind=='image':
+                        self.synthesize_image(text, save_path)
+                    elif kind=='joke':
+                        self.synthesize_joke()
+                    elif kind=='quote':
+                        self.synthesize_quote()
+                except:
+                    print('Error in the GeneratorMode')
 
         t=threading.Thread(target=run)
         t.daemon=True
