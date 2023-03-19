@@ -96,7 +96,7 @@ class BaseGenericMode(BaseMode):
                      'request': request})
             return self.parent_socket.recv_json()
 
-    def activateInput(self, func_name): 
+    def activateInput(self, func_name, delay_show=0.01): 
         if self.parent_port:
             self.parent_socket.send_json({
                     'command': 'setModeAction',
@@ -106,6 +106,7 @@ class BaseGenericMode(BaseMode):
                         {
                         'client': self.__class__.__name__,
                         'action': func_name,
+                        'delay': delay_show,
                         }
                     })
             print(self.parent_socket.recv_json())

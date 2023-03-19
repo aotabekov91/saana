@@ -33,7 +33,12 @@ class CommandMode(QBaseMode):
     def runApplicationAction(self, request):
         slot_names=request['slot_names']
         app=slot_names.get('app', None)
-        if app: os.popen(app)
+        if app=='ranger':
+            os.popen('kitty ranger')
+        elif app=='mpv':
+            os.popen('mpv ~/sciebo/music')
+        else:
+            os.popen(app)
 
     def get_commands(self):
         proc=subprocess.Popen(['pacman', '-Qe'], 

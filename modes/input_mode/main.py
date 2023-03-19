@@ -35,6 +35,9 @@ class InputMode(QBaseMode):
         self.set_mode(self.__class__.__name__)
         self.client=request['slot_names'].get('client', None)
         self.client_action=request['slot_names'].get('action', None)
+        delay=request['slot_names'].get('delay', 0.01)
+        time.sleep(delay)
+        self.showAction()
 
     def showAction(self, request={}):
         self.ui.show()

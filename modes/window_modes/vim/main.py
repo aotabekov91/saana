@@ -40,7 +40,7 @@ class VimMode(BaseGenericMode):
     @osAppCommand()
     def markJumpAction(self, request):
         self.activateInput('setTextInitialsAction')
-        return f'xdotool getactivewindow type `'
+        return f"xdotool getactivewindow type '`'"
 
     @osAppCommand()
     def hintJumpAction(self, request):

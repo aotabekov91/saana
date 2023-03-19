@@ -3,7 +3,7 @@ type: entity
 name: app
 automatically_extensible: no
 values:
-  - ['kitty ranger', ranger]
+  - ranger
   - [kitty, terminal, console]
   - [qutebrowser, browser, cute]
   - [google-chrome, chrome, google, google chrome]
