@@ -22,6 +22,7 @@ chatbot:
 - chat bot
 check: 
 - check
+- tech
 choose: 
 - choose
 clear: 
@@ -32,6 +33,7 @@ clear:
 - clear
 close: 
 - cloth 
+- lol
 - cause 
 - cool 
 - close 
@@ -384,3 +386,5 @@ yank:
 zoom: 
 - you 
 - about
+escape:
+- this game

@@ -170,6 +170,9 @@ utterances:
   - large
   - large [repeat](eleven)
   - large [repeat](eleven) times
+  - larger
+  - larger [repeat](eleven)
+  - larger [repeat](eleven) times
   - '[repeat](five) larger'
   - '[repeat](five) times larger'
 
@@ -186,6 +189,9 @@ utterances:
   - small
   - small [repeat](six)
   - small [repeat](five) times
+  - smaller
+  - smaller [repeat](six)
+  - smaller [repeat](five) times
   - '[repeat](five) smaller'
   - '[repeat](five) times smaller'
 

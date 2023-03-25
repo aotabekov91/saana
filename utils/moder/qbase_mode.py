@@ -32,8 +32,10 @@ class QBaseMode(BaseMode, QBaseApplication):
 
     def run(self):
         sys.exit(self.exec_())
+        print(f'{self.__class__.__name__}: exiting')
 
     def exit(self, request={}):
+        self.running=False
         self.zeromq_listener.running=False
         sys.exit()
 

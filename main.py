@@ -31,6 +31,7 @@ class SpeechToCommand:
                
     def run(self):
         self.handler.run()
+        print('SpeechToCommand: exiting')
 
     def exit(self):
         self.handler.exit()

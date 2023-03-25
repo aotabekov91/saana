@@ -79,12 +79,13 @@ class Handler:
 
             
     def set_connection(self):
-        self.socket = zmq.Context().socket(zmq.REP)
-        self.socket.bind(f'tcp://*:{self.port}')
-        self.listener_socket = zmq.Context().socket(zmq.PULL)
-        self.listener_socket.connect(f'tcp://localhost:{self.listener_port}')
-        self.intender_socket= zmq.Context().socket(zmq.REQ)
-        self.intender_socket.connect(f'tcp://localhost:{self.intender_port}')
+        if self.port:
+            self.socket = zmq.Context().socket(zmq.REP)
+            self.socket.bind(f'tcp://*:{self.port}')
+            self.listener_socket = zmq.Context().socket(zmq.PULL)
+            self.listener_socket.connect(f'tcp://localhost:{self.listener_port}')
+            self.intender_socket= zmq.Context().socket(zmq.REQ)
+            self.intender_socket.connect(f'tcp://localhost:{self.intender_port}')
 
     def set_current_window(self):
 
@@ -212,6 +213,7 @@ class Handler:
         def start():
             while self.running:
                 self.respond(self.socket.recv_json())
+            print('Handler listener: exiting')
 
         handler_thread=threading.Thread(target=start)
         handler_thread.setDaemon(True)
@@ -236,7 +238,6 @@ class Handler:
             d=self.listener_socket.recv_json()
 
             if d['text']=='exit':
-                self.exit()
                 break
 
             c_name=None
@@ -260,16 +261,20 @@ class Handler:
             if c_name:
                 self.set_current_mode(m_name)
                 self.act(m_name, c_name, s_names, i_data)
-        print('Handler: exiting')
+
+        self.exit()
+        print('Handler run: exiting')
 
     def exit(self, close_modes=True):
         self.running=False
 
         self.intender_socket.send_json({'command':'exit'})
         respond=self.intender_socket.recv_json()
-        # print(respond)
 
         if close_modes:
             for mode_name in self.modes:
                 self.act(mode_name, 'exit')
-        sys.exit()
+
+if __name__=='__main__':
+    app=Handler()
+    app.run()

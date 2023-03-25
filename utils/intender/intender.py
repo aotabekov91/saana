@@ -180,8 +180,9 @@ class Intender(SnipsNLUEngine):
         while self.running:
             request=self.socket.recv_json()
             self.respond(request)
+        print('Internder: exiting')
 
     def exit(self):
         self.running=False
-        self.save_utterences()
+        # self.save_utterences()
 

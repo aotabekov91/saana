@@ -183,11 +183,11 @@ class BaseMode:
         return os.path.dirname(file_path).replace('\\', '/')
 
     def run(self):
-        
         self.running=True
         while self.running:
             request = self.socket.recv_json()
             self.handle_request(request)
+        print(f'{self.__class__.__name__}: exiting')
 
     def exit(self, request=None):
         # print(self.__class__.__name__, 'exiting')
