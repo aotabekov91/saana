@@ -2,4 +2,4 @@
 type: intent
 name: TasksMode_finishTask
 utterances:
-  - tasks finish 
+  - finish 

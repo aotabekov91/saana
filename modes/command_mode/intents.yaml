@@ -4,21 +4,21 @@ name: app
 automatically_extensible: no
 values:
   - ranger
-  - [kitty, terminal, console]
-  - [qutebrowser, browser, cute]
-  - [google-chrome, chrome, google, google chrome]
-  - [sioyek, pdf, sioyek, document]
-  - [thunderbird, email, thunderbird, bird, thunder]
-  - [mpv, music, mpv]
-  - [anki, cards, card, carts, cart, carp, anti]
+  - [kitty, terminal]
+  - [qutebrowser, browser]
+  - [google-chrome, chrome]
+  - [sioyek, document]
+  - [thunderbird, email]
+  - mpv
+  - [anki, cards] 
 
 ---
 type: intent
-name: CommandMode_runApplicationAction
+name: CommandMode_openAction
 slots:
   - name: app
     entity: app
 utterances:
+  - '[app](anki)'
+  - '[app](email)'
   - Open [app](terminal)
-  - Run [app](browser)
-  - New [app](google chrome)

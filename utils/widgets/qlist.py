@@ -189,6 +189,7 @@ class ListMainWindow (InputMainWindow):
         self.list.setCurrentRow(crow)
 
     def showAction(self, request={}):
+        self.hide()
         self.list.show()
         self.show()
         self.edit.setFocus()

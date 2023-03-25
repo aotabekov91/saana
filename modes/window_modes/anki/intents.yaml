@@ -31,31 +31,26 @@ type: intent
 name: AnkiMode_frontPlayAction 
 utterances:
   - question
-  - front
 
 ---
 type: intent
 name: AnkiMode_backPlayAction 
 utterances:
-  - beck
-  - back
   - answer
-  - ansa
 
 ---
 type: intent
 name: AnkiMode_showImageAction 
 utterances:
   - image
-  - picture
 
 ---
 name: kind
 type: entity 
 automatically_extensible: no
 values:
-  - [image, picture, photo]
-  - [sound, audio, found, song]
+  - image
+  - sound
 
 ---
 type: intent
@@ -65,8 +60,4 @@ slots:
     entity: kind 
 utterances:
   - generate [kind](image)
-  - generate [kind](photo)
-  - generated [kind](audio)
-  - generated [kind](audio)
-  - create [kind](sound)
-  - created [kind](sound)
+  - generate [kind](sound)

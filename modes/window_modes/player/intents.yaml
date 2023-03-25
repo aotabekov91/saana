@@ -9,30 +9,27 @@ type: intent
 name: PlayerMode_pauseAction 
 utterances:
   - pause
-  - stop
 
 ---
 type: intent
 name: PlayerMode_muteAction 
 utterances:
   - mute
-  - newt
-  - silent
+
+---
+type: intent
+name: PlayerMode_unmuteAction 
+utterances:
+  - unmute
 
 ---
 type: intent
 name: PlayerMode_increaseVolumeAction 
 utterances:
-  - louder
   - increase
-  - raise
-  - high
 
 ---
 type: intent
 name: PlayerMode_decreaseVolumeAction 
 utterances:
   - decrease
-  - decrees
-  - lower
-  - low

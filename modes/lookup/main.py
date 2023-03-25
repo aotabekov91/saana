@@ -37,7 +37,6 @@ class LookupMode(QBaseGenericMode):
         self.ui.show()
         self.confirmAction(request)
 
-
     def submitToAnki(self, request):
         pass
         # todo

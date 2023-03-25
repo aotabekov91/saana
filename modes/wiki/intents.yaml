@@ -2,22 +2,17 @@
 type: intent
 name: WikiMode_showTodos
 utterances:
-  - todos 
-  - todo
-  - to do
-  - to does
+  - todo 
 
 ---
 type: intent
 name: WikiMode_showWikis
 utterances:
-  - wikis  
-  - wiki
+  - wiki  
 
 ---
 type: intent
 name: WikiMode_setTodoDone
 utterances:
-  - cross out   
-  - submit
-  - finish 
+  - finished 
+  - set done

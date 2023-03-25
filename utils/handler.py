@@ -14,6 +14,7 @@ from multiprocessing import Process
 
 from speechToCommand.utils.listener import Listener
 from speechToCommand.utils.intender import Intender
+from speechToCommand.utils.interpreter import Interpreter
 
 class Handler:
     def __init__(self, config=ConfigParser(),
@@ -36,6 +37,7 @@ class Handler:
         self.config=config
 
         self.port=handler_port
+        self.interpreter=Interpreter()
         self.intender_port=intender_port 
         self.listener_port=listener_port 
 
@@ -128,8 +130,8 @@ class Handler:
 
     def respond(self, r):
         
-        if not r['command'] in ['currentMode', 'accessStoreData']:
-            print('Handler request: ', r)
+        # if not r['command'] in ['currentMode', 'accessStoreData', 'storeData']:
+            # print('Handler request: ', r)
         try:
 
             if r['command']=='currentMode':
@@ -233,7 +235,9 @@ class Handler:
 
             d=self.listener_socket.recv_json()
 
-            if d['text']=='exit': self.exit()
+            if d['text']=='exit':
+                self.exit()
+                break
 
             c_name=None
 
@@ -243,6 +247,11 @@ class Handler:
             if c_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'])
 
+            if c_name is None:
+                text=self.interpreter.predict(d['text'])
+                if text:
+                    m_name, c_name, s_names, i_data = parse(text)
+
             print('Understood: ', m_name, c_name) 
 
             if self.current_mode != None:
@@ -251,14 +260,16 @@ class Handler:
             if c_name:
                 self.set_current_mode(m_name)
                 self.act(m_name, c_name, s_names, i_data)
+        print('Handler: exiting')
 
     def exit(self, close_modes=True):
         self.running=False
 
         self.intender_socket.send_json({'command':'exit'})
         respond=self.intender_socket.recv_json()
-        print(respond)
+        # print(respond)
 
         if close_modes:
             for mode_name in self.modes:
                 self.act(mode_name, 'exit')
+        sys.exit()

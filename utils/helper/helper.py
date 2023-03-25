@@ -36,6 +36,7 @@ def osAppCommand(checkActionOnFinish=False, checkWindowType=True):
                 cmd = func(self, request)
                 if cmd:
                     cmd = cmd.format(repeat=times)
+                    print(f'Running command: {cmd}')
                     os.popen(cmd)
             if checkActionOnFinish:
                 self.checkAction({})

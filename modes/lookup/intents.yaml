@@ -15,7 +15,7 @@ slots:
   - name: lan
     entity: lan
 utterances:
+  - '[lan](english)'
+  - '[lan](russian)'
   - definition [lan](english)
   - definition [lan](russian)
-  - meaning [lan](german)
-  - meaning [lan](turkish)

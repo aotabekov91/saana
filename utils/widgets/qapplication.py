@@ -22,11 +22,11 @@ class ZMQListener(QObject):
 
 class QBaseApplication(QApplication):
 
-    def __init__(self, argv=[]):
+    def __init__(self, argv=[], app_name='own_floating'):
 
         super(QBaseApplication, self).__init__(argv)
 
-        self.setApplicationName('own_floating')
+        self.setApplicationName(app_name)
         self.set_listener()
 
     def set_listener(self):

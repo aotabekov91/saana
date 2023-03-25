@@ -67,7 +67,7 @@ class MessageMainWindow(QBaseMainWindow):
         self.detail.setMargin(10)
 
         layout=QVBoxLayout()
-        layout.setContentsMargins(40,10,20,40)
+        layout.setContentsMargins(0,0,0,0)
         layout.setSpacing(0)
 
         layout.addWidget(self.title, 10)

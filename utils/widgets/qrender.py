@@ -61,7 +61,9 @@ class RenderMainWindow (InputMainWindow):
     def set_ui(self):
 
         super().set_ui()
+
         self.info=self.main
+        self.waiting=False
 
         self.setGeometry(0, 0, 700, 100)
 
@@ -100,6 +102,7 @@ class RenderMainWindow (InputMainWindow):
         self.hide()
 
     def showAction(self, request):
+        self.hide()
         self.show()
         self.browser.show()
         self.edit.setFocus()
@@ -109,3 +112,9 @@ class RenderMainWindow (InputMainWindow):
 
     def set_html(self, html):
         self.browser.loadHtml(html)
+
+    def keyPressEvent(self, event):
+        if event.key()==Qt.Key_Escape:
+            self.hide()
+        else:
+            super().keyPressEvent(event)

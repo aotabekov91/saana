@@ -2,7 +2,7 @@ type: entity
 name: item
 automatically_extensible: yes
 values:
-  - [pronunciation, pronounce, pronouns]
+  - pronunciation
 
 type: entity
 name: information
@@ -10,8 +10,8 @@ automatically_extensible: no
 values:
   - [image, photo, picture]
   - [explanation, explain]
-  - [example, sample]
-  - [word, term, ward]
+  - [example]
+  - [word, term]
 
 ---
 type: intent
@@ -24,29 +24,18 @@ type: intent
 name: GenericMode_openTabAction 
 utterances:
   - tab 
-  - tap 
-  - tep 
-  - teb 
-  - cap
-  - cep
-  - pep
 
 ---
 type: intent
 name: GenericMode_showAction
 utterances:
   - show
-  - sure
-  - so
-  - display
-  - this way
 
 ---
 type: intent
 name: GenericMode_hideAction
 utterances:
   - hide
-  - hi
   - disappear
 
 ---
@@ -58,27 +47,10 @@ utterances:
 ---
 type: intent
 name: GenericMode_chooseAction
-slots:
-  - name: item
-    entity: item
 utterances:
-  - choose [item](task work research)
-  - choose [item](application)
-  - choose [item](browser)
-  - choose [item](window browser)
-
----
-type: intent
-name: GenericMode_copyAction
-utterances:
-  - copy
-
----
-type: intent
-name: GenericMode_pasteAction
-utterances:
-  - paste
-
+  - choose
+  - select
+    
 ---
 type: intent
 name: GenericMode_removeAction
@@ -87,11 +59,8 @@ slots:
     entity: snips/number 
 utterances:
   - remove
-  - delete
-  - erase
-  - remove [repeat](ten)
-  - delete [repeat](three)
-  - erase [repeat](thousand)
+  - remove [repeat](five) times
+  - remove [repeat](four)
 
 ---
 type: intent
@@ -100,23 +69,9 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - move down
-  - move down [repeat](three) 
-  - move down [repeat](three) times
   - down
-  - noun
-  - dom
   - down [repeat](five) times
-  - down [repeat](eight) 
-  - dawn
-  - dawn [repeat](five)
-  - dawn [repeat](five) times
-  - below 
-  - below [repeat](three)
-  - below [repeat](eleven) row
-  - though
-  - lower [repeat](ten) times
-  - lower 
+  - down [repeat](four)
 
 ---
 type: intent
@@ -125,15 +80,9 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - move up
-  - move up [repeat](three) 
-  - move up [repeat](three) times
   - up
   - up [repeat](five) times
-  - up [repeat](eight) 
-  - up [repeat](five) times
-  - higher [repeat](ten) times
-  - above
+  - up [repeat](six)
 
 ---
 type: intent
@@ -142,15 +91,9 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - move left 
   - left 
-  - move left
-  - move left [repeat](three) 
-  - move left [repeat](three) times
-  - left
   - left [repeat](five) times
   - left [repeat](eight) 
-  - left [repeat](five) times
 
 
 ---
@@ -160,13 +103,7 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - move right 
   - right 
-  - move right
-  - move right [repeat](three) 
-  - move right [repeat](three) times
-  - right
-  - right [repeat](five) times
   - right [repeat](eight) 
   - right [repeat](five) times
 
@@ -191,20 +128,9 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - forward [repeat](five) times
-  - forward [repeat](eight) 
-  - forward [repeat](five) times
-  - next [repeat](five) times
+  - next
   - next [repeat](eight) 
   - next [repeat](five) times
-  - forward
-  - plus [repeat](five) times
-  - plus
-  - next
-  - ante
-  - nex
-  - nice
-  - nick
 
 ---
 type: intent
@@ -213,42 +139,15 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - backward [repeat](five) times
-  - backward [repeat](eight) 
-  - backward [repeat](five) times
-  - back [repeat](five) times
-  - back [repeat](eight) 
-  - back [repeat](five) times
-  - beck [repeat](five) times
-  - beck [repeat](eight) 
-  - beck [repeat](five) times
-  - backward 
-  - back
-  - beck 
-  - minus
-  - minus [repeat](five) times
   - previous
-  - post
+  - previous [repeat](eight) 
+  - previous [repeat](five) times
 
 ---
 type: intent
 name: GenericMode_closeAction
 utterances:
   - close
-  - clause
-  - cool
-  - cloth
-  - finish
-  - cause
-
----
-type: intent
-name: GenericMode_floatingToggleAction
-utterances:
-  - float
-  - floating
-  - toggle
-  - toggle floating
 
 ---
 type: intent
@@ -265,10 +164,14 @@ slots:
   - name: repeat
     entity: snips/number 
 utterances:
-  - bigger
-  - bigger [repeat](eleven)
-  - larger
-  - larger [repeat](hunderd)
+  - zoom in
+  - zoom in [repeat](eleven)
+  - zoom in [repeat](eleven) times
+  - large
+  - large [repeat](eleven)
+  - large [repeat](eleven) times
+  - '[repeat](five) larger'
+  - '[repeat](five) times larger'
 
 ---
 type: intent
@@ -279,8 +182,12 @@ slots:
 utterances:
   - zoom out
   - zoom out [repeat](ten)
-  - smaller
-  - smaller [repeat](six)
+  - zoom out [repeat](ten) times
+  - small
+  - small [repeat](six)
+  - small [repeat](five) times
+  - '[repeat](five) smaller'
+  - '[repeat](five) times smaller'
 
 ---
 type: intent
@@ -288,15 +195,7 @@ name: GenericMode_checkAction
 utterances:
   - check
   - cast
-  - jack
-  - determine 
-  - identify
-
----
-type: intent
-name: GenericMode_selectAction
-utterances:
-  - select
+  - who
 
 ---
 type: intent
@@ -332,16 +231,23 @@ utterances:
 type: intent
 name: GenericMode_lockAction
 utterances:
+  - attach
   - lock
-  - disable
+  - fix
     
 ---
 type: intent
 name: GenericMode_unlockAction
 utterances:
+  - detach 
   - unlock
-  - dislock
-  - enable
+  - unfix
+
+---
+type: intent
+name: GenericMode_createAction
+utterances:
+  - create
 
 ---
 type: intent
@@ -350,38 +256,13 @@ slots:
   - name: meta
     entity: information
 utterances:
+  - info
+  - info [meta]
+  - information 
   - information [meta](image)
-  - information [meta](explanation)
-  - information [meta](meaning)
-  - meta [meta](image)
-  - meta [meta](explanation)
-  - meta [meta](meaning)
-  - info [info](image)
-  - info [info](explanation)
-  - info [info](meaning)
 
 ---
 type: intent
 name: GenericMode_soundAction
-slots:
-  - name: meta
-    entity: item
 utterances:
   - sound
-  - sound [meta](top)
-  - sound [meta](down)
-  - sound [meta](down)
-  - sound [meta](image)
-  - sound [meta](pronunciation)
-  - found
-  - found [meta](top)
-  - found [meta](down)
-  - found [meta](down)
-  - found [meta](image)
-  - found [meta](pronunciation)
-  - voice
-  - voice [meta](top)
-  - voice [meta](down)
-  - voice [meta](down)
-  - voice [meta](image)
-  - voice [meta](pronunciation)

@@ -79,6 +79,23 @@ class VimMode(BaseGenericMode):
     def gotoEndAction(self, request={}):
         return 'xdotool getactivewindow type G'
 
+    @osAppCommand()
+    def pasteAction(self, request={}):
+        return 'xdotool getactivewindow key Ctrl+Shift+v'
+
+    @osAppCommand()
+    def searchAction(self, request={}):
+        self.activateInput('setTextInitialsAction')
+        return 'xdotool getactivewindow type f' 
+
+    @osAppCommand()
+    def yankAction(self, request={}):
+        return 'xdotool getactivewindow type yy' 
+
+    @osAppCommand()
+    def putAction(self, request={}):
+        return 'xdotool getactivewindow type p' 
+
 if __name__=='__main__':
     app=VimMode(port=33333, parent_port=44444)
     app.run()

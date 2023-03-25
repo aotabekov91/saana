@@ -1,9 +1,9 @@
 import os
 import sys
 import time
-import openai
+import threading
 
-from tendo import singleton
+import openai
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -40,10 +40,10 @@ class AIAnswer(QObject):
                 prompt=question,
                 temperature=0.5,
                 top_p=0.1,
-                max_tokens=100)
+                max_tokens=1000)
             return r['choices'][0]['text']
         except:
-            return ''
+            return 'Could not fetch an answer from OPENAI'
 
 class AIMode(QBaseGenericMode):
 
@@ -58,12 +58,28 @@ class AIMode(QBaseGenericMode):
 
         self.set_answerer()
 
+        self.question=None
+        self.answer=None
+
         self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
+        self.ui.edit.textChanged.connect(self.inputTextChanged)
         self.ui.set_css(self.css_path)
         self.ui.set_html(self.get_html())
 
     def hideAction(self, request={}):
         self.ui.hide()
+
+    def copyAction(self, request):
+        if self.answer and self.parent_port:
+            self.parent_socket.send_json({
+                'command': 'setModeAction',
+                'mode_name': 'ClipboardMode', 
+                'mode_action': 'saveToClipboardAction', 
+                'slot_names': {'text':f'Question: \n{self.question}\nAnswer: {self.answer}'},
+                })
+            respond=self.parent_socket.recv_json()
+            print(respond)
+        self.client=None
 
     def set_answerer(self):
         self.answerer=AIAnswer(self)
@@ -80,17 +96,24 @@ class AIMode(QBaseGenericMode):
 
     @pyqtSlot(str, str)
     def update(self, question, answer):
-        html=self.get_html(answer)
+        self.answer=answer
+        answer=answer.replace('\n', '<br>')
+        html=self.get_html(answer=answer, question=self.question)
         self.ui.set_html(html)
         self.ui.show()
 
-    def confirmAction(self, request=None):
-        question=self.ui.edit.text()
-        self.answerer.question=question
-        html=self.get_html(' ... ')
+    def inputTextChanged(self):
+        self.question=self.ui.edit.text()
+        html=self.get_html(question=self.question)
         self.ui.set_html(html)
 
-    def get_html(self, answer=''):
+    def confirmAction(self, request=None):
+        self.question=self.ui.edit.text()
+        self.answerer.question=self.question
+        # html=self.get_html(' ... ', self.question)
+        # self.ui.set_html(html)
+
+    def get_html(self, question='', answer='', badge=''):
         html='''
         <!doctype html>
             <html>
@@ -98,10 +121,12 @@ class AIMode(QBaseGenericMode):
                     <title>OpenAI</title>
                 </head>
                 <body>
-                    <p>Answer: {}</p>
+                    <p>Question: {}</p>
+                    <p>Answer: {} </p>
+                    <p>{}</p>
                 </body>
         </html>
-        '''.format(answer)
+        '''.format(question, badge, answer)
         return html
 
 if __name__=='__main__':

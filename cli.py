@@ -15,6 +15,7 @@ class SpeechToCommandCLI:
         self.set_config()
         self.set_connection()
         self.set_argparser()
+        self.poller=zmq.Poller()
 
     def set_argparser(self):
 
@@ -59,18 +60,31 @@ class SpeechToCommandCLI:
             for mode_action in actions:
                 tmp=mode_action.split('_')
                 mode_name, action_name=tmp[0], tmp[-1]
-                self.handler_socket.send_json({
-                        'command':'setModeAction',
-                        'mode_name':mode_name,
-                        'mode_action': mode_action,
-                        })
-                print(self.handler_socket.recv_json())
+
+                try:
+                    self.handler_socket.send_json({
+                            'command':'setModeAction',
+                            'mode_name':mode_name,
+                            'mode_action': mode_action,
+                            })
+                    print(self.handler_socket.recv_json())
+                except:
+                    pass
+
 
     def run_handler_actions(self, actions):
         if self.handler_port:
             for action in actions:
-                self.handler_socket.send_json({'command':action})
-                print(self.handler_socket.recv_json())
+
+                try:
+
+                    self.handler_socket.send_json({'command':action})
+                    print(self.handler_socket.recv_json())
+
+                except:
+                    pass
+
+
 
     def run(self):
         args=self.parser.parse_args()

@@ -18,7 +18,8 @@ class QBaseMode(BaseMode, QBaseApplication):
                  parent_port=None, 
                  config=None,
                  window_classes=[],
-                 argv=[]):
+                 argv=[],
+                 app_name='own_floating'):
 
         super(QBaseMode, self).__init__(
                  keyword=keyword, 
@@ -26,7 +27,8 @@ class QBaseMode(BaseMode, QBaseApplication):
                  port=port, 
                  parent_port=parent_port, 
                  config=config,
-                 argv=argv)
+                 argv=argv,
+                 app_name=app_name)
 
     def run(self):
         sys.exit(self.exec_())

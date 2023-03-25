@@ -30,7 +30,7 @@ class CommandMode(QBaseMode):
             self.ui.hide()
             self.checkAction(request)
 
-    def runApplicationAction(self, request):
+    def openAction(self, request):
         slot_names=request['slot_names']
         app=slot_names.get('app', None)
         if app=='ranger':

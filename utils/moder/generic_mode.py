@@ -77,16 +77,9 @@ class BaseGenericMode(BaseMode):
     def moveRightAction(self, request):
         return 'xdotool getactivewindow key --repeat {repeat} Right'
 
-    @osGenericCommand
-    def pasteAction(self, request):
-        return 'xdotool getactivewindow key --repeat {repeat} ctrl+v'
-
-    @osGenericCommand
-    def copyAction(self, request):
-        return 'xdotool getactivewindow key --repeat {repeat} ctrl+c'
-
-    def floatingToggleAction(self, request):
-        asyncio.run(self.manager.command('floating toggle'))
+    # @osGenericCommand
+    # def pasteAction(self, request):
+    #     return 'xdotool getactivewindow key --repeat {repeat} ctrl+v'
 
     def checkAction(self, request={}, delay=0.05):
         if self.parent_port:

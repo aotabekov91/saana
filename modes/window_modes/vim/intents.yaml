@@ -18,18 +18,27 @@ utterances:
 
 ---
 type: intent
+name: VimMode_yankAction 
+utterances:
+  - yank 
+
+---
+type: intent
+name: VimMode_putAction 
+utterances:
+  - put 
+
+---
+type: intent
 name: VimMode_gotoBeginAction 
 utterances:
   - beginning 
-  - begin
 
 ---
 type: intent
 name: VimMode_gotoEndAction 
 utterances:
-  - ending
   - end 
-  - and
 
 ---
 type: intent

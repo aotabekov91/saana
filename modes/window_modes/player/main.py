@@ -68,10 +68,6 @@ class PlayerMode(QBaseGenericMode):
         return f'playerctl {self.get_current_player()} pause'
 
     @osAppCommand()
-    def muteAction(self, request):
-        return f'pactl set-sink-mute @DEFAULT_SINK@ toggle' 
-
-    @osAppCommand()
     def forwardAction(self, request):
         return f'playerctl {self.get_current_player()} next'
 
@@ -86,6 +82,10 @@ class PlayerMode(QBaseGenericMode):
     @osAppCommand()
     def decreaseVolumeAction(self, request):
         return 'pactl set-sink-volume 0 -5%'
+
+    @osAppCommand()
+    def muteAction(self, request):
+        return f'pactl set-sink-mute 0 toggle' 
 
 if __name__=='__main__':
     app=PlayerMode(port=33333)

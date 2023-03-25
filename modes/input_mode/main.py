@@ -40,8 +40,12 @@ class InputMode(QBaseMode):
         self.showAction()
 
     def showAction(self, request={}):
+        self.ui.hide()
         self.ui.show()
         self.ui.edit.setFocus()
+
+    def clearAction(self, request={}):
+        self.ui.edit.clear()
 
     def writeAction(self, request={}):
         slot_names=request['slot_names']

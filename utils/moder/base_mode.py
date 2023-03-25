@@ -18,10 +18,11 @@ class BaseMode:
                  parent_port=None, 
                  config=None,
                  window_classes='all',
-                 argv=None):
+                 argv=None,
+                 app_name='own_floating'):
 
         if type(argv)==list:
-            super(BaseMode, self).__init__(argv)
+            super(BaseMode, self).__init__(argv, app_name)
         else:
             super(BaseMode, self).__init__()
 
@@ -44,7 +45,7 @@ class BaseMode:
         self.set_intents_path()
         self.set_connection()
         self.register()
-        print(self.__class__.__name__, self.port, self.parent_port)
+        # print(self.__class__.__name__, self.port, self.parent_port)
 
     def lockAction(self, request):
         self.locked=True
@@ -104,7 +105,7 @@ class BaseMode:
                     'intents_path': self.intents_path})
 
                 respond=self.parent_socket.recv_json()
-                print(f'Handler responded with: {respond}')
+                # print(f'Handler responded with: {respond}')
                 success=True
             poller.unregister(self.parent_socket)
 
@@ -113,7 +114,7 @@ class BaseMode:
             self.socket.send_json({'registered':success})
 
     def handle_request(self, request):
-        print(f'{self.__class__.__name__} received request: {request}')
+        # print(f'{self.__class__.__name__} received request: {request}')
         command=request['command'].rsplit('_', 1)
         mode_name, action=command[0], command[-1]
         mode_func=getattr(self, action, False)
@@ -147,7 +148,7 @@ class BaseMode:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
 
-        print(msg)
+        # print(msg)
 
     def setParentPortAction(self, request={}):
         slot_names=request['slot_names']
@@ -168,7 +169,7 @@ class BaseMode:
             else:
                 self.port=self.socket.bind_to_random_port('tcp://*')
         except:
-            print(f'{self.__class__.__name__} is already running')
+            # print(f'{self.__class__.__name__} is already running')
             if self.parent_port:
                 socket = zmq.Context().socket(zmq.PUSH)
                 socket.connect(f'tcp://localhost:{self.port}')
@@ -189,7 +190,7 @@ class BaseMode:
             self.handle_request(request)
 
     def exit(self, request=None):
-        print(self.__class__.__name__, 'exiting')
+        # print(self.__class__.__name__, 'exiting')
         self.running=False
 
 if __name__=='__main__':

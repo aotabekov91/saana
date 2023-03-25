@@ -41,8 +41,8 @@ class Listener(sr.Recognizer):
     
     def set_microphone(self):
         self.mic=sr.Microphone()
-        with self.mic as source:
-            self.adjust_for_ambient_noise(source)
+        # with self.mic as source:
+            # self.adjust_for_ambient_noise(source)
 
     def run(self):
         def threaded_listen():
@@ -53,7 +53,8 @@ class Listener(sr.Recognizer):
                     except Exception:  # listening timed out, just try again
                         pass
                     else:
-                        if self.running: self.callback(audio)
+                        self.callback(audio)
+                print('Listener: exiting')
 
         self.running=True
         listener_thread = threading.Thread(target=threaded_listen)
@@ -66,11 +67,11 @@ class Listener(sr.Recognizer):
         command=json.loads(self.recognize_vosk(audio))
         if command['text']=='':
             return
-        elif command['text']=='stop listening':
-            self.exit()
         else:
             try:
                 self.send_json(command)
+                if command['text']=='exit':
+                    self.exit()
             except:
                 pass
 

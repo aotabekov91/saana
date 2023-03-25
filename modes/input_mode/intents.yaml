@@ -6,5 +6,9 @@ slots:
     entity: item
 utterances:
   - type [input](task work research)
-  - pipe [input](task work research)
-  - pop [input](task work research)
+
+---
+type: intent
+name: InputMode_clearAction
+utterances:
+  - clear
