@@ -1,0 +1,18 @@
+---
+type: intent
+name: WikiMode_showTodos
+utterances:
+  - todo 
+
+---
+type: intent
+name: WikiMode_showWikis
+utterances:
+  - wiki  
+
+---
+type: intent
+name: WikiMode_setTodoDone
+utterances:
+  - finished 
+  - set done

@@ -1,0 +1,10 @@
+# answer entity
+---
+type: entity
+name: kind
+automatically_extensible: no
+values:
+  - answer
+  - code
+  - image
+  - sound

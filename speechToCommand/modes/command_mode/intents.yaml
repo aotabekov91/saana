@@ -1,0 +1,24 @@
+---
+type: entity
+name: app
+automatically_extensible: no
+values:
+  - ranger
+  - [kitty, terminal]
+  - [qutebrowser, browser]
+  - [google-chrome, chrome]
+  - [sioyek, document]
+  - [thunderbird, email]
+  - mpv
+  - [anki, cards] 
+
+---
+type: intent
+name: CommandMode_openAction
+slots:
+  - name: app
+    entity: app
+utterances:
+  - '[app](anki)'
+  - '[app](email)'
+  - Open [app](terminal)

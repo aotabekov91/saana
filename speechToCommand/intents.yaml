@@ -1,0 +1,666 @@
+---
+type: entity
+name: mode
+automatically_extensible: no 
+values:
+  - [ApplicationsMode, applications]
+  - [TasksMode, tasks]
+  - [AIMode, chatbot]
+  - [TranlatorMode, translator]
+  - [LookupMode, look up]
+  - [WikiMode, wiki]
+  - [BookmarksMode, bookmarks]
+  - [WindowsMode, i3, i three]
+  - [GenericMode, generic]
+  - [PlayerMode, player]
+  - [CommandMode, command]
+  - [NotifyMode, notify]
+  - [InputMode, input]
+  - [RangerMode, ranger]
+  - [TmuxMode, tmux]
+
+---
+type: intent
+name: ChangeMode_changeMode
+slots:
+  - name: mode
+    entity: mode
+utterances:
+  - '[mode]'
+  - change [mode]
+---
+type: intent
+name: ClipboardMode_copyAction
+utterances:
+  - copy
+
+---
+type: intent
+name: ClipboardMode_pasteAction
+utterances:
+  - paste
+---
+type: entity
+name: app
+automatically_extensible: no
+values:
+  - ranger
+  - [kitty, terminal]
+  - [qutebrowser, browser]
+  - [google-chrome, chrome]
+  - [sioyek, document]
+  - [thunderbird, email]
+  - mpv
+  - [anki, cards] 
+
+---
+type: intent
+name: CommandMode_openAction
+slots:
+  - name: app
+    entity: app
+utterances:
+  - '[app](anki)'
+  - '[app](email)'
+  - Open [app](terminal)
+type: entity
+name: item
+automatically_extensible: yes
+values:
+  - pronunciation
+
+type: entity
+name: information
+automatically_extensible: no
+values:
+  - [image, photo, picture]
+  - [explanation, explain]
+  - [example]
+  - [word, term]
+
+---
+type: intent
+name: GenericMode_openAction
+utterances:
+  - open
+
+---
+type: intent
+name: GenericMode_openTabAction 
+utterances:
+  - tab 
+
+---
+type: intent
+name: GenericMode_showAction
+utterances:
+  - show
+
+---
+type: intent
+name: GenericMode_hideAction
+utterances:
+  - hide
+  - disappear
+
+---
+type: intent
+name: GenericMode_doneAction
+utterances:
+  - done
+
+---
+type: intent
+name: GenericMode_chooseAction
+utterances:
+  - choose
+  - select
+    
+---
+type: intent
+name: GenericMode_removeAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - remove
+  - remove [repeat](five) times
+  - remove [repeat](four)
+
+---
+type: intent
+name: GenericMode_moveDownAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - down
+  - down [repeat](five) times
+  - down [repeat](four)
+
+---
+type: intent
+name: GenericMode_moveUpAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - up
+  - up [repeat](five) times
+  - up [repeat](six)
+
+---
+type: intent
+name: GenericMode_moveLeftAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - left 
+  - left [repeat](five) times
+  - left [repeat](eight) 
+
+
+---
+type: intent
+name: GenericMode_moveRightAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - right 
+  - right [repeat](eight) 
+  - right [repeat](five) times
+
+---
+type: intent
+name: GenericMode_fullscreenAction
+utterances:
+  - full screen
+  - fullscreen 
+
+---
+type: intent
+name: GenericMode_cancelAction
+utterances:
+  - escape 
+  - cancel
+
+---
+type: intent
+name: GenericMode_forwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - next
+  - next [repeat](eight) 
+  - next [repeat](five) times
+
+---
+type: intent
+name: GenericMode_backwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - previous
+  - previous [repeat](eight) 
+  - previous [repeat](five) times
+
+---
+type: intent
+name: GenericMode_closeAction
+utterances:
+  - close
+
+---
+type: intent
+name: GenericMode_confirmAction
+utterances:
+  - confirm
+  - okay
+  - 'yes'
+
+---
+type: intent
+name: GenericMode_zoomInAction 
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - zoom in
+  - zoom in [repeat](eleven)
+  - zoom in [repeat](eleven) times
+  - large
+  - large [repeat](eleven)
+  - large [repeat](eleven) times
+  - larger
+  - larger [repeat](eleven)
+  - larger [repeat](eleven) times
+  - '[repeat](five) larger'
+  - '[repeat](five) times larger'
+
+---
+type: intent
+name: GenericMode_zoomOutAction 
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - zoom out
+  - zoom out [repeat](ten)
+  - zoom out [repeat](ten) times
+  - small
+  - small [repeat](six)
+  - small [repeat](five) times
+  - smaller
+  - smaller [repeat](six)
+  - smaller [repeat](five) times
+  - '[repeat](five) smaller'
+  - '[repeat](five) times smaller'
+
+---
+type: intent
+name: GenericMode_checkAction 
+utterances:
+  - check
+  - cast
+  - who
+
+---
+type: intent
+name: GenericMode_startAction
+utterances:
+  - start
+
+---
+type: intent
+name: GenericMode_finishAction
+utterances:
+  - finish
+
+---
+type: intent
+name: GenericMode_saveAction
+utterances:
+  - save
+
+---
+type: intent
+name: GenericMode_refreshAction
+utterances:
+  - refresh
+
+---
+type: intent
+name: GenericMode_fitAction
+utterances:
+  - fit
+
+---
+type: intent
+name: GenericMode_lockAction
+utterances:
+  - attach
+  - lock
+  - fix
+    
+---
+type: intent
+name: GenericMode_unlockAction
+utterances:
+  - detach 
+  - unlock
+  - unfix
+
+---
+type: intent
+name: GenericMode_createAction
+utterances:
+  - create
+
+---
+type: intent
+name: GenericMode_informationAction
+slots:
+  - name: meta
+    entity: information
+utterances:
+  - info
+  - info [meta]
+  - information 
+  - information [meta](image)
+
+---
+type: intent
+name: GenericMode_soundAction
+utterances:
+  - sound
+---
+type: intent
+name: InputMode_writeAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+
+---
+type: intent
+name: InputMode_clearAction
+utterances:
+  - clear
+---
+type: entity
+name: keyboard
+automatically_extensible: no
+values:
+  - [us, english]
+  - [de, german]
+  - [ru, russian]
+  - [tr, turkish]
+
+---
+type: intent
+name: KeyboardMode_changeKeyboard
+slots:
+  - name: lan
+    entity: keyboard
+utterances:
+  - keyboard [lan](english)
+---
+type: entity
+name: lan
+automatically_extensible: no
+values:
+  - [en, english]
+  - [de, german]
+  - [ru, russian]
+  - [tr, turkish]
+
+---
+type: intent
+name: LookupMode_lookupAction
+slots:
+  - name: lan
+    entity: lan
+utterances:
+  - '[lan](english)'
+  - '[lan](russian)'
+  - definition [lan](english)
+  - definition [lan](russian)
+# answer entity
+---
+type: entity
+name: kind
+automatically_extensible: no
+values:
+  - answer
+  - code
+  - image
+  - sound
+---
+type: intent
+name: TasksMode_finishTask
+utterances:
+  - finish 
+---
+type: entity
+name: lan
+automatically_extensible: no
+values:
+  - [en, english]
+  - [ru, russian]
+  - [de, german]
+  - [tr, turkish]
+
+---
+type: intent
+name: TranslatorMode_setLanguageAction
+slots:
+  - name: to
+    entity: lan
+utterances:
+  - translate to [to](german) 
+  - translate [to](german) 
+  - translate to [to](english) 
+  - translate [to](english) 
+---
+type: intent
+name: WikiMode_showTodos
+utterances:
+  - todo 
+
+---
+type: intent
+name: WikiMode_showWikis
+utterances:
+  - wiki  
+
+---
+type: intent
+name: WikiMode_setTodoDone
+utterances:
+  - finished 
+  - set done
+---
+type: entity
+name: workspace
+automatically_extensible: no
+values:
+  - ['1', one, monday, january]
+  - ['2', two, tuesday, february]
+  - ['3', three, wednesday, march]
+  - ['4', four, thursday, april]
+  - ['5', five, friday, may]
+  - ['6', six, saturday, june]
+  - ['7', seven, sunday, july]
+  - ['8', eight, august]
+  - ['9', nine, september]
+  - ['10', ten, october]
+  - ['11', eleven, november]
+  - ['12', twelve, december]
+
+---
+type: entity
+name: focus_window
+automatically_extensible: no
+values:
+  - left
+  - right
+  - tiling
+  - floating
+
+---
+type: intent
+name: WindowsMode_changeWorkspaceAction
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - '[workspace](five)'
+  - '[workspace](seven)'
+  - '[workspace](four)'
+  - '[workspace](nine)'
+  - workspace [workspace](five)
+
+---
+type: intent
+name: WindowsMode_moveToWorkspaceAction
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - move [workspace](eight)
+  - move [workspace](monday)
+  - move [workspace](march)
+
+---
+type: intent
+name: WindowsMode_focusAction
+slots:
+  - name: window
+    entity: focus_window
+utterances:
+  - '[window](left)'
+  - '[window](right)'
+  - focus [window](left)  
+  - focus [window](right)  
+  - focus [window](tiling)  
+
+---
+type: intent
+name: WindowMode_floatingToggleAction
+utterances:
+  - toggle floating
+type: entity
+name: deck
+automatically_extensible: no
+values:
+  - english
+  - german
+
+---
+type: intent
+name: AnkiMode_studyAction 
+utterances:
+  - deck 
+
+---
+type: intent
+name: AnkiMode_examplePlayAction 
+slots:
+  - name: number
+    entity: snips/number
+utterances:
+  - sentence [number](one)
+  - sentence [number](two)
+  - example [number](one)
+  - example [number](two)
+  - example
+  - sentence
+  - context
+
+---
+type: intent
+name: AnkiMode_frontPlayAction 
+utterances:
+  - question
+
+---
+type: intent
+name: AnkiMode_backPlayAction 
+utterances:
+  - answer
+
+---
+type: intent
+name: AnkiMode_showImageAction 
+utterances:
+  - image
+
+---
+name: kind
+type: entity 
+automatically_extensible: no
+values:
+  - image
+  - sound
+
+---
+type: intent
+name: AnkiMode_generateAction 
+slots:
+  - name: kind
+    entity: kind 
+utterances:
+  - generate [kind](image)
+  - generate [kind](sound)
+---
+type: intent
+name: PlayerMode_playAction 
+utterances:
+  - play
+
+---
+type: intent
+name: PlayerMode_pauseAction 
+utterances:
+  - pause
+
+---
+type: intent
+name: PlayerMode_muteAction 
+utterances:
+  - mute
+
+---
+type: intent
+name: PlayerMode_unmuteAction 
+utterances:
+  - unmute
+
+---
+type: intent
+name: PlayerMode_increaseVolumeAction 
+utterances:
+  - increase
+
+---
+type: intent
+name: PlayerMode_decreaseVolumeAction 
+utterances:
+  - decrease
+---
+type: entity
+name: hint
+automatically_extensible: yes 
+
+---
+type: intent
+name: VimMode_markSetAction 
+utterances:
+  - mark 
+
+---
+type: intent
+name: VimMode_markJumpAction 
+utterances:
+  - jump 
+
+---
+type: intent
+name: VimMode_yankAction 
+utterances:
+  - yank 
+
+---
+type: intent
+name: VimMode_putAction 
+utterances:
+  - put 
+
+---
+type: intent
+name: VimMode_gotoBeginAction 
+utterances:
+  - beginning 
+
+---
+type: intent
+name: VimMode_gotoEndAction 
+utterances:
+  - end 
+
+---
+type: intent
+name: VimMode_hintJumpAction 
+utterances:
+  - hint 
+
+---
+type: intent
+name: VimMode_hintJumpNewAction 
+utterances:
+  - follow

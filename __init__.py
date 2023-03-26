@@ -1,4 +1,6 @@
-from .main import *
+from .speechToCommand import utils
+from .speechToCommand import SpeechToCommand 
+from .speechToCommand import SpeechToCommandCLI 
 
 from tendo import singleton
 
@@ -7,13 +9,12 @@ def run():
 
         me=singleton.SingleInstance()
 
-        parser=argparse.ArgumentParser()
-        parser.add_argument('--listener', nargs='?', type=bool, default=False)
-        args=parser.parse_args()
-        r=SpeechToCommand()
-        if args.listener: r.set_listener()
-        r.run()
+        app=SpeechToCommand()
+        app.run()
 
     except singleton.SingleInstanceException:
 
         print('An instance of SpeechToCommand is already running!')
+
+if __name__=='__main__':
+    run()

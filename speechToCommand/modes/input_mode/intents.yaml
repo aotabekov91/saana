@@ -1,0 +1,14 @@
+---
+type: intent
+name: InputMode_writeAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+
+---
+type: intent
+name: InputMode_clearAction
+utterances:
+  - clear

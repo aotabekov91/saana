@@ -1,0 +1,5 @@
+---
+type: intent
+name: TasksMode_finishTask
+utterances:
+  - finish 
