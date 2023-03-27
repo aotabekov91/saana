@@ -82,23 +82,41 @@ class TasksMode(QBaseMode):
         self.timer_thread=QThread()
         self.timer=Timer(self)
         self.timer.moveToThread(self.timer_thread)
-        self.timer.finished.connect(self.finishTask)
-        self.timer.change.connect(self.reportStatus)
+        self.timer.finished.connect(self.finishAction)
+        self.timer.change.connect(self.report_status)
         self.timer_thread.started.connect(self.timer.loop)
         QTimer.singleShot(0, self.timer_thread.start)
 
     def showAction(self, request={}):
-        self.tlist=self.getTasks()
+        self.tlist=self.get_tasks()
         self.ui.addWidgetsToList(self.tlist)
         self.ui.show()
 
     def confirmAction(self, request={}):
         item=self.ui.list.currentItem()
-        self.setTask({'task_id': item.itemData['id'], 'task_name':item.itemData['top']})
+        self.set_tasks({'task_id': item.itemData['id'], 'task_name':item.itemData['top']})
         self.ui.hide()
         self.ui.edit.clear()
 
-    def reportStatus(self):
+    def finishAction(self, request={}):
+        if self.mode=='work':
+            worked_seconds=self.duration-self.timer.duration
+            self.db.add_pomodoro_now(self.task_id, worked_seconds, self.note)
+            self.alert('rest')
+            self.mode='rest'
+            self.timer.duration=self.rest
+            self.timer.running=True
+        elif self.mode=='rest':
+            self.mode=None
+            self.note=''
+            self.duration=0
+            self.task_name=''
+            self.task_id=None
+            self.timer.running=False
+            self.alert('work')
+        self.report_status()
+
+    def report_status(self):
         data={'countdown':self.timer.duration,
               'mode':self.mode,
               'task_id':self.task_id,
@@ -114,7 +132,7 @@ class TasksMode(QBaseMode):
         respond=self.parent_socket.recv_json()
         print(respond)
 
-    def getTasks(self, request={}):
+    def get_tasks(self, request={}):
         tsks={}
         for i, j in self.db.task_chain.items():
             if i is None: continue
@@ -125,7 +143,7 @@ class TasksMode(QBaseMode):
         data=[{'top':n, 'id':t} for n, t in tsks.items()]
         return data
 
-    def alertAction(self, kind=''):
+    def alert(self, kind=''):
         quote=self.quotes[random.randint(0, len(self.quotes))]
         def play():
             playsound.playsound(self.sound_path)
@@ -152,25 +170,7 @@ class TasksMode(QBaseMode):
                     timeout=120,
                     )
 
-    def finishTask(self, request={}):
-
-        if self.mode=='work':
-            worked_seconds=self.duration-self.timer.duration
-            self.db.add_pomodoro_now(self.task_id, worked_seconds, self.note)
-            self.alertAction('rest')
-            self.mode='rest'
-            self.timer.duration=self.rest
-            self.timer.running=True
-        elif self.mode=='rest':
-            self.mode=None
-            self.note=''
-            self.duration=0
-            self.task_name=''
-            self.task_id=None
-            self.timer.running=False
-            self.alertAction('work')
-
-    def setTask(self, request):
+    def set_tasks(self, request):
         self.task_id=request.get('task_id', -1)
         self.note=request.get('rest', self.note)
         self.task_name=request.get('task_name', '')

@@ -114,7 +114,6 @@ type: intent
 name: GenericMode_chooseAction
 utterances:
   - choose
-  - select
     
 ---
 type: intent

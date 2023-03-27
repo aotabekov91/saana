@@ -1,0 +1,164 @@
+type: entity
+name: grammar_unit
+automatically_extensible: no
+values:
+  - word
+  - sentence
+  - paragraph
+
+---
+type: entity
+name: keyboard
+automatically_extensible: no
+values:
+  - [us, english]
+  - [de, german]
+  - [ru, russian]
+  - [tr, turkish]
+
+---
+type: intent
+name: InputMode_changeKeyboard
+slots:
+  - name: lan
+    entity: keyboard
+utterances:
+  - keyboard [lan](english)
+
+---
+type: intent
+name: InputMode_escapeAction
+utterances:
+  - escape
+
+---
+type: intent
+name: InputMode_clearAction
+utterances:
+  - clear
+
+---
+type: intent
+name: InputMode_tabAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - tab
+  - tab [repeat](one)
+  - tab [repeat](two) times
+
+---
+type: intent
+name: InputMode_spaceAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - space
+  - space [repeat](four)
+  - space [repeat](five) times
+
+---
+type: intent
+name: InputMode_interuptAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - interupt
+  - interupt [repeat](two)
+  - interupt [repeat](ten) times
+
+---
+type: intent
+name: InputMode_enterAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - enter
+  - enter [repeat](two)
+  - enter [repeat](ten) times
+
+---
+type: intent
+name: InputMode_backspaceAction
+slots:
+  - name: repeat
+    entity: snips/number 
+  - name: unit
+    entity: grammar_unit 
+utterances:
+  - remove
+  - remove [repeat](five) times
+  - remove [repeat](four)
+  - remove [unit](sentence)
+  - remove [unit](paragraph) 
+  - remove [unit](word) [repeat](five) times
+
+---
+type: intent
+name: InputMode_downAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - down
+  - down [repeat](five) times
+  - down [repeat](four)
+
+---
+type: intent
+name: InputMode_upAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - up
+  - up [repeat](five) times
+  - up [repeat](six)
+
+---
+type: intent
+name: InputMode_leftAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - left 
+  - left [repeat](five) times
+  - left [repeat](eight) 
+
+---
+type: intent
+name: InputMode_rightAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - right 
+  - right [repeat](eight) 
+  - right [repeat](five) times
+
+---
+type: intent
+name: InputMode_plusAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - plus 
+  - plus [repeat](eight) 
+  - plus [repeat](five) times
+
+---
+type: intent
+name: InputMode_minusAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - minus 
+  - minus [repeat](eight) 
+  - minus [repeat](five) times

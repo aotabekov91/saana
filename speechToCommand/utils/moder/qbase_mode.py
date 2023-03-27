@@ -17,7 +17,7 @@ class QBaseMode(BaseMode, QBaseApplication):
                  port=None, 
                  parent_port=None, 
                  config=None,
-                 window_classes=[],
+                 window_classes='all',
                  argv=[],
                  app_name='own_floating'):
 
@@ -27,6 +27,7 @@ class QBaseMode(BaseMode, QBaseApplication):
                  port=port, 
                  parent_port=parent_port, 
                  config=config,
+                 window_classes=window_classes,
                  argv=argv,
                  app_name=app_name)
 

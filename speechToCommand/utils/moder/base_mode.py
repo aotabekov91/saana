@@ -38,7 +38,6 @@ class BaseMode:
         self.window_classes=window_classes
         self.manager=asyncio.run(Connection().connect())
 
-        self.locked=False
         self.running = False
 
         self.set_config()
@@ -47,10 +46,27 @@ class BaseMode:
         self.register()
 
     def lockAction(self, request):
-        self.locked=True
+        self.parent_socket.send_json({
+            'command': 'lockAction',
+            'mode_name':self.__class__.__name__,
+            'mode_action': 'lockListen',})
+        respond=self.parent_socket.recv_json()
 
     def unlockAction(self, request):
-        self.locked=False
+        self.parent_socket.send_json({
+            'command': 'unlockAction',
+            'mode_name':self.__class__.__name__})
+        respond=self.parent_socket.recv_json()
+
+    def changeModeAction(self, request={}, mode_name=None):
+        if not mode_name:
+            slotNames=request.get('slot_names',{})
+            mode_name=slotNames.get('mode', None)
+        if mode_name=='me':
+            mode_name=self.__class__.__name__
+        if mode_name:
+            self.parent_socket.send_json({'command':'setCurrentMode', 'mode_name':mode_name})
+            respond=self.parent_socket.recv_json()
 
     def get_current_window(self):
         tree=asyncio.run(self.manager.get_tree())
@@ -118,18 +134,18 @@ class BaseMode:
         mode_func=getattr(self, action, False)
         ui_func=None
         if hasattr(self, 'ui'):
-            ui_func=getattr(self.ui, action, False)
+            ui_func=getattr(self.ui, action, None)
 
         try:
+
             msg=None
             if mode_func:
                 mode_func(request)
-                msg={"status":f"{self.__class__.__name__} handled request"}
+                msg=f"{self.__class__.__name__}: handled request"
             elif ui_func and (self.ui.isVisible() or 'showAction' in action):
                 ui_func(request)
-                msg={"status":f"{self.__class__.__name__}'s UI handled request"}
-
-            elif self.__class__.__name__!=mode_name and not self.locked:
+                msg=f"{self.__class__.__name__}: UI handled request"
+            elif self.__class__.__name__!=mode_name:
                 if self.parent_port:
                     self.parent_socket.send_json(
                             {'command':'setModeAction',
@@ -139,14 +155,14 @@ class BaseMode:
                              'intent_data': request['intent_data'],
                              'own_only': True})
                     respond=self.parent_socket.recv_json()
-
+                    msg=f'{self.__class__.__name__}: sending to handler'
                 else:
-                    msg={"status":"not understood"}
+                    msg=f'{self.__class__.__name__}: not understood'
+
         except:
             err_type, error, traceback = sys.exc_info()
             msg='{err}'.format(err=error)
-
-        # print(msg)
+        print(msg)
 
     def setParentPortAction(self, request={}):
         slot_names=request['slot_names']

@@ -15,6 +15,15 @@ class InputMainWindow (QBaseMainWindow):
         self.setStyleSheet(self.style_sheet)
         self.setCentralWidget()
 
+    def showAction(self, request={}):
+        print(request)
+        self.hide()
+        self.show()
+        self.edit.setFocus()
+
+    def clearAction(self, request={}):
+        self.ui.edit.clear()
+
     def set_ui(self):
 
         self.setGeometry(0, 0, 700, 0)

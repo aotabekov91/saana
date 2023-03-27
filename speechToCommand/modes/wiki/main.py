@@ -6,10 +6,10 @@ import fileinput
 
 from subprocess import Popen
 
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import QBaseGenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class WikiMode(QBaseMode):
+class WikiMode(QBaseGenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(WikiMode, self).__init__(
                  keyword='archive', 
@@ -29,24 +29,7 @@ class WikiMode(QBaseMode):
         diary=self.config.get('Custom', 'diary_folder')
         self.diary_folder=os.path.expanduser(diary)
 
-    def showAction(self, request={}):
-        if self.mode in ['wikis', None]:
-            self.dlist=self.get_wiki_data()
-        elif self.mode=='todos':
-            self.dlist=self.get_todo_data()
-        self.ui.addWidgetsToList(self.dlist)
-        self.ui.show()
-        self.ui.edit.setFocus()
-
-    def showTodos(self, request={}): 
-        self.mode='todos'
-        self.showAction(request)
-
-    def showWikis(self, request={}): 
-        self.mode='wikis'
-        self.showAction(request)
-
-    def setTodoDone(self, request={}):
+    def finishAction(self, request={}):
         if self.ui.isVisible() and self.mode=='todos':
             item=self.ui.list.currentItem()
             line=item.itemData['line']
@@ -68,12 +51,28 @@ class WikiMode(QBaseMode):
         item=self.ui.list.currentItem()
         line=item.itemData['line']
         path=item.itemData['path']
-
         os_cmd=['kitty', '--class', 'floating', 'vim', '-c',  'Goyo', f'+{line}', path]
         p=Popen(os_cmd)
-
         self.ui.edit.clear()
         self.ui.hide()
+
+    def showAction(self, request={}):
+        if self.mode in ['wikis', None]:
+            self.dlist=self.get_wiki_data()
+        elif self.mode=='todos':
+            self.dlist=self.get_todo_data()
+        self.ui.addWidgetsToList(self.dlist)
+        self.ui.show()
+        self.ui.edit.setFocus()
+        self.changeModeAction(mode_name='me')
+
+    def showTodos(self, request={}): 
+        self.mode='todos'
+        self.showAction(request)
+
+    def showWikis(self, request={}): 
+        self.mode='wikis'
+        self.showAction(request)
 
     def get_wiki_data(self, wiki_folder=None, lines=None):
         lines=[]

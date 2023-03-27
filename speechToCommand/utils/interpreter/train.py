@@ -121,9 +121,10 @@ class Trainer:
                     print(f'You said: {text}')
                     if word!=text:
                         if word in self.y_data:
+                            if not word in self.y_data: self.y_data[word]+=[word]
                             self.y_data[word]+=[text]
                         else:
-                            self.y_data[word]=[text]
+                            self.y_data[word]=[word, text]
 
         self.save_data()
 

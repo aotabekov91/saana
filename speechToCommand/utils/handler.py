@@ -31,6 +31,8 @@ class Handler:
         self.previous_mode=None
         self.last_command=None
         self.last_speech=None
+        self.locked=False
+        self.locking_mode=None
         self.private_mode=False
 
         self.manager=asyncio.run(Connection().connect())
@@ -51,6 +53,16 @@ class Handler:
     def set_current_mode(self, mode_name):
         self.previous_mode=self.current_mode
         self.current_mode=mode_name
+
+    def set_lock(self, request):
+        self.locked=True
+
+        self.locking_mode=request['mode_name']
+        self.locking_action=request['mode_action']
+
+    def set_unlock(self, request={}):
+        self.locked=False
+        self.locking_mode=None
 
     def set_config(self):
         if self.config.has_section('General'):
@@ -165,6 +177,12 @@ class Handler:
                 self.mode_store_data[r['mode_name']]={}
                 self.create_socket(r)
                 msg={'status':'ok', 'action': 'registeredMode', 'info': r['mode_name']}
+            elif r['command']=='lockAction':
+                self.set_lock(r)
+                msg={'status':'ok', 'action': 'lockAction', 'info': r['mode_name']}
+            elif r['command']=='unlockAction':
+                self.set_unlock(r)
+                msg={'status':'ok', 'action': 'unlockAction', 'info': r['mode_name']}
             elif r['command']=='exit':
                 msg={'status':'ok', 'info':'exiting'}
                 self.exit()
@@ -226,6 +244,8 @@ class Handler:
 
             self.last_speech=d['text']
 
+            d['text']=self.interpreter.predict(d['text'], prob=0.7)
+
             if d['text']=='exit':
                 break
             elif d['text']=='private':
@@ -235,25 +255,34 @@ class Handler:
                 self.private_mode=False
                 self.set_current_mode(self.previous_mode)
 
-            if self.private_mode: continue
+            if self.private_mode:
+                continue
 
             c_name=None
 
-            if self.current_mode != None:
+            if self.locked:
+                m_name, c_name, s_names, i_data = parse(d['text'])
+                if c_name and 'unlockAction' in c_name:
+                    self.set_unlock()
+                else:
+                    self.act(
+                            self.locking_mode, 
+                            self.locking_action, 
+                            {'text':d['text'], 'command':c_name, 'slots':s_names},
+                            )
+                continue
+
+            if self.current_mode != None and c_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'], self.current_mode)
 
             if c_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'])
 
-            if c_name is None:
-                text=self.interpreter.predict(d['text'])
-                if text:
-                    m_name, c_name, s_names, i_data = parse(text)
-
-            print('Understood: ', m_name, c_name) 
 
             if self.current_mode != None:
                 m_name=self.current_mode
+
+            print('Understood: ', m_name, c_name) 
 
             if c_name:
                 self.set_current_mode(m_name)

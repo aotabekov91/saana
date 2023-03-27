@@ -1,0 +1,14 @@
+---
+type: intent
+name: EditorMode_typeAction
+slots:
+  - name: input
+    entity: item
+utterances:
+  - type [input](task work research)
+
+---
+type: intent
+name: EditorMode_clearAction
+utterances:
+  - clear

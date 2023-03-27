@@ -1,0 +1,53 @@
+---
+type: intent
+name: VimMode_markSetAction 
+utterances:
+  - mark 
+
+---
+type: intent
+name: VimMode_markJumpAction 
+utterances:
+  - jump 
+
+---
+type: intent
+name: VimMode_yankAction 
+utterances:
+  - yank 
+
+---
+type: intent
+name: VimMode_putAction 
+utterances:
+  - put 
+
+---
+type: intent
+name: VimMode_deleteAction 
+utterances:
+  - delete 
+
+---
+type: intent
+name: VimMode_gotoBeginAction 
+utterances:
+  - beginning 
+
+---
+type: intent
+name: VimMode_gotoEndAction 
+utterances:
+  - end 
+
+---
+type: intent
+name: VimMode_hintJumpAction 
+utterances:
+  - hint 
+
+---
+type: intent
+name: VimMode_hintJumpNewAction 
+utterances:
+  - follow

@@ -1,78 +1,104 @@
-answer: 
+answer:
+- answer 
 - anthony
-attach: 
+attach:
+- attach 
 - at that
-bigger: 
+bigger:
+- bigger 
 - because you know 
 - ticket 
 - the eleven 
 - the level 
 - you level
-cancel: 
+cancel:
+- cancel 
 - castle
-cards: 
+cards:
+- cards 
 - carts 
 - carts 
 - parts
-cast: 
+cast:
+- cast 
 - cast
-chatbot: 
+chatbot:
+- chatbot 
 - chat both 
 - jackpot 
 - chat bot
-check: 
+check:
+- check 
+- sick
 - check
 - tech
 - jack
-choose: 
+choose:
+- choose 
 - choose
-clear: 
+clear:
+- clear 
 - career 
 - a year 
 - year 
 - fear 
 - clear
-close: 
+close:
+- close 
 - cloth 
 - lol
 - cause 
 - cool 
 - close 
 - clause
-command: 
+commands:
+- commands
+- command 
 - common 
 - comment 
 - cold 
 - column
-confirm: 
+confirm:
+- confirm 
 - confirm 
 - console
-copy: 
+copy:
+- copy 
 - copy 
 - hockey 
 - pocket
-create: 
+three:
 - three
-cross out: 
+create:
+- create 
+- three
+cross out:
+- cross out 
 - perform 
 - cross out 
 - fault 
 - hawthorn 
 - cosell 
 - cause all
-deck: 
+deck:
+- deck 
 - click 
 - dec
-decrease: 
+decrease:
+- decrease 
 - the trees
-delete: 
+delete:
+- delete 
 - philly 
 - with
-detach: 
+detach:
+- detach 
 - the dead
-disappear: 
+disappear:
+- disappear 
 - this disappear here
-down: 
+down:
+- down 
 - dom 
 - though 
 - dawn 
@@ -83,79 +109,107 @@ down:
 - bom 
 - bomb 
 - ball
-eleven: 
+eleven:
+- eleven 
 - a lover 
 - eleven 
 - level 
 - your lover 
 - lower 
 - eleven
-end: 
+end:
+- end 
 - and
-english: 
+- andy
+english:
+- english 
 - in laws 
 - it was 
 - was 
 - news
-erase: 
+erase:
+- erase 
 - here is 
 - here is 
 - yea all
-example: 
+example:
+- example 
 - sample
-finished: 
+finished:
+- finished 
 - finish it
-fit: 
+fit:
+- fit 
 - hit 
-five: 
+five:
+- five 
 - far 
 - fight 
 - pipe
-float: 
+float:
+- float 
+- flop
+- floated
+- flawed
 - fault 
 - what
-follow: 
+follow:
+- follow 
 - oh
-four: 
+four:
+- four 
 - for 
 - fall
-fullscreen: 
+fullscreen:
+- fullscreen 
 - full screen 
 - fourth grade 
-generic: 
+generic:
+- generic 
 - genetic
-hide: 
+hide:
+- hide 
 - hi 
 - fight
-hint: 
+hint:
+- hint 
 - eight
-i3: 
+eight:
+- eight
+i3:
+- i3 
 - i three 
 - i'd three 
 - by three 
 - are three
-image: 
+image:
+- image 
 - in it 
 - of it 
-info: 
+info:
+- info 
 - in for 
 - for 
 - in plaque 
 - in faith 
 - important for 
 - in full
-information: 
+information:
+- information 
 - formation 
 - if omniscient 
 - if mission 
 - he formation 
 - in formation
-keyboard: 
+keyboard:
+- keyboard 
 - he bought 
 - he wore
-kitty: 
+kitty:
+- kitty 
 - city
-left: 
+left:
+- left 
 - love 
 - left 
 - loved 
@@ -167,16 +221,28 @@ left:
 - walk 
 - woof 
 - want
-lock: 
+lock:
+- lock 
+- luck
+- look
 - lot
-unlock: 
+unlock:
+- unlock 
+- unluck 
 - a lot
 - a lock
-lookup: 
+fix:
+- fix
+- fixed
+- on things
+lookup:
+- lookup 
 - hook up
-meaning: 
+meaning:
+- meaning 
 - me
-meta: 
+meta:
+- meta 
 - more 
 - not a 
 - mother 
@@ -185,66 +251,87 @@ meta:
 - malta 
 - neither 
 - nothing met 
-mode: 
+mode:
+- mode 
 - more 
 - mod
-move: 
+move:
+- move 
 - more 
 - moved 
 - moon 
-mpv: 
+mpv:
+- mpv 
 - mp eat 
 - m p v 
 - em pee vee
-mute: 
+mute:
+- mute 
 - newt 
 - youth
-next: 
+next:
+- next 
 - nice 
 - nick 
 - nex
-nine: 
+nine:
+- nine 
 - mine
-notify: 
+notify:
+- notify 
 - not for 
 - not fly 
 - not notify 
 - not of far
-one: 
+one:
+- one 
 - war 
 - ball 
 - one
-open: 
+open:
+- open 
 - over 
 - owner
-paste: 
+paste:
+- paste 
 - pest 
 - path 
 - faced 
 - beast
-pause: 
+pause:
+- pause 
 - both
 - was
 - horse
 - force
-photo: 
+photo:
+- photo 
 - in father
-player: 
+player:
+- player 
 - for year
-play: 
+play:
+- play 
 - way
 - played
-previous: 
+previous:
+- previous 
 - peters 
 - please
-pronounce: 
+pronounce:
+- pronounce 
 - pronouns
-ranger: 
+ranger:
+- ranger 
 - surrender
-remove: 
+remove:
+- remove 
 - removed 
 - the move
-right: 
+- re move
+- ree move
+right:
+- right 
 - right 
 - focus write 
 - right 
@@ -255,100 +342,133 @@ right:
 - ralf 
 - wide 
 - write
-run: 
+jump:
+- jump
+- dump
+- dumb
+run:
+- run 
 - ron 
 - wrong 
 - rob 
-ru: 
+ru:
+- ru 
 - russia 
 - awesome 
 - hallucination 
 - motion 
 - machine 
 - russian
-save: 
+save:
+- save 
 - say
-sentence: 
+sentence:
+- sentence 
 - sanders 
 - sometimes
-set: 
+set:
+- set 
 - sit 
-seven: 
+seven:
+- seven 
 - server
 - alone 
 - seven 
 - space on 
 - them 
 - several
-show: 
+show:
+- show 
 - this way 
 - sure 
 - so
-sioyek: 
+sioyek:
+- sioyek 
 - see you yak 
 - syria 
 - see you yack 
 - celiac
-six: 
+six:
+- six 
 - spacex
-sound : 
+space:
+- space
+  faith
+sound :
+- sound  
 - form 
 - full 
 - for time 
 - for phone 
 - found 
 - some
-sound: 
+sound:
+- sound 
 - song 
-tab: 
+tab:
+- tab 
 - cap 
 - tep 
 - pep 
 - cep 
 - tap 
 - teb
-take: 
+take:
+- take 
 - pig 
 - cake 
 - fake
-tasks: 
+todo:
+- to do
+- two do
+tasks:
+- tasks 
+- task
+- tests
+- cask
+- tusk
 - tacks 
 - tax
-ten: 
+ten:
+- ten 
 - ten 
 - then 
 - can 
 - cab 
 - town 
 - time
-thunderbird: 
+thunderbird:
+- thunderbird 
 - thunderbolt
-tmux: 
+tmux:
+- tmux 
 - mux 
 - max 
 - theme oxford 
 - key marks 
 - change t marks
-to do: 
+to do:
+- to do 
 - two do 
 - today 
 - the lose 
 - to do
-toggle floating: 
-- portal floating 
-- pablo floating 
-- toggle floating 
-- pogo floating 
-- purple floating 
-- purple flopping
-top: 
+toggle:
+- toggle
+- pablo
+- pogo
+- vogel
+- porco
+top:
+- top 
 - pope 
 - pop 
-- 
 - on pop
-tranlator: 
+tranlator:
+- tranlator 
 - trusts later
-translate: 
+translate:
+- translate 
 - joseph 
 - traffic 
 - totally 
@@ -363,42 +483,66 @@ translate:
 - trusted 
 - chaucer to russia 
 - profit 
-turkish: 
+turkish:
+- turkish 
 - circus
-twelve: 
+twelve:
+- twelve 
 - valve 
 - well
-two: 
+two:
+- two 
 - too 
 - to
-type: 
+type:
+- type 
 - pipe
-unmute: 
+unmute:
+- unmute 
 - omni 
 - on mute
-up: 
+up:
+- up 
 - of eight 
 - help
 - of
 - op
-wednesday: 
+wednesday:
+- wednesday 
 - where they
-wiki: 
+wiki:
+- wiki 
 - wiki 
 - wikis 
 - wiki 
 - bookies 
 - with you
 larger:
+- larger
 - roger
-word: 
+word:
+- word 
 - ward 
 - wart
-yank: 
+yank:
+- yank 
 - yeah 
 - yang
-zoom: 
+zoom:
+- zoom 
 - you 
 - about
 escape:
+- escape
 - this game
+'yes':
+- 'yes'
+- yeah
+- yep
+- yap
+interupt:
+- interupt
+bottom:
+- bottle
+menu:
+- menu

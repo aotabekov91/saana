@@ -23,7 +23,6 @@ class Interpreter:
             return levenshtein_distance(t1, t2)
 
     def set_similarity(self):
-
         if self.data_path is None:
             file_path=os.path.abspath(inspect.getfile(self.__class__))
             mode_path=os.path.dirname(file_path).replace('\\', '/')
@@ -35,7 +34,6 @@ class Interpreter:
         d=d[d.notna().all(axis=1)]
         d['similarity']=0
         self.similarity=d.set_index(['variable', 'value']).to_dict()['similarity']
-
 
     def set_model(self, save_model=True):
         self.model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=5000)
@@ -95,20 +93,34 @@ class Interpreter:
             success=False
             for j in range(i+1, len(raw_data)+1):
                 text=' '.join(raw_data[i:j])
-                features=self.vectorizer.transform([text]).toarray()
-                t_length=np.array([self.get_similarity(t1, text) for t1 in self.model.classes_])
-                t_length=t_length.reshape((1,len(t_length)))
-                data=np.concatenate([features, t_length], axis=1)
-                prediction=self.model.predict(data)
-                if prediction:
-                    probability=np.max(self.model.predict_proba(data))
-                    if prob<probability:
-                        word=prediction[0]
-                        words+=[word]
-                        i=j
-                        success=True
-                        break
 
+                word=None
+                if text in self.model.classes_:
+                    word=text
+                else:
+                    found=False
+                    for (item, value), similarity in self.similarity.items():
+                        if text==value:
+                            word=item
+                            found=True
+                            break
+
+                    if not found:
+                        features=self.vectorizer.transform([text]).toarray()
+                        t_length=np.array([self.get_similarity(t1, text) for t1 in self.model.classes_])
+                        t_length=t_length.reshape((1,len(t_length)))
+                        data=np.concatenate([features, t_length], axis=1)
+                        prediction=self.model.predict(data)
+                        if prediction:
+                            probability=np.max(self.model.predict_proba(data))
+                            if prob<probability:
+                                word=prediction[0]
+
+                if word:
+                    words+=[word]
+                    i=j
+                    success=True
+                    break
 
             if not success:
                 words+=[raw_data[i]]
@@ -118,16 +130,6 @@ class Interpreter:
         print(f'Interpreter [{sentence}]: {new_sentence}')
         return new_sentence
 
-    # def predict(self, text, prob=0.3):
-    #     features=self.vectorizer.transform([text]).toarray()
-    #     t_length=np.array([self.get_similarity(t1, text) for t1 in self.model.classes_])
-    #     t_length=t_length.reshape((1,len(t_length)))
-    #     data=np.concatenate([features, t_length], axis=1)
-    #     prediction=self.model.predict(data)
-    #     if prediction:
-    #         probability=np.max(self.model.predict_proba(data))
-    #         print('Interpreter: ', text, prediction[0], probability, prob)
-    #         if prob<probability: return prediction[0]
 
 if __name__=='__main__':
     i=Interpreter()
