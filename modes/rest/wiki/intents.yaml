@@ -1,7 +1,0 @@
-# open an app 
----
-type: intent
-name: WikiMode_showTodos
-utterances:
-  - todos 
-  - show todos
