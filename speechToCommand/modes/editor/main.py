@@ -55,11 +55,19 @@ class EditorMode(GenericMode):
             self.setTextAction({'text':text})
         elif 'setTextInitialsAction' in self.client_request:
             self.setTextAction({'text':text})
+        elif 'setNumberFromTextAction' in self.client_request:
+            numbers=self.text_to_number(text)
+            self.setTextAction({'text':numbers})
         if 'sendTextAction' in self.client_request:
             self.send_text(text)
         if 'clickEnter' in self.client_request:
             self.enterAction(request)
         self.escapeAction(request)
+
+    def text_to_number(self, text):
+        # text should be converted to integers
+        # used for tmux hinting
+        raise
 
     @command(checkWindowType=False)
     def setTextAction(self, request):

@@ -29,7 +29,7 @@ class GenericMode(InputMode):
                 )
 
         self.manager=asyncio.run(Connection().connect())
-        self.tmux_server=libtmux.Server()
+        self.tmux=libtmux.Server()
 
     def change_mode(self, mode_name=None):
         if mode_name=='me':
@@ -52,7 +52,7 @@ class GenericMode(InputMode):
         window=self.get_current_window()
         if window.name=='tmux':
             cmd=('list-panes', '-F', '#{pane_id}:#{pane_pid}:#{pane_active}')
-            r=self.tmux_server.cmd(*cmd)
+            r=self.tmux.cmd(*cmd)
             for pane_data in r.stdout:
                 pane_id, pid, active=tuple(pane_data.split(':'))
                 if active=='1':

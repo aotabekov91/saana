@@ -25,7 +25,7 @@ class WindowsMode(GenericMode):
     @command(checkActionOnFinish=True, windowCommand=True)
     def focusAction(self, request):
         slot_names=request.get('slot_names', {})
-        window=slot_names.get('window', None)
+        window=slot_names.get('direction', None)
         if window in ['tiling', 'floating']:
             return 'focus mode_toggle'
         elif window in ['left', 'right']:
@@ -39,7 +39,6 @@ class WindowsMode(GenericMode):
 
     @command(checkActionOnFinish=True, windowCommand=True)
     def changeWorkspaceAction(self, request):
-        print(request)
         slot_names=request['slot_names']
         workspace=slot_names.get('workspace', None)
         if workspace:

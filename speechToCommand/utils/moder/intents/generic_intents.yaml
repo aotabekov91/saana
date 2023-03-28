@@ -243,3 +243,38 @@ type: intent
 name: GenericMode_menuAction
 utterances:
   - menu
+
+---
+type: intent
+name: GenericMode_horizontalAction
+utterances:
+  - horizontal
+
+---
+type: intent
+name: GenericMode_verticalAction
+utterances:
+  - vertical
+
+---
+type: intent
+name: GenericMode_renameAction
+utterances:
+  - rename
+
+---
+type: intent
+name: GenericMode_listAction
+utterances:
+  - list
+
+---
+type: intent
+name: GenericMode_focusAction
+slots:
+  - name: direction
+    entity: direction
+utterances:
+  - focus [direction](left)  
+  - focus [direction](right)  
+  - focus [direction](tiling)  

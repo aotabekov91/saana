@@ -14,10 +14,10 @@ values:
   - [GenericMode, generic]
   - [PlayerMode, player]
   - [NotifyMode, notify]
-  - [InputMode, input]
   - [EditorMode, editor]
   - [RangerMode, ranger]
   - [TmuxMode, tmux]
+  - [KittyMode, kitty]
 
 ---
 type: entity
@@ -39,11 +39,13 @@ values:
 
 ---
 type: entity
-name: focus_window
+name: direction
 automatically_extensible: no
 values:
   - [left, info]
   - [right, main]
+  - [up, top]
+  - [down, bottom]
   - [tiling, background]
   - [floating, foreground]
 

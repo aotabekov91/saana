@@ -24,19 +24,6 @@ utterances:
 
 ---
 type: intent
-name: WindowsMode_focusAction
-slots:
-  - name: window
-    entity: focus_window
-utterances:
-  - '[window](left)'
-  - '[window](right)'
-  - focus [window](left)  
-  - focus [window](right)  
-  - focus [window](tiling)  
-
----
-type: intent
 name: WindowsMode_floatingToggleAction
 utterances:
   - float

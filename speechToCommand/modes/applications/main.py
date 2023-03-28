@@ -80,7 +80,7 @@ class ApplicationsMode(GenericMode):
             if i3_window.name=='tmux':
                 cmd=('list-panes', '-a', '-F',
                      '#{session_id}:#{window_id}:#{pane_id}:#{pane_pid}')
-                r=self.tmux_server.cmd(*cmd)
+                r=self.tmux.cmd(*cmd)
                 for pane_data in r.stdout:
                     pane_id, pid=tuple(pane_data.rsplit(':', 1))
                     cmd=f'ps -o cmd --no-headers --ppid {pid}'.split(' ')

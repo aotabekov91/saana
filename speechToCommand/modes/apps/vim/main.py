@@ -30,17 +30,17 @@ class VimMode(GenericMode):
 
     @command()
     def markSetAction(self, request={}):
-        self.set_dictation({'request':'setTextInitialsAction'})
+        self.editorAction({'request':'setTextInitialsAction'})
         return 'xdotool getactivewindow type m'
 
     @command()
     def markJumpAction(self, request):
-        self.set_dictation({'request':'setTextInitialsAction'})
+        self.editorAction({'request':'setTextInitialsAction'})
         return f"xdotool getactivewindow type '`'"
 
     @command()
     def hintJumpAction(self, request):
-        self.set_dictation({'request':'setTextInitialsAction'})
+        self.editorAction({'request':'setTextInitialsAction'})
         return 'xdotool getactivewindow type ..w'
 
     @command()
@@ -77,7 +77,7 @@ class VimMode(GenericMode):
 
     @command()
     def searchAction(self, request={}):
-        self.set_dictation({'request': 'setTextAction'})
+        self.editorAction({'request': 'setTextAction'})
         return 'xdotool getactivewindow type /' 
 
     @command()
