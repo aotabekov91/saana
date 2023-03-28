@@ -17,7 +17,7 @@ class VimMode(GenericMode):
                  port=None, 
                  parent_port=None, 
                  config=None, 
-                 window_classes=['vim', 'ranger', 'kitty', 'tmux']):
+                 window_classes=['vim']):
 
         super(VimMode, self).__init__(
                 keyword=keyword,

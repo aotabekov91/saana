@@ -8,9 +8,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-import asyncio
-from i3ipc.aio import Connection
-
 from os.path import abspath
 from configparser import ConfigParser
 
@@ -32,21 +29,17 @@ class BaseMode(QApplication):
         self.info=info
         self.port=port
         self.config=config
-        self.running = False
         self.keyword=keyword
-        self.intents_path=None
         self.parent_port=parent_port
+        self.window_classes=window_classes
 
         self.setApplicationName(app_name)
 
-        self.window_classes=window_classes
-        self.manager=asyncio.run(Connection().connect())
+        self.running = False
+        self.intents_path=None
 
         self.set_config()
-        self.set_intents_path()
         self.set_connection()
-        self.set_listener()
-
         self.register_mode()
 
     def set_config(self):
@@ -70,11 +63,11 @@ class BaseMode(QApplication):
             if self.config.has_option('Custom', 'window_classes'):
                 self.window_classes=self.config.getint('Custom', 'window_classes')
 
-    def set_intents_path(self):
         file_path=os.path.abspath(inspect.getfile(self.__class__))
         main_path=os.path.dirname(file_path).replace('\\', '/')
         path=f'{main_path}/intents.yaml'
-        if os.path.isfile(path): self.intents_path=path
+        if os.path.isfile(path):
+            self.intents_path=path
 
     def register_mode(self):
         if self.parent_port:

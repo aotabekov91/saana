@@ -1,10 +1,7 @@
-import os
-import sys
-import zmq
-import time
+import asyncio
 import subprocess
 
-import asyncio
+import libtmux
 from i3ipc.aio import Connection
 
 from .input import InputMode
@@ -31,6 +28,9 @@ class GenericMode(InputMode):
                  app_name=app_name
                 )
 
+        self.manager=asyncio.run(Connection().connect())
+        self.tmux_server=libtmux.Server()
+
     def change_mode(self, mode_name=None):
         if mode_name=='me':
             mode_name=self.__class__.__name__
@@ -50,11 +50,30 @@ class GenericMode(InputMode):
 
     def get_window_class(self):
         window=self.get_current_window()
-        return window.window_class
+        if window.name=='tmux':
+            cmd=('list-panes', '-F', '#{pane_id}:#{pane_pid}:#{pane_active}')
+            r=self.tmux_server.cmd(*cmd)
+            for pane_data in r.stdout:
+                pane_id, pid, active=tuple(pane_data.split(':'))
+                if active=='1':
+                    cmd=f'ps -o cmd --no-headers --ppid {pid}'.split(' ')
+                    w=subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                    processes=w.stdout.readlines()
+                    if len(processes)>0:
+                        process_name=(processes[-1]
+                                      .decode()
+                                      .strip('\n')
+                                      .lower()
+                                      )
+                        for f in ['vim', 'ranger']:
+                            if f in process_name: return f
+            return 'tmux'
+        else:
+            return window.window_class
 
     def parse_repeats(self, request):
         slot_names=request.get('slot_names', {})
-        return slot_names.get('repeat', 1)
+        return int(slot_names.get('repeat', 1.))
 
     def editorAction(self, slot_names): 
         if self.parent_port:
@@ -68,10 +87,13 @@ class GenericMode(InputMode):
             print(self.parent_socket.recv_json())
 
     def checkAction(self, request={}):
+        window_class=self.get_window_class()
         if self.parent_port:
             self.parent_socket.send_json(
                     {'command':'setCurrentWindow',
-                     'request': request})
+                     'request': request, 
+                     'window_class': window_class,
+                     })
             return self.parent_socket.recv_json()
 
     def lockAction(self, request):

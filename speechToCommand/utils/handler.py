@@ -2,13 +2,9 @@ import sys
 import zmq
 
 import threading
-
-import asyncio
-from i3ipc.aio import Connection
+from multiprocessing import Process
 
 from configparser import ConfigParser
-
-from multiprocessing import Process
 
 from .listener import Listener
 from .intender import Intender
@@ -35,8 +31,6 @@ class Handler:
         self.locked=False
         self.locking_mode=None
         self.private_mode=False
-
-        self.manager=asyncio.run(Connection().connect())
 
         self.config=config
 
@@ -101,24 +95,14 @@ class Handler:
             self.intender_socket= zmq.Context().socket(zmq.REQ)
             self.intender_socket.connect(f'tcp://localhost:{self.intender_port}')
 
-    def set_current_window(self):
+    def set_current_window(self, r={}):
+        window_class=r.get('window_class', None)
 
-        tree=asyncio.run(self.manager.get_tree())
-        window=tree.find_focused()
-        window_class=getattr(window, 'window_class', None)
-
-        if window_class is None: return
-
-        mode_names=[]
-        modes=[]
         for mode_name, mode_data in self.modes.items():
             if window_class in mode_data['window_classes']:
-                mode_names+=[mode_name]
-
-        if len(mode_names)>0:
-            self.set_current_mode(mode_names[0])
-        else:
-            self.set_current_mode('GenericMode')
+                self.set_current_mode(mode_name)
+                return
+        self.set_current_mode('GenericMode')
 
     def check_for_keyword(self, text):
         tmp=text.split(' ', 1)
@@ -155,7 +139,7 @@ class Handler:
                 self.set_current_mode(r.get('mode_name'))
                 msg={'status':'ok', 'currentMode':self.current_mode}
             elif r['command']=='setCurrentWindow':
-                self.set_current_window()
+                self.set_current_window(r)
                 msg={'status':'ok', 'info':'updated mode based on window_class',}
             elif r['command']=='getAllModes':
                 msg={'status':'ok', 'allModes':self.modes}

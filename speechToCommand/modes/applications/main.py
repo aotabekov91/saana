@@ -1,10 +1,8 @@
 import os
 import sys
 import asyncio
-import subprocess
 import threading
-
-from i3ipc.aio import Connection
+import subprocess
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -53,15 +51,22 @@ class ApplicationsMode(GenericMode):
         if item.itemData['kind']=='command':
             subprocess.Popen(item.itemData['id'])
         else:
-            self.set_window(item.itemData['id'])
+            self.set_window(item.itemData)
         self.ui.edit.clear()
         self.ui.hide()
         self.checkAction(request)
 
-    def set_window(self, wid):
+    def set_window(self, item_data):
+        print(item_data)
+        wid=item_data['id']
+        pid=item_data.get('tmux_id', False)
         tree=asyncio.run(self.manager.get_tree())
         w=tree.find_by_id(wid)
-        asyncio.run(w.command('focus'))
+        if w: asyncio.run(w.command('focus'))
+        if not pid: return
+        session, window, pane=tuple(pid.split(':'))
+        os.popen(f'tmux select-pane -t "{pane}"')
+        os.popen(f"tmux select-window -t '{window}'")
 
     def get_windows(self):
         tree=asyncio.run(self.manager.get_tree())
@@ -72,10 +77,27 @@ class ApplicationsMode(GenericMode):
             if i3_window.name in ['content']+[str(i) for i in range(0, 11)]: continue
             if 'i3bar' in i3_window.name: continue
             workspace=i3_window.workspace().name
-            items+=[{'top':i3_window.name,
-                     'down':f'Workspace {workspace}',
-                     'id':i3_window.id,
-                     'kind':'application'}]
+            if i3_window.name=='tmux':
+                cmd=('list-panes', '-a', '-F',
+                     '#{session_id}:#{window_id}:#{pane_id}:#{pane_pid}')
+                r=self.tmux_server.cmd(*cmd)
+                for pane_data in r.stdout:
+                    pane_id, pid=tuple(pane_data.rsplit(':', 1))
+                    cmd=f'ps -o cmd --no-headers --ppid {pid}'.split(' ')
+                    w=subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                    processes=w.stdout.readlines()
+                    if len(processes)>0:
+                        command=processes[-1].decode().strip('\n')
+                        items+=[{'top':command,
+                                 'down':f'Workspace {workspace}: [tmux]',
+                                 'id': i3_window.id, 
+                                 'tmux_id': pane_id, 
+                                 'kind':'application'}]
+            else:
+                items+=[{'top':i3_window.name,
+                         'down':f'Workspace {workspace}',
+                         'id':i3_window.id,
+                         'kind':'application'}]
         return items
 
     def set_commands(self):
@@ -112,4 +134,5 @@ class ApplicationsMode(GenericMode):
 
 if __name__=='__main__':
     app=ApplicationsMode(port=33333)
+    app.showAction()
     app.run()
