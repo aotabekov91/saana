@@ -1,5 +1,4 @@
-from .base_mode import BaseMode
-from .qbase_mode import QBaseMode
-from .generic_mode import BaseGenericMode 
-from .qgeneric_mode import QBaseGenericMode 
+from .base import BaseMode
+from .input import InputMode
+from .generic import GenericMode
 

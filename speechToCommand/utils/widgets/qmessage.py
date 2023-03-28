@@ -5,14 +5,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from .qmainwindow import QBaseMainWindow
+from speechToCommand.utils.helper import command
 
 class MessageMainWindow(QBaseMainWindow):
 
     message_hidden=pyqtSignal()
 
-    def __init__ (self, app, window_title='', label_title=''):
+    def __init__ (self, mode, window_title='', label_title=''):
 
-        super(MessageMainWindow, self).__init__(app, window_title)
+        super(MessageMainWindow, self).__init__(mode, window_title)
 
         self.pause=False
 
@@ -122,3 +123,8 @@ class MessageMainWindow(QBaseMainWindow):
             self.information.setText('')
             self.detail.setText('')
             self.message_hidden.emit()
+
+    @command(checkActionOnFinish=True, checkWindowType=False)
+    def hideAction(self, request):
+        self.pause=False
+        self.hide()

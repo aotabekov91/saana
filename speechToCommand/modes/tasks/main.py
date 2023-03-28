@@ -15,8 +15,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from speechToCommand.utils.moder import BaseMode
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
 class Timer(QObject):
@@ -47,7 +46,7 @@ class Timer(QObject):
         self.running=False
         self.finished.emit()
 
-class TasksMode(QBaseMode):
+class TasksMode(GenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(TasksMode, self).__init__(

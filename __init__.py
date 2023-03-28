@@ -1,6 +1,9 @@
-from .speechToCommand import utils
+# from .speechToCommand.utils import moder 
+# from .speechToCommand.utils import helper 
+# from .speechToCommand.utils import widgets 
+
 from .speechToCommand import SpeechToCommand 
-from .speechToCommand import SpeechToCommandCLI 
+# from .speechToCommand import SpeechToCommandCLI 
 
 from tendo import singleton
 

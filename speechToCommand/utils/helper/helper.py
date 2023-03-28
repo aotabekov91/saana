@@ -1,34 +1,37 @@
 import os
+import time
 import asyncio
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-def command(checkActionOnFinish=False, checkWindowType=True, windowCommand=False):
+def command(checkActionOnFinish=False, checkWindowType=True, 
+            windowCommand=False, delayAction=None, waitAction=None):
     def _command(func):
         def inner(self, request):
             cond=True
             if checkWindowType:
                 if self.window_classes != 'all':
-                    window = self.get_current_window()
-                    cond = window.window_class in self.window_classes
+                    cond = self.get_window_class() in self.window_classes
             if cond: 
-                repeat_func = getattr(self, 'repeat', None)
-                if repeat_func:
-                    times = int(repeat_func(request))
-                else:
-                    times = 1
                 cmd = func(self, request)
                 if cmd:
+                    if hasattr(self, 'parse_repeats'):
+                        times = self.parse_repeats(request)
+                        cmd = cmd.format(repeat=times)
+                    if delayAction: time.sleep(delayAction)
                     print(f'Running command: {cmd}')
-                    cmd = cmd.format(repeat=times)
                     if windowCommand:
                         asyncio.run(self.manager.command(cmd))
                     else:
                         os.popen(cmd)
+                    if waitAction: time.sleep(waitAction)
             if checkActionOnFinish:
-                self.checkAction(request)
+                if hasattr(self, 'checkAction'):
+                    self.checkAction(request)
+                elif hasattr(self, 'mode'):
+                    self.mode.checkAction(request)
         return inner
     return _command
 
@@ -39,9 +42,8 @@ class ZMQListener(QObject):
     def __init__(self, parent):
         super(ZMQListener, self).__init__()
         self.parent = parent
-        self.running = True
 
     def loop(self):
-        while self.running:
+        while self.parent.running:
             request = self.parent.socket.recv_json()
             self.request.emit(request)

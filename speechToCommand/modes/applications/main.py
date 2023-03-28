@@ -1,3 +1,4 @@
+import os
 import sys
 import asyncio
 import subprocess
@@ -9,10 +10,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class ApplicationsMode(QBaseGenericMode):
+class ApplicationsMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(ApplicationsMode, self).__init__(
                  keyword='applications', 

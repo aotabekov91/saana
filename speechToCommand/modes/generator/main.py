@@ -14,8 +14,7 @@ import fake_useragent
 
 import openai
 
-
-from speechToCommand.utils.moder import BaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 
 openai.api_key=os.environ['OPEN_AI_API']
 
@@ -32,7 +31,7 @@ def translate(to_translate, to_language="auto", from_language="auto", wrap_len="
     re_result = re.findall(expr, data)
     if (len(re_result) > 0): return re_result[0]
 
-class GeneratorMode(BaseGenericMode):
+class GeneratorMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(GeneratorMode, self).__init__(
                  keyword='generator', 

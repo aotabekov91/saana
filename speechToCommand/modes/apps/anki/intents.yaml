@@ -7,12 +7,6 @@ values:
 
 ---
 type: intent
-name: AnkiMode_studyAction 
-utterances:
-  - deck 
-
----
-type: intent
 name: AnkiMode_examplePlayAction 
 slots:
   - name: number
@@ -31,6 +25,7 @@ type: intent
 name: AnkiMode_frontPlayAction 
 utterances:
   - question
+  - ask
 
 ---
 type: intent

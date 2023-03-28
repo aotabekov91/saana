@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineWidgets import *
 
 from .qinput import InputMainWindow
+from speechToCommand.utils.helper import command
 
 class Browser(QWebEngineView):
     def __init__(self):
@@ -55,8 +56,8 @@ class Browser(QWebEngineView):
         self.page().scripts().insert(script)
 
 class RenderMainWindow (InputMainWindow):
-    def __init__ (self, app, window_title='', label_title=''):
-        super(RenderMainWindow, self).__init__(app, window_title, label_title)
+    def __init__ (self, mode, window_title='', label_title=''):
+        super(RenderMainWindow, self).__init__(mode, window_title, label_title)
 
     def set_ui(self):
 
@@ -96,11 +97,13 @@ class RenderMainWindow (InputMainWindow):
         self.show()
         self.edit.setFocus()
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def doneAction(self, request):
         self.edit.clear()
         self.browser.setHtml('')
         self.hide()
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def showAction(self, request):
         self.hide()
         self.show()

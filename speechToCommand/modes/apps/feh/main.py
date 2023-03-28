@@ -8,11 +8,11 @@ import asyncio
 from i3ipc.aio import Connection
 
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.moder import BaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 
-class FehMode(BaseGenericMode):
+class FehMode(GenericMode):
     def __init__(self,
-                 keyword='fehmode', 
+                 keyword='feh', 
                  info='FehMode', 
                  port=None, 
                  parent_port=None, 

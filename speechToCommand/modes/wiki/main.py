@@ -6,13 +6,13 @@ import fileinput
 
 from subprocess import Popen
 
-from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class WikiMode(QBaseGenericMode):
+class WikiMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(WikiMode, self).__init__(
-                 keyword='archive', 
+                 keyword='wiki', 
                  info='Wikis', 
                  port=port, 
                  parent_port=parent_port, 

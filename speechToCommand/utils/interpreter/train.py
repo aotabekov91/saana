@@ -12,7 +12,7 @@ from speechToCommand.utils.listener import Listener
 class Trainer:
 
     def __init__(self, 
-                 yaml_path='/home/adam/bin/python/speechToCommand/utils/interpreter/model/data.yaml',
+                 yaml_path='/home/adam/bin/python/speechToCommand/utils/interpreter/model/data.sav',
                  mode_path='/home/adam/bin/python/speechToCommand/modes', 
                  intender_port=9723,
                  listener_port=19833,

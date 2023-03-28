@@ -8,11 +8,11 @@ import asyncio
 from i3ipc.aio import Connection
 
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.moder import BaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 
-class VimMode(BaseGenericMode):
+class VimMode(GenericMode):
     def __init__(self,
-                 keyword='vimmode', 
+                 keyword='vim', 
                  info='VimMode', 
                  port=None, 
                  parent_port=None, 
@@ -30,17 +30,17 @@ class VimMode(BaseGenericMode):
 
     @command()
     def markSetAction(self, request={}):
-        self.dictateAction({'request':'setTextInitialsAction'})
+        self.set_dictation({'request':'setTextInitialsAction'})
         return 'xdotool getactivewindow type m'
 
     @command()
     def markJumpAction(self, request):
-        self.dictateAction({'request':'setTextInitialsAction'})
+        self.set_dictation({'request':'setTextInitialsAction'})
         return f"xdotool getactivewindow type '`'"
 
     @command()
     def hintJumpAction(self, request):
-        self.dictateAction({'request':'setTextInitialsAction'})
+        self.set_dictation({'request':'setTextInitialsAction'})
         return 'xdotool getactivewindow type ..w'
 
     @command()
@@ -77,7 +77,7 @@ class VimMode(BaseGenericMode):
 
     @command()
     def searchAction(self, request={}):
-        self.dictateAction({'request': 'setTextAction'})
+        self.set_dictation({'request': 'setTextAction'})
         return 'xdotool getactivewindow type /' 
 
     @command()

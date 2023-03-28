@@ -1,9 +1,9 @@
 import os
 
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.moder import BaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 
-class TmuxMode(BaseGenericMode):
+class TmuxMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(TmuxMode, self).__init__(
                  keyword='tmux', 

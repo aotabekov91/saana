@@ -6,10 +6,10 @@ from multiprocessing import Process
 from .anki_notes import *
 from generator import finish_processes
 
-from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets import ListMainWindow
 
-class LookupMode(QBaseGenericMode):
+class LookupMode(GenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(LookupMode, self).__init__(

@@ -7,11 +7,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.helper import command
 from speechToCommand.utils.widgets import ListMainWindow
 
-class PlayerMode(QBaseGenericMode):
+class PlayerMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(PlayerMode, self).__init__(
                  keyword='player', 

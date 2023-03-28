@@ -1,6 +1,6 @@
 import sys
 
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
 import re
@@ -22,7 +22,7 @@ def translate(to_translate, to_language="auto", from_language="auto", wrap_len="
     re_result = re.findall(expr, data)
     if (len(re_result) > 0): return re_result[0]
 
-class TranslatorMode(QBaseMode):
+class TranslatorMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(TranslatorMode, self).__init__(
                  keyword='translator', 

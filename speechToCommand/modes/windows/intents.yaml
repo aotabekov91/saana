@@ -1,0 +1,55 @@
+---
+type: intent
+name: WindowsMode_changeWorkspaceAction
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - '[workspace](five)'
+  - '[workspace](seven)'
+  - '[workspace](four)'
+  - '[workspace](nine)'
+  - workspace [workspace](five)
+
+---
+type: intent
+name: WindowsMode_moveToWorkspaceAction
+slots:
+  - name: workspace
+    entity: workspace
+utterances:
+  - move [workspace](eight)
+  - move [workspace](monday)
+  - move [workspace](march)
+
+---
+type: intent
+name: WindowsMode_focusAction
+slots:
+  - name: window
+    entity: focus_window
+utterances:
+  - '[window](left)'
+  - '[window](right)'
+  - focus [window](left)  
+  - focus [window](right)  
+  - focus [window](tiling)  
+
+---
+type: intent
+name: WindowsMode_floatingToggleAction
+utterances:
+  - float
+
+---
+type: intent
+name: WindowsMode_closeAction
+utterances:
+  - close
+
+---
+type: intent
+name: WindowsMode_hideAction
+utterances:
+  - hide
+  - disappear

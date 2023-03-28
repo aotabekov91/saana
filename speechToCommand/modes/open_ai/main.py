@@ -9,7 +9,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from speechToCommand.utils.moder import QBaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qrender import RenderMainWindow 
 
 
@@ -45,7 +45,7 @@ class AIAnswer(QObject):
         except:
             return 'Could not fetch an answer from OPENAI'
 
-class AIMode(QBaseGenericMode):
+class AIMode(GenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(AIMode, self).__init__(

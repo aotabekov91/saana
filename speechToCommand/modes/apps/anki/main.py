@@ -12,9 +12,9 @@ import asyncio
 from i3ipc.aio import Connection
 
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.moder import BaseGenericMode
+from speechToCommand.utils.moder import GenericMode
 
-class AnkiMode(BaseGenericMode):
+class AnkiMode(GenericMode):
     def __init__(self,
                  keyword='anki', 
                  info='AnkiMode', 
@@ -66,7 +66,7 @@ class AnkiMode(BaseGenericMode):
             respond=self.anki_socket.recv_json()
             return respond.get('data', None)
 
-    def play_sound(self, path_raw):
+    def play_sound(self, path_raw, block=False):
 
         def get_sound_name(text):
             match=re.match('\[[^:]*:(.*)\]', text)
@@ -76,6 +76,7 @@ class AnkiMode(BaseGenericMode):
         full_path=os.path.join(self.anki_media, path)
         t=threading.Thread(target=playsound.playsound, args=(full_path,))
         t.start()
+        if block: t.join()
 
     def generate(self, text, kind='sound'):
 
@@ -113,7 +114,7 @@ class AnkiMode(BaseGenericMode):
         else:
             return None, None
 
-    @command()
+    @command(checkWindowType=False)
     def refreshAction(self, request={}):
         self.anki_socket.send_json({'command':'refreshReviewer'})
         respond=self.anki_socket.recv_json()
@@ -138,7 +139,6 @@ class AnkiMode(BaseGenericMode):
 
     @command()
     def generateAction(self, request={}):
-
         slot_names=request['slot_names']
         kind=slot_names.get('kind', None)
 
@@ -170,7 +170,7 @@ class AnkiMode(BaseGenericMode):
             respond=self.anki_socket.recv_json()
             print(respond)
 
-    @command()
+    @command(checkWindowType=False)
     def examplePlayAction(self, request):
         plhld =self.get_reviewer_state()
         if plhld==None: return
@@ -181,7 +181,7 @@ class AnkiMode(BaseGenericMode):
         path_raw=data['field_values'][f'Example {"I"*number}{plhld}_s']
         if path_raw: self.play_sound(path_raw) 
 
-    @command()
+    @command(checkWindowType=False)
     def frontPlayAction(self, request):
         plhld =self.get_reviewer_state()
         if plhld==None: return
@@ -191,9 +191,9 @@ class AnkiMode(BaseGenericMode):
             path_raw=data['field_values'][f'Meaning_s']
         else:
             path_raw=data['field_values'][f'Word_s']
-        if path_raw: self.play_sound(path_raw) 
+        if path_raw: self.play_sound(path_raw, block=True) 
 
-    @command()
+    @command(checkWindowType=False)
     def backPlayAction(self, request):
         plhld =self.get_reviewer_state()
         if plhld==None: return
@@ -204,34 +204,43 @@ class AnkiMode(BaseGenericMode):
         else:
             path_raw=data['field_values'][f'Meaning_s']
         if path_raw: self.play_sound(path_raw) 
+        if plhld=='_w': self.showAction(request)
 
-    @command()
-    def showAction(self, request={}):
+    @command(checkWindowType=False)
+    def showAction(self, request={}, delay=None, wait=None):
         return 'xdotool getactivewindow key space'
 
     @command()
     def leftAction(self, request={}):
         plhld =self.get_reviewer_state()
-        if plhld=='_w': self.showAction({})
-        return 'xdotool getactivewindow type 1'
+        if plhld=='_w': self.showAction({}, wait=.05)
+        os.popen('xdotool getactivewindow type 1')
+        time.sleep(0.05)
+        self.frontPlayAction(request)
 
     @command()
     def rightAction(self, request={}):
         plhld =self.get_reviewer_state()
-        if plhld=='_w': self.showAction({})
-        return 'xdotool getactivewindow type 3'
+        if plhld=='_w':
+            self.showAction({}, wait=0.05)
+        os.popen('xdotool getactivewindow type 3')
+        time.sleep(0.05)
+        self.frontPlayAction(request)
 
     @command()
     def downAction(self, request={}):
         plhld =self.get_reviewer_state()
-        if plhld=='_w': self.showAction({})
-        return 'xdotool getactivewindow type 2'
+        if plhld=='_w': self.showAction({}, delay=0.1)
+        os.popen('xdotool getactivewindow type 2')
+        self.frontPlayAction(request)
+
 
     @command()
     def upAction(self, request={}):
         plhld =self.get_reviewer_state()
-        if plhld=='_w': self.showAction({})
-        return 'xdotool getactivewindow type 4'
+        if plhld=='_w': self.showAction({}, delay=0.1)
+        os.popen('xdotool getactivewindow type 4')
+        self.frontPlayAction(request)
 
     @command()
     def fullscreenAction(self, request={}):

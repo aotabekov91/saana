@@ -1,8 +1,6 @@
-from . import generic
-from . import input
-from . import editor
+from . import windows 
 
-from . import manager 
+from . import editor
 from . import applications
 from . import notify
 from . import tasks

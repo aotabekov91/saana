@@ -4,17 +4,20 @@ from PyQt5.QtWidgets import *
 
 from .qmainwindow import QBaseMainWindow
 
+from speechToCommand.utils.helper import command
+
 class InputMainWindow (QBaseMainWindow):
 
     returnPressed=pyqtSignal()
 
-    def __init__ (self, app, window_title='', label_title=''):
-        super(InputMainWindow, self).__init__(app, window_title)
+    def __init__ (self, mode, window_title='', label_title=''):
+        super(InputMainWindow, self).__init__(mode, window_title)
         self.label_title=label_title
         self.set_ui()
         self.setStyleSheet(self.style_sheet)
         self.setCentralWidget()
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def showAction(self, request={}):
         print(request)
         self.hide()
@@ -64,7 +67,7 @@ class InputMainWindow (QBaseMainWindow):
         self.main.setLayout(allQHBoxLayout)
 
         self.edit.returnPressed.connect(self.returnPressed)
-        self.returnPressed.connect(self.app.confirmAction)
+        self.returnPressed.connect(self.mode.confirmAction)
     
     def setCentralWidget(self):
         super().setCentralWidget(self.main)

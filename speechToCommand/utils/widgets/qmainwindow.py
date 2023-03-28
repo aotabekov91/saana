@@ -4,12 +4,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from speechToCommand.utils.helper import command
+
 class QBaseMainWindow (QMainWindow):
 
-    def __init__ (self, app, window_title=''):
+    def __init__ (self, mode, window_title=''):
         super(QBaseMainWindow, self).__init__()
-        self.app=app
-        self.socket=app.socket
+        self.mode=mode
+        self.socket=mode.socket
         self.setWindowTitle(window_title)
 
     def move_to_center(self):
@@ -24,16 +26,15 @@ class QBaseMainWindow (QMainWindow):
         else:
             super().keyPressEvent(event)
 
-    def stop_waiting(self):
-        self.app.stop_waiting()
-    
     def showAction(self, request={}):
         self.show()
         self.setFocus()
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def hideAction(self, request={}):
         self.hide()
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def doneAction(self, request={}):
         self.hide()
 

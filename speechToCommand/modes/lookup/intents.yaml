@@ -1,14 +1,4 @@
 ---
-type: entity
-name: lan
-automatically_extensible: no
-values:
-  - [en, english]
-  - [de, german]
-  - [ru, russian]
-  - [tr, turkish]
-
----
 type: intent
 name: LookupMode_lookupAction
 slots:

@@ -12,6 +12,7 @@ from multiprocessing import Process
 
 from .listener import Listener
 from .intender import Intender
+from .moder import GenericMode
 from .interpreter import Interpreter
 
 class Handler:
@@ -63,6 +64,7 @@ class Handler:
     def set_unlock(self, request={}):
         self.locked=False
         self.locking_mode=None
+        self.last_command='unlockAction'
 
     def set_config(self):
         if self.config.has_section('General'):
@@ -118,12 +120,24 @@ class Handler:
         else:
             self.set_current_mode('GenericMode')
 
+    def check_for_keyword(self, text):
+        tmp=text.split(' ', 1)
+        candidate_text=tmp[0]
+        command=tmp[-1]
+        candidate=self.interpreter.predict(candidate_text, prob=0.9)
+        for mode_name, mode in self.modes.items():
+            if candidate==mode['keyword']:
+                return mode_name, command
+        return None, None
+
     def lode_modules(self):
 
-        self.run_in_background(Listener,
-                               {'port':self.listener_port})
+        self.run_in_background(GenericMode, {'parent_port':self.port})
+        self.run_in_background(Listener, {'port':self.listener_port})
         self.run_in_background(Intender,
-                               {'port':self.intender_port, 'modes_path':self.modes_path})
+                               {'port':self.intender_port,
+                                'modes_path':self.modes_path
+                                })
 
     def respond(self, r):
         
@@ -244,8 +258,6 @@ class Handler:
 
             self.last_speech=d['text']
 
-            d['text']=self.interpreter.predict(d['text'], prob=0.7)
-
             if d['text']=='exit':
                 break
             elif d['text']=='private':
@@ -268,9 +280,21 @@ class Handler:
                     self.act(
                             self.locking_mode, 
                             self.locking_action, 
-                            {'text':d['text'], 'command':c_name, 'slots':s_names},
+                            {'text':d['text'],
+                             'command':c_name,
+                             'slots':s_names
+                             },
                             )
                 continue
+
+            candidate_mode, text=self.check_for_keyword(d['text'])
+
+            if candidate_mode:
+                m_name, c_name, s_names, i_data = parse(text)
+                m_name=candidate_mode
+                routing=True
+            else:
+                routing=False
 
             if self.current_mode != None and c_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'], self.current_mode)
@@ -278,8 +302,12 @@ class Handler:
             if c_name is None:
                 m_name, c_name, s_names, i_data = parse(d['text'])
 
+            if c_name is None:
+                d['text']=self.interpreter.predict(d['text'], prob=0.3)
+                m_name, c_name, s_names, i_data = parse(d['text'])
 
-            if self.current_mode != None:
+
+            if self.current_mode and not routing:
                 m_name=self.current_mode
 
             print('Understood: ', m_name, c_name) 
@@ -289,7 +317,6 @@ class Handler:
                 self.act(m_name, c_name, s_names, i_data)
 
         self.exit()
-        print('Handler run: exiting')
 
     def exit(self, close_modes=True):
         self.running=False
@@ -300,6 +327,7 @@ class Handler:
         if close_modes:
             for mode_name in self.modes:
                 self.act(mode_name, 'exit')
+        print('Handler run: exiting')
 
     def run_in_background(self, mode_class, kwargs):
         def start(mode_class, kwargs):

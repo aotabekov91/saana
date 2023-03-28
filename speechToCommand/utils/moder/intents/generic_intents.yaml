@@ -1,0 +1,245 @@
+---
+type: intent
+name: GenericMode_changeModeAction
+slots:
+  - name: mode
+    entity: mode
+utterances:
+  - '[mode]'
+  - change [mode]
+
+---
+type: intent
+name: GenericMode_editorAction
+utterances:
+  - editor
+---
+type: intent
+name: GenericMode_openAction
+utterances:
+  - open
+
+---
+type: intent
+name: GenericMode_showAction
+utterances:
+  - show
+
+---
+type: intent
+name: GenericMode_clearAction
+utterances:
+  - clear
+
+---
+type: intent
+name: GenericMode_doneAction
+utterances:
+  - done
+
+---
+type: intent
+name: GenericMode_chooseAction
+utterances:
+  - choose
+    
+---
+type: intent
+name: GenericMode_fullscreenAction
+utterances:
+  - full screen
+  - fullscreen 
+
+---
+type: intent
+name: GenericMode_cancelAction
+utterances:
+  - cancel
+
+---
+type: intent
+name: GenericMode_forwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - forward
+  - forward [repeat](eight) 
+  - forward [repeat](five) times
+
+---
+type: intent
+name: GenericMode_backwardAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - backward
+  - backward [repeat](eight) 
+  - backward [repeat](five) times
+
+---
+type: intent
+name: GenericMode_nextAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - next
+  - next [repeat](eight) 
+  - next [repeat](five) times
+
+---
+type: intent
+name: GenericMode_previousAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - previous
+  - previous [repeat](eight) 
+  - previous [repeat](five) times
+
+---
+type: intent
+name: GenericMode_topAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - top
+  - top [repeat](eight) 
+  - top [repeat](five) times
+
+---
+type: intent
+name: GenericMode_bottomAction
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - bottom
+  - bottom [repeat](eight) 
+  - bottom [repeat](five) times
+---
+type: intent
+name: GenericMode_confirmAction
+utterances:
+  - confirm
+  - okay
+  - 'yes'
+  - yeap
+
+---
+type: intent
+name: GenericMode_zoomInAction 
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - zoom in
+  - zoom in [repeat](eleven)
+  - zoom in [repeat](eleven) times
+  - large
+  - large [repeat](eleven)
+  - large [repeat](eleven) times
+  - larger
+  - larger [repeat](eleven)
+  - larger [repeat](eleven) times
+  - '[repeat](five) larger'
+  - '[repeat](five) times larger'
+
+---
+type: intent
+name: GenericMode_zoomOutAction 
+slots:
+  - name: repeat
+    entity: snips/number 
+utterances:
+  - zoom out
+  - zoom out [repeat](ten)
+  - zoom out [repeat](ten) times
+  - small
+  - small [repeat](six)
+  - small [repeat](five) times
+  - smaller
+  - smaller [repeat](six)
+  - smaller [repeat](five) times
+  - '[repeat](five) smaller'
+  - '[repeat](five) times smaller'
+
+---
+type: intent
+name: GenericMode_checkAction 
+utterances:
+  - check
+  - cast
+
+---
+type: intent
+name: GenericMode_startAction
+utterances:
+  - start
+
+
+---
+type: intent
+name: GenericMode_saveAction
+utterances:
+  - save
+
+---
+type: intent
+name: GenericMode_finishAction
+utterances:
+  - finish
+
+---
+type: intent
+name: GenericMode_refreshAction
+utterances:
+  - refresh
+
+---
+type: intent
+name: GenericMode_fitAction
+utterances:
+  - fit
+
+---
+type: intent
+name: GenericMode_lockAction
+utterances:
+  - fix
+  - lock
+    
+---
+type: intent
+name: GenericMode_unlockAction
+utterances:
+  - unfix
+  - unlock
+
+---
+type: intent
+name: GenericMode_createAction
+utterances:
+  - create
+
+---
+type: intent
+name: GenericMode_searchAction
+utterances:
+  - search
+
+---
+type: intent
+name: GenericMode_toggleAction
+utterances:
+  - toggle
+
+---
+type: intent
+name: GenericMode_menuAction
+utterances:
+  - menu

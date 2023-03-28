@@ -4,10 +4,10 @@ import json
 import logging
 import subprocess
 
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets.qlist import ListMainWindow
 
-class BookmarkMode(QBaseMode):
+class BookmarkMode(GenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(BookmarkMode, self).__init__(

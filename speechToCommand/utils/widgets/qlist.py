@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 
 from playsound import playsound
 from .qinput import InputMainWindow
+from speechToCommand.utils.helper import command
 
 class QCustomListWidget(QListWidget):
 
@@ -67,9 +68,9 @@ class QCustomListItem (QWidget):
 
 class ListMainWindow (InputMainWindow):
 
-    def __init__(self, app, window_title='', label_title=''):
+    def __init__(self, mode, window_title='', label_title=''):
         super(ListMainWindow, self).__init__(
-            app, window_title, label_title=label_title)
+            mode, window_title, label_title=label_title)
 
         self.dlist = []
 
@@ -165,6 +166,7 @@ class ListMainWindow (InputMainWindow):
         self.list.setItemWidget(item, widget)
         return widget
 
+    @command(checkActionOnFinish=True, checkWindowType=False)
     def doneAction(self, request={}):
         self.list.clear()
         self.edit.clear()

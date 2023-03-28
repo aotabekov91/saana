@@ -1,4 +1,3 @@
-from .qapplication import QBaseApplication
 from .qmainwindow import QBaseMainWindow
 
 from .qinput import InputMainWindow

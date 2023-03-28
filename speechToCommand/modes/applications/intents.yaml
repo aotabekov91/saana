@@ -1,18 +1,4 @@
 ---
-type: entity
-name: app
-automatically_extensible: no
-values:
-  - [ranger, file browser]
-  - [kitty, terminal]
-  - [qutebrowser, browser]
-  - [google-chrome, chrome]
-  - [sioyek, document]
-  - [thunderbird, email]
-  - [mpv, music player]
-  - [anki, cards] 
-
----
 type: intent
 name: ApplicationsMode_openAction
 slots:

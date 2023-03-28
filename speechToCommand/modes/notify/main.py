@@ -4,10 +4,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from speechToCommand.utils.moder import QBaseMode
+from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.widgets import MessageMainWindow
 
-class NotifyMode(QBaseMode):
+class NotifyMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
         super(NotifyMode, self).__init__(
                  keyword='notify', 

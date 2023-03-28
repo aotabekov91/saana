@@ -26,7 +26,7 @@ class Interpreter:
         if self.data_path is None:
             file_path=os.path.abspath(inspect.getfile(self.__class__))
             mode_path=os.path.dirname(file_path).replace('\\', '/')
-            self.data_path=f'{mode_path}/model/data.yaml'
+            self.data_path=f'{mode_path}/model/data.sav'
 
         dt=yaml.safe_load(open(self.data_path))
         d=pd.DataFrame([{s:d} for s in dt for d in dt[s]]).melt()
@@ -36,7 +36,7 @@ class Interpreter:
         self.similarity=d.set_index(['variable', 'value']).to_dict()['similarity']
 
     def set_model(self, save_model=True):
-        self.model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=5000)
+        self.model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=10000)
 
 
         dt=yaml.safe_load(open(self.data_path))
