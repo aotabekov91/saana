@@ -125,6 +125,7 @@ class Handler:
 
     def respond(self, r):
         
+        if not r['command'] in ['accessStoreData', 'currentMode']: print(r)
         try:
 
             if r['command']=='currentMode':
@@ -234,7 +235,8 @@ class Handler:
                 return None, None, {}, {}
 
         self.running=True
-        self.set_current_window()
+
+        self.set_current_mode('GenericMode')
 
         while self.running:
 

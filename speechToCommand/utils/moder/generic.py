@@ -34,7 +34,7 @@ class GenericMode(InputMode):
     def change_mode(self, mode_name=None):
         if mode_name=='me':
             mode_name=self.__class__.__name__
-        if mode_name:
+        if self.parent_port and mode_name:
             self.parent_socket.send_json({'command':'setCurrentMode', 'mode_name':mode_name})
             respond=self.parent_socket.recv_json()
 
@@ -84,17 +84,17 @@ class GenericMode(InputMode):
                     'mode_action': 'activateAction',
                     'slot_names':slot_names,
                     })
-            print(self.parent_socket.recv_json())
+            respond=self.parent_socket.recv_json()
 
     def checkAction(self, request={}):
-        window_class=self.get_window_class()
         if self.parent_port:
+            window_class=self.get_window_class()
             self.parent_socket.send_json(
                     {'command':'setCurrentWindow',
                      'request': request, 
                      'window_class': window_class,
                      })
-            return self.parent_socket.recv_json()
+            respond=self.parent_socket.recv_json()
 
     def lockAction(self, request):
         self.parent_socket.send_json({
@@ -162,7 +162,6 @@ class GenericMode(InputMode):
     def zoomOutAction(self, request={}):
         return 'xdotool getactivewindow key --repeat {repeat} minus'
 
-    @command(checkActionOnFinish=False)
     def changeModeAction(self, request):
         slot_names=request['slot_names']
         mode_name=slot_names.get('mode', None)

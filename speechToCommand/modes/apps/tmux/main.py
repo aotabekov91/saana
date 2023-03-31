@@ -56,16 +56,16 @@ class TmuxMode(VimMode):
     @command(checkWindowType=False)
     def searchAction(self, request):
         self.editorAction({'request':'setTextAction'})
-        return 'xdotool getactivewindow key ctrl+a f'
+        return 'xdotool key --clearmodifiers ctrl+a f'
 
     @command(checkWindowType=False)
     def renameAction(self, request):
         self.editorAction({'request':'setTextAction'})
-        return 'xdotool getactivewindow key ctrl+a ,'
+        return 'xdotool getactivewindow key --clearmodifiers ctrl+a ,'
 
     @command(checkWindowType=False)
     def listAction(self, request):
-        return 'xdotool getactivewindow key ctrl+a w'
+        return 'tmux choose-tree -Zw'
 
     @command(checkWindowType=False)
     def horizontalAction(self, request):

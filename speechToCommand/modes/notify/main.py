@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets import MessageMainWindow
+from speechToCommand.utils.widgets import MessageWindow
 
 class NotifyMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -16,7 +16,7 @@ class NotifyMode(GenericMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.ui =  MessageMainWindow(self, 'Message - own_floating')
+        self.ui =  MessageWindow(self, 'Message - own_floating')
 
     def notifyAction(self, request):
 

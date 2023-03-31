@@ -8,8 +8,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from speechToCommand.utils.helper import command
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class ApplicationsMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -20,21 +21,22 @@ class ApplicationsMode(GenericMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.ui=ListMainWindow(self, 'AppsMode - own_floating', 'Apps: ')
+        self.ui=ListWindow(self, 'AppsMode - own_floating', 'Applications')
         self.commands={}
         self.set_commands()
 
     def showCommandsAction(self, request):
         self.ui.addWidgetsToList(self.commands)
-        self.ui.edit.setFocus()
+        self.ui.setFocus()
         self.ui.show()
 
     def showAction(self, request={}):
         dlist=self.get_windows()
         self.ui.addWidgetsToList(dlist)
-        self.ui.edit.setFocus()
         self.ui.show()
+        self.ui.setFocus()
 
+    @command(checkActionOnFinish=True, waitAction=0.1)
     def openAction(self, request):
         slot_names=request['slot_names']
         app=slot_names.get('app', None)
@@ -45,19 +47,20 @@ class ApplicationsMode(GenericMode):
         else:
             os.popen(app)
 
+    @command(checkActionOnFinish=True, waitAction=0.1)
     def confirmAction(self, request={}):
-        if not self.ui.isVisible(): return
-        item=self.ui.list.currentItem()
-        if item.itemData['kind']=='command':
-            subprocess.Popen(item.itemData['id'])
-        else:
-            self.set_window(item.itemData)
-        self.ui.edit.clear()
-        self.ui.hide()
-        self.checkAction(request)
+        if self.ui.isVisible():
+            item=self.ui.list.currentItem()
+            kind=item.itemData.get('kind', None)
+            if kind:
+                if item.itemData['kind']=='command':
+                    subprocess.Popen(item.itemData['id'])
+                else:
+                    self.set_window(item.itemData)
+            self.ui.clear()
+            self.ui.hide()
 
     def set_window(self, item_data):
-        print(item_data)
         wid=item_data['id']
         pid=item_data.get('tmux_id', False)
         tree=asyncio.run(self.manager.get_tree())

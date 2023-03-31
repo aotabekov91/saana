@@ -278,3 +278,33 @@ utterances:
   - focus [direction](left)  
   - focus [direction](right)  
   - focus [direction](tiling)  
+
+---
+type: intent
+name: GenericMode_questionAction 
+utterances:
+  - question
+  - ask
+
+---
+type: intent
+name: GenericMode_answerAction 
+utterances:
+  - answer
+
+---
+type: intent
+name: GenericMode_exampleAction 
+slots:
+  - name: number
+    entity: snips/number
+utterances:
+  - example
+  - example [number](one)
+  - example [number](two)
+
+---
+type: intent
+name: GenericMode_imageAction 
+utterances:
+  - image

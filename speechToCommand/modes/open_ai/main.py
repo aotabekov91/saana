@@ -10,7 +10,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qrender import RenderMainWindow 
+from speechToCommand.utils.widgets import RenderWindow 
 
 
 class AIAnswer(QObject):
@@ -49,20 +49,20 @@ class AIMode(GenericMode):
 
     def __init__(self, port=None, parent_port=None, config=None):
         super(AIMode, self).__init__(
-                 keyword='question', 
+                 keyword='a i', 
                  info='AIMode', 
                  port=port, 
                  parent_port=parent_port, 
-                 config=config,
-                 argv=sys.argv)
+                 config=config)
 
         self.set_answerer()
 
         self.question=None
         self.answer=None
 
-        self.ui=RenderMainWindow(self, 'OpenAI - own_floating', 'Question: ')
-        self.ui.edit.textChanged.connect(self.inputTextChanged)
+        self.ui=RenderWindow(self, 'OpenAI - own_floating', 'Question: ')
+        self.ui.returnPressed.connect(self.confirmAction)
+        self.ui.inputTextChanged.connect(self.inputTextChanged)
         self.ui.set_css(self.css_path)
         self.ui.set_html(self.get_html())
 
@@ -103,15 +103,15 @@ class AIMode(GenericMode):
         self.ui.show()
 
     def inputTextChanged(self):
-        self.question=self.ui.edit.text()
+        self.question=self.ui.text()
         html=self.get_html(question=self.question)
         self.ui.set_html(html)
 
-    def confirmAction(self, request=None):
-        self.question=self.ui.edit.text()
+    def confirmAction(self, request={}):
+        self.question=self.ui.text()
         self.answerer.question=self.question
-        # html=self.get_html(' ... ', self.question)
-        # self.ui.set_html(html)
+        html=self.get_html(self.question, ' ... ')
+        self.ui.set_html(html)
 
     def get_html(self, question='', answer='', badge=''):
         html='''
@@ -131,4 +131,5 @@ class AIMode(GenericMode):
 
 if __name__=='__main__':
     app=AIMode()
+    app.ui.showAction({})
     app.run()

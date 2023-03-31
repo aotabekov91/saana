@@ -1,6 +1,4 @@
-from .qmainwindow import QBaseMainWindow
-
-from .qinput import InputMainWindow
-from .qlist import ListMainWindow
-from .qrender import RenderMainWindow
-from .qmessage import MessageMainWindow
+from .input import InputWindow
+from .list import ListWindow
+from .render import RenderWindow
+from .message import MessageWindow

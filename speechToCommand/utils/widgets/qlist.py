@@ -82,21 +82,36 @@ class ListMainWindow (InputMainWindow):
         self.setGeometry(0, 0, 700, 500)
 
         self.style_sheet += '''
+            QListWidget{
+                border-style: outset;
+                border-width: 0px;
+                border-radius: 15px;
+                color: transparent;
+                border-color: rgba(0,0,0,0);
+                background-color: rgba(0,0,0,0);
+                }
             QListWidget::item{
                 color: transparent;
-                background-color: transparent;
+                border-color: rgba(0,0,0,0);
+                background-color: rgba(0,0,0,0);
+                border-style: outset;
+                border-width: 0px;
+                border-radius: 15px;
                 }
             QListWidget::item:selected {
+                border-color: rgba(0,0,0,0);
                 color: blue;
                 background-color: blue;
+                font-size: 20px;
                 }
                 '''
 
-        self.list = QCustomListWidget() 
+        self.list = QCustomListWidget()
         self.list.setWordWrap(True)
         self.list.setSpacing(0)
         self.list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.list.setAttribute(Qt.WA_TranslucentBackground)
 
         layout = QVBoxLayout()
         layout.setSpacing(0)
@@ -206,19 +221,19 @@ class ListMainWindow (InputMainWindow):
                     playsound(sound_path, block=False)
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
+        if event.key() in [Qt.Key_Down, Qt.Key_Up]:
+            self.list.keyPressEvent(event)
+        elif event.key() in [Qt.Key_Q, Qt.Key_Escape]:
             self.hide()
-        elif event.modifiers() and Qt.ControlModifier:
+        elif event.modifiers() or self.list.hasFocus():
             if event.key() in [Qt.Key_J, Qt.Key_N]:
                 self.moveAction(crement=1)
             elif event.key() in [Qt.Key_K, Qt.Key_P]:
                 self.moveAction(crement=-1)
-            elif event.key() in  [Qt.Key_L, Qt.Key_M]:
-                self.returnPressed.emit()
-        elif self.edit.hasFocus():
-            if event.key() in [Qt.Key_Down, Qt.Key_Up]:
-                self.list.keyPressEvent(event)
+            elif event.key() in  [Qt.Key_L, Qt.Key_M, Qt.Key_Enter]:
+                self.mode.confirmAction()
             else:
                 self.edit.keyPressEvent(event)
         else:
-            super().keyPressEvent(event)
+            self.edit.keyPressEvent(event)
+        self.setFocus()

@@ -49,7 +49,6 @@ clear:
 close:
 - close 
 - cloth 
-- lol
 - cause 
 - cool 
 - close 
@@ -375,7 +374,6 @@ run:
 - rob 
 ru:
 - ru 
-- russia 
 - awesome 
 - hallucination 
 - motion 
@@ -572,11 +570,21 @@ anki:
 - anki
 - thank you
 - inky
+- and key
+- end key
+- anti
 question:
 - question
+- questions
 - awesome
 - pleasure
 - russia
 ask:
 - ask
 - 'off'
+applications:
+- applications
+- application
+ai:
+- a i
+- ey i 

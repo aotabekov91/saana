@@ -7,7 +7,7 @@ import fileinput
 from subprocess import Popen
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class WikiMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -19,7 +19,7 @@ class WikiMode(GenericMode):
                  config=config)
 
         self.mode=None
-        self.ui=ListMainWindow(self, 'Vimwiktionary - own_floating', 'Wiki: ')
+        self.ui=ListWindow(self, 'Vimwiktionary - own_floating', 'Wiki: ')
         self.ui.returnPressed.connect(self.confirmAction)
 
     def set_config(self):
@@ -53,7 +53,7 @@ class WikiMode(GenericMode):
         path=item.itemData['path']
         os_cmd=['kitty', '--class', 'floating', 'vim', '-c',  'Goyo', f'+{line}', path]
         p=Popen(os_cmd)
-        self.ui.edit.clear()
+        self.ui.clear()
         self.ui.hide()
 
     def showAction(self, request={}):
@@ -63,7 +63,7 @@ class WikiMode(GenericMode):
             self.dlist=self.get_todo_data()
         self.ui.addWidgetsToList(self.dlist)
         self.ui.show()
-        self.ui.edit.setFocus()
+        self.ui.setFocus()
         self.changeModeAction(mode_name='me')
 
     def showTodos(self, request={}): 

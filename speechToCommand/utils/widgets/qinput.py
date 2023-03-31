@@ -17,7 +17,7 @@ class InputMainWindow (QBaseMainWindow):
         self.setStyleSheet(self.style_sheet)
         self.setCentralWidget()
 
-    @command(checkActionOnFinish=True, checkWindowType=False)
+    @command(checkWindowType=False)
     def showAction(self, request={}):
         print(request)
         self.hide()
@@ -31,43 +31,40 @@ class InputMainWindow (QBaseMainWindow):
 
         self.setGeometry(0, 0, 700, 0)
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.FramelessWindowHint)
-
         self.style_sheet='''
             QWidget{
-                font-size: 18px;
+                font-size: 16px;
                 color: white;
                 border-width: 0px;
-                border-radius: 0px;
-                border-color: transparent;
-                background-color: transparent;
-                }
-            QWidget#input{
-                background-color: green;
-                }
-            QLineEdit{
+                border-radius: 10px;
                 border-style: outset;
+                border-color: rgba(0,0,0,0);
+                background-color: rgba(0,0,0,0);
+                }
+           QWidget#input{
+                color: green;
+                background-color: green;
                 }
                 '''
 
         self.main=QWidget(objectName='input')
+        self.main.setWindowFlags(Qt.FramelessWindowHint)
         self.main.adjustSize()
 
-        self.label= QLabel()
+        self.label= QLabel()#objectName='inputLabel')
         self.label.setText(self.label_title)
 
-        self.edit=QLineEdit()
+        self.edit=QLineEdit()#objectName='inputEdit')
 
         allQHBoxLayout  = QHBoxLayout()
-        allQHBoxLayout.setContentsMargins(10,0,0,0)
+        allQHBoxLayout.setContentsMargins(10,5,0,5)
         allQHBoxLayout.addWidget(self.label, 0)
         allQHBoxLayout.addWidget(self.edit, 0)
 
         self.main.setLayout(allQHBoxLayout)
 
-        self.edit.returnPressed.connect(self.returnPressed)
-        self.returnPressed.connect(self.mode.confirmAction)
+        self.edit.returnPressed.connect(self.mode.confirmAction)
+        self.returnPressed.connect(lambda: self.mode.confirmAction({}))
     
     def setCentralWidget(self):
         super().setCentralWidget(self.main)

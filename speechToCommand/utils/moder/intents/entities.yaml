@@ -5,12 +5,12 @@ automatically_extensible: no
 values:
   - [ApplicationsMode, applications]
   - [TasksMode, tasks]
-  - [AIMode, chatbot]
+  - [AIMode, chatbot, a i, chat, ai]
   - [TranlatorMode, translator]
   - [LookupMode, look up]
   - [WikiMode, wiki]
   - [BookmarksMode, bookmarks]
-  - [WindowsMode, i3, i three]
+  - [WindowsMode, i3, i three, windows]
   - [GenericMode, generic]
   - [PlayerMode, player]
   - [NotifyMode, notify]
@@ -18,6 +18,14 @@ values:
   - [RangerMode, ranger]
   - [TmuxMode, tmux]
   - [KittyMode, kitty]
+
+---
+name: data
+type: entity 
+automatically_extensible: no
+values:
+  - image
+  - sound
 
 ---
 type: entity

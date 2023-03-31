@@ -13,7 +13,7 @@ class Listener(sr.Recognizer):
         self.port=port
         self.running=False
 
-        self.energy_threshold = 25  # minimum audio energy to consider for recording
+        self.energy_threshold = 150  # minimum audio energy to consider for recording
         self.pause_threshold = 0.15  # seconds of non-speaking audio before a phrase is considered complete
         self.non_speaking_duration = 0.1  # seconds of non-speaking audio to keep on both sides of the recording
 

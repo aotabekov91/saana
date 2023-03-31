@@ -16,7 +16,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class Timer(QObject):
 
@@ -56,8 +56,8 @@ class TasksMode(GenericMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.ui=ListMainWindow(self, 'Tasks - own_floating', 'Task: ')
-        self.ui.edit.returnPressed.connect(self.confirmAction)
+        self.ui=ListWindow(self, 'Tasks - own_floating', 'Task: ')
+        self.ui.returnPressed.connect(self.confirmAction)
 
         self.mode=None
         self.note=''
@@ -95,7 +95,7 @@ class TasksMode(GenericMode):
         item=self.ui.list.currentItem()
         self.set_tasks({'task_id': item.itemData['id'], 'task_name':item.itemData['top']})
         self.ui.hide()
-        self.ui.edit.clear()
+        self.ui.clear()
 
     def finishAction(self, request={}):
         if self.mode=='work':

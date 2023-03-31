@@ -7,7 +7,7 @@ from .anki_notes import *
 from generator import finish_processes
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class LookupMode(GenericMode):
 
@@ -22,7 +22,7 @@ class LookupMode(GenericMode):
         self.lan='en'
         self.word=None
 
-        self.ui=ListMainWindow(self, 'Lookup - own_floating', 'Word: ')
+        self.ui=ListWindow(self, 'Lookup - own_floating', 'Word: ')
 
     def lookupAction(self, request):
         slot_names=request['slot_names']
@@ -33,7 +33,7 @@ class LookupMode(GenericMode):
 
     def getTextAction(self, request):
         text=super().getTextAction(request)
-        self.ui.edit.setText(text)
+        self.ui.setText(text)
         self.ui.show()
         self.confirmAction(request)
 
@@ -48,7 +48,7 @@ class LookupMode(GenericMode):
 
     def confirmAction(self, request={}):
         processes=[]
-        text=self.ui.edit.text()
+        text=self.ui.text()
         self.notes=get_anki_notes(text, self.lan, processes)
         self.set_label(self.notes)
         self.set_data(self.notes)
@@ -75,9 +75,8 @@ class LookupMode(GenericMode):
                                       ipa,
                                       " "*bool(plural), 
                                       )
-        self.ui.edit.setText(word)
-        self.ui.label.setText(label)
-        self.ui.label.show()
+        self.ui.setText(word)
+        self.ui.setLabel(label)
 
     def set_data(self, notes):
         self.dlist=[]

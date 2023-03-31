@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import GenericMode
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.widgets import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class PlayerMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -22,7 +22,7 @@ class PlayerMode(GenericMode):
                  window_classes='all')
 
         self.current_player=''
-        self.ui=ListMainWindow(self, 'PlayerMode - own_floating', 'Player: ')
+        self.ui=ListWindow(self, 'PlayerMode - own_floating', 'Player: ')
 
     def get_player_list(self):
 
@@ -45,13 +45,13 @@ class PlayerMode(GenericMode):
     def showAction(self, request={}):
         self.ui.addWidgetsToList(self.get_player_list())
         self.ui.show()
-        self.ui.edit.setFocus()
+        self.ui.setFocus()
 
     def confirmAction(self, request={}):
         if self.ui.isVisible():
             item=self.ui.list.currentItem()
             self.current_player=item.itemData['id']
-            self.ui.edit.clear()
+            self.ui.clear()
             self.ui.hide()
     
     def get_current_player(self):

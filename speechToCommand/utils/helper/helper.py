@@ -9,24 +9,24 @@ from PyQt5.QtWidgets import *
 def command(checkActionOnFinish=False, checkWindowType=True, 
             windowCommand=False, delayAction=None, waitAction=None):
     def _command(func):
-        def inner(self, request):
+        def inner(self, request={}, *args, **kwargs):
             cond=True
             if checkWindowType:
                 if self.window_classes != 'all':
                     cond = self.get_window_class() in self.window_classes
+            if delayAction: time.sleep(delayAction)
             if cond: 
-                cmd = func(self, request)
+                cmd = func(self, request, *args, **kwargs)
                 if cmd:
                     if hasattr(self, 'parse_repeats'):
                         times = self.parse_repeats(request)
                         cmd = cmd.format(repeat=times)
-                    if delayAction: time.sleep(delayAction)
                     print(f'Running command: {cmd}')
                     if windowCommand:
                         asyncio.run(self.manager.command(cmd))
                     else:
                         os.popen(cmd)
-                    if waitAction: time.sleep(waitAction)
+            if waitAction: time.sleep(waitAction)
             if checkActionOnFinish:
                 if hasattr(self, 'checkAction'):
                     self.checkAction(request)

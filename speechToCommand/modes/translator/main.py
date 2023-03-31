@@ -1,7 +1,7 @@
 import sys
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 import re
 
@@ -31,8 +31,8 @@ class TranslatorMode(GenericMode):
                  parent_port=parent_port, 
                  config=config)
 
-        self.ui=ListMainWindow(self, 'Translator - own_floating', 'Apps: ')
-        self.ui.edit.returnPressed.connect(self.confirmAction)
+        self.ui=ListWindow(self, 'Translator - own_floating', 'Apps: ')
+        self.ui.returnPressed.connect(self.confirmAction)
 
         self.to_lan='de'
 
@@ -41,7 +41,7 @@ class TranslatorMode(GenericMode):
         self.to_lan=slot_names.get('lan', 'en')
 
     def confirmAction(self, request={}):
-        text=self.ui.edit.text()
+        text=self.ui.text()
         trans=translate(text, self.to_lan)
         dlist=[{'top':text, 'down':trans}]
         self.ui.addWidgetsToList(dlist)

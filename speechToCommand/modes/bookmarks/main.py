@@ -5,7 +5,7 @@ import logging
 import subprocess
 
 from speechToCommand.utils.moder import GenericMode
-from speechToCommand.utils.widgets.qlist import ListMainWindow
+from speechToCommand.utils.widgets import ListWindow
 
 class BookmarkMode(GenericMode):
 
@@ -21,7 +21,7 @@ class BookmarkMode(GenericMode):
         self.bookmarks_paths = self.find_bookmarks_paths()
         self.bookmarks=self.get_bookmarks()
 
-        self.ui=ListMainWindow(self, 'Bookmarks - own_floating', 'Bookmark: ')
+        self.ui=ListWindow(self, 'Bookmarks - own_floating', 'Bookmark: ')
         self.ui.addWidgetsToList(self.bookmarks)
 
     def confirmAction(self, request={}):

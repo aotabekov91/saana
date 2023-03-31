@@ -93,38 +93,37 @@ class BaseMode(QApplication):
         mode_name, action=command[0], command[-1]
         mode_func=getattr(self, action, False)
 
-
         ui_func=None
         if hasattr(self, 'ui'):
             ui_func=getattr(self.ui, action, None)
 
-        try:
+        # try:
 
-            msg=None
-            if mode_func:
-                mode_func(request)
-                msg=f"{self.__class__.__name__}: handled request"
-            elif ui_func and (self.ui.isVisible() or 'showAction' in action):
-                ui_func(request)
-                msg=f"{self.__class__.__name__}: UI handled request"
-            elif self.__class__.__name__!=mode_name:
-                if self.parent_port:
-                    self.parent_socket.send_json(
-                            {'command':'setModeAction',
-                             'mode_name':mode_name,
-                             'mode_action': request['command'],
-                             'slot_names': request['slot_names'],
-                             'intent_data': request['intent_data'],
-                             'own_only': True})
-                    respond=self.parent_socket.recv_json()
-                    msg=f'{self.__class__.__name__}: {mode_name} {request["command"]} {request["slot_names"]}'
-                else:
-                    msg=f'{self.__class__.__name__}: not understood'
+        msg=None
+        if mode_func:
+            mode_func(request)
+            msg=f"{self.__class__.__name__}: handled request"
+        elif ui_func and (self.ui.isVisible() or 'showAction' in action):
+            ui_func(request)
+            msg=f"{self.__class__.__name__}: UI handled request"
+        elif self.__class__.__name__!=mode_name:
+            if self.parent_port:
+                self.parent_socket.send_json(
+                        {'command':'setModeAction',
+                         'mode_name':mode_name,
+                         'mode_action': request['command'],
+                         'slot_names': request['slot_names'],
+                         'intent_data': request['intent_data'],
+                         'own_only': True})
+                respond=self.parent_socket.recv_json()
+                msg=f'{self.__class__.__name__}: {mode_name} {request["command"]} {request["slot_names"]}'
+            else:
+                msg=f'{self.__class__.__name__}: not understood'
 
-        except:
-            err_type, error, traceback = sys.exc_info()
-            msg='{err}'.format(err=error)
-        print(msg)
+        # except:
+        #     err_type, error, traceback = sys.exc_info()
+        #     msg='{err}'.format(err=error)
+        # print(msg)
 
     def set_connection(self):
         if self.parent_port:
@@ -141,10 +140,14 @@ class BaseMode(QApplication):
             if self.parent_port:
                 socket = zmq.Context().socket(zmq.PUSH)
                 socket.connect(f'tcp://localhost:{self.port}')
-                socket.send_json({'command':'setParentPortAction',
+                socket.send_json({'command':'set_parent_port',
                                   'slot_names':{'parent_port':self.parent_port}})
-                self.register_mode()
             sys.exit()
+
+    def set_parent_port(self, request):
+        slot_names=request['slot_names']
+        self.parent_port=slot_names['parent_port']
+        self.register_mode()
 
     def set_listener(self):
         self.listener = QThread()

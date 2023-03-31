@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 
 from speechToCommand.utils.moder import GenericMode 
 from speechToCommand.utils.helper import command
-from speechToCommand.utils.widgets.qinput import InputMainWindow
+from speechToCommand.utils.widgets import InputWindow
 
 class EditorMode(GenericMode):
     def __init__(self, port=None, parent_port=None, config=None):
@@ -24,7 +24,7 @@ class EditorMode(GenericMode):
         self.client_action=None
         self.client_request=[]
 
-        self.ui=InputMainWindow(self, 'InputMode - own_floating', 'Inputs: ')
+        self.ui=InputWindow(self, 'InputMode - own_floating', 'Inputs: ')
         self.ui.setFixedSize(700, 30)
 
     def send_text(self, text, delay=0.01):
@@ -48,8 +48,8 @@ class EditorMode(GenericMode):
         self.lockAction(request)
 
     def confirmAction(self, request={}):
-        text=self.ui.edit.text().strip()
-        self.ui.edit.clear()
+        text=self.ui.text().strip()
+        self.ui.clear()
         self.ui.hide()
         if 'setTextAction' in self.client_request:
             self.setTextAction({'text':text})
@@ -91,4 +91,5 @@ class EditorMode(GenericMode):
 
 if __name__=='__main__':
     app=EditorMode(port=33333)
+    app.ui.showAction()
     app.run()
