@@ -1,0 +1,369 @@
+---
+type: entity
+name: ordinal
+automatically_extensible: yes
+values:
+  - ['1', one, monday, january]
+  - ['2', two, tuesday, february]
+  - ['3', three, wednesday, march]
+  - ['4', four, thursday, april]
+  - ['5', five, friday, may]
+  - ['6', six, saturday, june]
+  - ['7', seven, sunday, july]
+  - ['8', eight, august]
+  - ['9', nine, september]
+  - ['10', ten, october]
+  - ['11', eleven, november]
+  - ['12', twelve, december]
+
+---
+type: entity
+name: lan
+automatically_extensible: yes
+values:
+  - ['de', german]
+  - ['us', english]
+  - ['ru', russian]
+  - ['tr', turkish] 
+
+
+---
+type: intent
+name: open
+utterances:
+  - open
+
+---
+type: intent
+name: close
+utterances:
+  - close
+
+---
+type: intent
+name: hide
+utterances:
+  - hide
+
+---
+type: intent
+name: show
+utterances:
+  - show
+
+---
+type: intent
+name: quit
+utterances:
+  - quit
+
+---
+type: intent
+name: done
+utterances:
+  - done
+
+---
+type: intent
+name: choose
+utterances:
+  - choose
+    
+---
+type: intent
+name: fullscreen
+utterances:
+  - full screen
+  - fullscreen 
+
+---
+type: intent
+name: cancel
+utterances:
+  - cancel
+
+---
+type: intent
+name: forward
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - forward
+  - forward [digit](eight) 
+  - forward [digit](five) times
+
+---
+type: intent
+name: backward
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - backward
+  - backward [digit](eight) 
+  - backward [digit](five) times
+
+---
+type: intent
+name: next
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - next
+  - next [digit](eight) 
+  - next [digit](five) times
+
+---
+type: intent
+name: previous
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - previous
+  - previous [digit](eight) 
+  - previous [digit](five) times
+
+---
+type: intent
+name: top
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - top
+  - top [digit](eight) 
+  - top [digit](five) times
+
+---
+type: intent
+name: bottom
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - bottom
+  - bottom [digit](eight) 
+  - bottom [digit](five) times
+
+---
+type: intent
+name: confirm
+utterances:
+  - okay
+
+---
+type: intent
+name: zoomIn 
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - zoom in
+  - zoom in [digit](eleven)
+  - zoom in [digit](eleven) times
+
+---
+type: intent
+name: zoomOut 
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - zoom out
+  - zoom out [digit](ten)
+  - zoom out [digit](ten) times
+
+
+---
+type: intent
+name: start
+utterances:
+  - start
+
+---
+type: intent
+name: start
+utterances:
+  - stop
+
+---
+type: intent
+name: start
+utterances:
+  - pause
+
+---
+type: intent
+name: start
+utterances:
+  - play
+
+---
+type: intent
+name: save
+utterances:
+  - save
+
+---
+type: intent
+name: finish
+utterances:
+  - finish
+
+---
+type: intent
+name: refresh
+utterances:
+  - refresh
+
+---
+type: intent
+name: search
+utterances:
+  - search
+
+---
+type: intent
+name: toggle
+utterances:
+  - toggle
+
+---
+type: intent
+name: activate
+utterances:
+  - activate
+
+---
+type: intent
+name: deactivate
+utterances:
+  - deactivate
+
+---
+type: intent
+name: menu
+utterances:
+  - menu
+
+---
+type: intent
+name: help
+utterances:
+  - help
+
+---
+type: intent
+name: command
+utterances:
+  - command
+
+---
+type: intent
+name: rename
+utterances:
+  - rename
+
+---
+type: intent
+name: main
+utterances:
+  - main
+
+---
+type: intent
+name: remove
+utterances:
+  - remove
+
+---
+type: intent
+name: up
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - up
+  - up [digit](five) times
+  - up [digit](six)
+
+---
+type: intent
+name: down
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - down
+  - down [digit](five) times
+  - down [digit](four)
+
+---
+type: intent
+name: left
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - left 
+  - left [digit](five) times
+  - left [digit](eight) 
+
+---
+type: intent
+name: goto
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - go to 
+  - go to [digit](eight) 
+  - go to [digit](five) times
+
+---
+type: intent
+name: right
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - right 
+  - right [digit](eight) 
+  - right [digit](five) times
+
+---
+type: intent
+name: setMode
+slots:
+  - name: mode
+    entity: mode 
+utterances:
+  - activate [mode](file browser) 
+  - activate [mode](cards) 
+  - activate [mode](files) 
+  - activate [mode](normal) 
+
+---
+type: intent
+name: setApp
+slots:
+  - name: app
+    entity: app 
+utterances:
+  - app [app](keyboard)
+  - app [app](player)
+  - app [app](window)
+  - app [app](lura)
+  - app [app](feh)
+  - app [app](vim)
+  - app [app](tmux)
+  - app [app](willmann)
+
+---
+type: intent
+name: checkApp
+utterances:
+  - check
