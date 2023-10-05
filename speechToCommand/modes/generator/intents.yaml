@@ -1,9 +1,0 @@
----
-type: intent
-name: GeneratorMode_generateAction 
-slots:
-  - name: kind
-    entity: data 
-utterances:
-  - generate [kind](image)
-  - generate [kind](sound)

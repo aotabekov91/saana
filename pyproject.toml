@@ -1,16 +1,19 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "speechToCommand"
-version = "1.0.0"
-authors = [
-  { name="AO", email="adhambek.otabekov.post@gmail.com" },
-]
-description = "Speech to Command "
+[tool.poetry]
+name = "Saana"
+version = "0.0.1"
+description = "A controller"
+authors = ["A O <adhambek.otabekov.post@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+plug = {git = "https://github.com/aotabekov91/plug", branch='main'}
+# plug = {path = "/home/adama/code/plug", develop = true}
+# plug = {path = "/home/adam/code/plug", develop = true}
+
+[tool.poetry.scripts]
+saana = "saana.main:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
