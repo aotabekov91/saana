@@ -1,4 +1,7 @@
 [Settings]
+keywords=['controller']
 
+[Umay.Settings]
 port=20002
+pollerize=false
 umay_port=19999

@@ -1,5 +1,15 @@
 ---
 type: entity
+name: app
+automatically_extensible: no
+
+---
+type: entity
+name: mode
+automatically_extensible: no
+
+---
+type: entity
 name: ordinal
 automatically_extensible: yes
 values:
@@ -25,7 +35,6 @@ values:
   - ['us', english]
   - ['ru', russian]
   - ['tr', turkish] 
-
 
 ---
 type: intent
@@ -348,22 +357,16 @@ utterances:
 
 ---
 type: intent
-name: setApp
+name: setApplication
 slots:
   - name: app
     entity: app 
 utterances:
-  - app [app](keyboard)
-  - app [app](player)
-  - app [app](window)
-  - app [app](lura)
-  - app [app](feh)
-  - app [app](vim)
-  - app [app](tmux)
-  - app [app](willmann)
+  - app [app]
+  - application [app]
 
 ---
 type: intent
-name: checkApp
+name: check
 utterances:
   - check
