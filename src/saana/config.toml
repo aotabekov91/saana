@@ -1,7 +1,18 @@
 [Settings]
-keywords=['controller']
+keywords=['controller', 'beauty']
 
 [Umay.Settings]
 port=20002
-pollerize=false
+pollerize=true
 umay_port=19999
+
+[Picky.Settings]
+folder='~/.config/saana/picky'
+
+[[Picky.Picks]]
+pick = 'aotabekov91/saana_plugins'
+subdir = [
+	'src/feh',
+	'src/xkey',
+	'src/i3manager',
+	]

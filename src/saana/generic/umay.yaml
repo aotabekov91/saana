@@ -10,21 +10,8 @@ automatically_extensible: no
 
 ---
 type: entity
-name: ordinal
+name: toggler
 automatically_extensible: yes
-values:
-  - ['1', one, monday, january]
-  - ['2', two, tuesday, february]
-  - ['3', three, wednesday, march]
-  - ['4', four, thursday, april]
-  - ['5', five, friday, may]
-  - ['6', six, saturday, june]
-  - ['7', seven, sunday, july]
-  - ['8', eight, august]
-  - ['9', nine, september]
-  - ['10', ten, october]
-  - ['11', eleven, november]
-  - ['12', twelve, december]
 
 ---
 type: entity
@@ -80,16 +67,10 @@ utterances:
     
 ---
 type: intent
-name: fullscreen
-utterances:
-  - full screen
-  - fullscreen 
-
----
-type: intent
 name: cancel
 utterances:
   - cancel
+  - abort
 
 ---
 type: intent
@@ -126,7 +107,7 @@ utterances:
 
 ---
 type: intent
-name: previous
+name: prev
 slots:
   - name: digit
     entity: snips/number 
@@ -161,7 +142,8 @@ utterances:
 type: intent
 name: confirm
 utterances:
-  - okay
+  - "okay"
+  - "yes"
 
 ---
 type: intent
@@ -194,15 +176,15 @@ utterances:
 
 ---
 type: intent
-name: start
+name: pause
 utterances:
-  - stop
+  - pause
 
 ---
 type: intent
-name: start
+name: stop
 utterances:
-  - pause
+  - stop
 
 ---
 type: intent
@@ -236,12 +218,6 @@ utterances:
 
 ---
 type: intent
-name: toggle
-utterances:
-  - toggle
-
----
-type: intent
 name: activate
 utterances:
   - activate
@@ -254,15 +230,30 @@ utterances:
 
 ---
 type: intent
-name: menu
+name: toggle
+slots:
+  - name: toggler
+    entity: toggler
 utterances:
-  - menu
+  - toggle
+  - toggle [toggler](menu)
+  - toggle [toggler](info)
+  - toggle [toggler](play)
+  - toggle [toggler](pause)
+  - toggle [toggler](detail)
+  - toggle [toggler](full screen)
 
 ---
 type: intent
 name: help
 utterances:
   - help
+
+---
+type: intent
+name: menu
+utterances:
+  - menu
 
 ---
 type: intent
@@ -296,8 +287,8 @@ slots:
     entity: snips/number 
 utterances:
   - up
-  - up [digit](five) times
   - up [digit](six)
+  - up [digit](five) times
 
 ---
 type: intent
@@ -307,8 +298,8 @@ slots:
     entity: snips/number 
 utterances:
   - down
-  - down [digit](five) times
   - down [digit](four)
+  - down [digit](five) times
 
 ---
 type: intent
@@ -318,20 +309,9 @@ slots:
     entity: snips/number 
 utterances:
   - left 
-  - left [digit](five) times
   - left [digit](eight) 
-
----
-type: intent
-name: goto
-slots:
-  - name: digit
-    entity: snips/number 
-utterances:
-  - go to 
-  - go to [digit](eight) 
-  - go to [digit](five) times
-
+  - left [digit](five) times
+    
 ---
 type: intent
 name: right
@@ -345,19 +325,31 @@ utterances:
 
 ---
 type: intent
+name: goto
+slots:
+  - name: digit
+    entity: snips/number 
+utterances:
+  - go to 
+  - go to [digit](eight) 
+  - go to [digit](five) times
+
+
+---
+type: intent
 name: setMode
 slots:
   - name: mode
     entity: mode 
 utterances:
-  - activate [mode](file browser) 
-  - activate [mode](cards) 
-  - activate [mode](files) 
-  - activate [mode](normal) 
+  - mode [mode](cards) 
+  - mode [mode](files) 
+  - mode [mode](normal) 
+  - mode [mode](file browser) 
 
 ---
 type: intent
-name: setApplication
+name: setApp
 slots:
   - name: app
     entity: app 
@@ -370,3 +362,23 @@ type: intent
 name: check
 utterances:
   - check
+
+---
+type: intent
+name: reload
+utterances:
+  - reload 
+
+---
+type: intent
+name: goToLast
+utterances:
+  - last
+  - go to last
+
+---
+type: intent
+name: goToFirst
+utterances:
+  - first
+  - go to first

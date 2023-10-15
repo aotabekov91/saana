@@ -1,37 +1,28 @@
+from plug import Plug
 from saana.generic import Generic
+from plug.plugs.moder import Moder
+from plug.plugs.picky import Picky
 from plug.plugs.umay_plug import Umay
-from plug.plugs.handler import Handler
 
-class Saana(Handler):
+class Saana(Plug):
 
     def loadModer(self):
 
-        prms={'pollerize': False}
-        super().loadModer(
-                plugs=set([Generic, Umay]),
-                plug_prmts={'Umay': prms},
+        self.moder.load(
+                plugs=set([Picky, Generic]),
+                    )
+        self.moder.load(
+                plugs=set([Umay])
                 )
 
     def setup(self):
 
         super().setup()
-        self.setModer()
-        self.setConnect(
-                kind='REP',
-                socket_kind='bind',
+        self.setModer(
+                Moder,
+                default='Generic'
                 )
-
-    def handle(self, request):
-
-        umay=self.moder.plugs.umay
-        res=umay.send({'getState':{}})
-        prev=res['getState'].get('prev')
-        if prev and prev!=self.name:
-            data= {'app':prev, 'action':request}
-            res=umay.send({'act':data})
-            print('Saana rerouting to {prev}:', res)
+        self.loadModer()
 
 def run():
-
-    app=Saana()
-    app.run()
+    Saana()
