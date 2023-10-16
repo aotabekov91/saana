@@ -13,6 +13,7 @@ folder='~/.config/saana/picky'
 pick = 'aotabekov91/saana_plugins'
 subdir = [
 	'src/feh',
+	'src/mpv',
 	'src/xkey',
 	'src/i3manager',
 	]

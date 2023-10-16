@@ -37,18 +37,6 @@ utterances:
 
 ---
 type: intent
-name: hide
-utterances:
-  - hide
-
----
-type: intent
-name: show
-utterances:
-  - show
-
----
-type: intent
 name: quit
 utterances:
   - quit
@@ -70,7 +58,6 @@ type: intent
 name: cancel
 utterances:
   - cancel
-  - abort
 
 ---
 type: intent
@@ -142,8 +129,7 @@ utterances:
 type: intent
 name: confirm
 utterances:
-  - "okay"
-  - "yes"
+  - okay
 
 ---
 type: intent
@@ -167,66 +153,11 @@ utterances:
   - zoom out [digit](ten)
   - zoom out [digit](ten) times
 
-
----
-type: intent
-name: start
-utterances:
-  - start
-
----
-type: intent
-name: pause
-utterances:
-  - pause
-
----
-type: intent
-name: stop
-utterances:
-  - stop
-
----
-type: intent
-name: start
-utterances:
-  - play
-
 ---
 type: intent
 name: save
 utterances:
   - save
-
----
-type: intent
-name: finish
-utterances:
-  - finish
-
----
-type: intent
-name: refresh
-utterances:
-  - refresh
-
----
-type: intent
-name: search
-utterances:
-  - search
-
----
-type: intent
-name: activate
-utterances:
-  - activate
-
----
-type: intent
-name: deactivate
-utterances:
-  - deactivate
 
 ---
 type: intent
@@ -242,42 +173,6 @@ utterances:
   - toggle [toggler](pause)
   - toggle [toggler](detail)
   - toggle [toggler](full screen)
-
----
-type: intent
-name: help
-utterances:
-  - help
-
----
-type: intent
-name: menu
-utterances:
-  - menu
-
----
-type: intent
-name: command
-utterances:
-  - command
-
----
-type: intent
-name: rename
-utterances:
-  - rename
-
----
-type: intent
-name: main
-utterances:
-  - main
-
----
-type: intent
-name: remove
-utterances:
-  - remove
 
 ---
 type: intent
@@ -331,9 +226,8 @@ slots:
     entity: snips/number 
 utterances:
   - go to 
+  - go to [digit](five)
   - go to [digit](eight) 
-  - go to [digit](five) times
-
 
 ---
 type: intent
@@ -342,10 +236,7 @@ slots:
   - name: mode
     entity: mode 
 utterances:
-  - mode [mode](cards) 
-  - mode [mode](files) 
-  - mode [mode](normal) 
-  - mode [mode](file browser) 
+  - listen [mode]
 
 ---
 type: intent
@@ -354,31 +245,34 @@ slots:
   - name: app
     entity: app 
 utterances:
-  - app [app]
   - application [app]
 
 ---
 type: intent
-name: check
+name: checkMode
 utterances:
-  - check
-
----
-type: intent
-name: reload
-utterances:
-  - reload 
+  - check mode
 
 ---
 type: intent
 name: goToLast
 utterances:
-  - last
   - go to last
 
 ---
 type: intent
 name: goToFirst
 utterances:
-  - first
   - go to first
+
+---
+type: intent
+name: screenshot
+utterances:
+  - screen shot 
+
+---
+type: intent
+name: showState
+utterances:
+  - show state 
